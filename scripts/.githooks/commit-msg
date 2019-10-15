@@ -1,0 +1,12 @@
+#!/bin/bash
+
+INPUT_FILE=$1
+START_LINE=`head -n1 $INPUT_FILE`
+PATTERN="^(feat|refactor|test|fix|doc)(:)(.*)"
+if ! [[ "$START_LINE" =~ $PATTERN ]]; then
+  echo ""
+  echo "[ERROR]  Bad commit message, see example: {prefix}: commit message"
+  echo "Supported values for {prefix} are: feat,refactor,test,fix and doc"
+  echo ""
+  exit 1
+fi
