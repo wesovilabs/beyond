@@ -12,15 +12,27 @@ import (
 
 var (
 	once     sync.Once
-	instance *goa
+	instance *Goa
 )
 
-// Goa returns an instace of goa structure
-func Goa() *goa {
+// Goa struct
+type Goa struct {
+	goa *goa
+}
+
+// Execute executes goa application
+func (g *Goa) Execute(node *ast.File) error {
+	return g.goa.Execute(node)
+}
+
+// Init returns an instance of goa structure
+func Init() *Goa {
 	once.Do(func() {
-		instance = &goa{
-			functions: []*inspector.Function{},
-			aspects:   aspect.Aspects{},
+		instance = &Goa{
+			goa: &goa{
+				functions: []*inspector.Function{},
+				aspects:   aspect.Aspects{},
+			},
 		}
 	})
 	return instance
@@ -58,7 +70,7 @@ func (g *goa) normalize() {
 		if function.Name() == "main" {
 			skip = true
 		}
-		if function.Name() == "Goa" {
+		if function.Name() == "Init" {
 			skip = true
 		}
 		if !skip {
@@ -68,12 +80,12 @@ func (g *goa) normalize() {
 	g.functions = normalizedFunctions
 }
 
-func (g *goa) Execute(node *ast.File) {
+func (g *goa) Execute(node *ast.File) error {
 	inspector := inspector.NewInspector(node)
 	g.aspects = inspector.SearchRegisteredAspects()
 	g.functions = inspector.SearchFunctions()
 	g.imports = inspector.SearchImports()
 	g.normalize()
 	g.run()
-	writer.Node(node, fmt.Sprintf(".goa/main.go"))
+	return writer.Node(node, fmt.Sprintf(".goa/main.go"))
 }

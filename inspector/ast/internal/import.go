@@ -53,11 +53,11 @@ func removeExistingImportSpecs(function *inspector.Function, specs []ast.Spec) [
 	for _, spec := range specs {
 		importSpecs = append(importSpecs, spec)
 		for _, decl := range function.FileDecls() {
-			switch genDecl := decl.(type) {
-			case *ast.GenDecl:
+			if genDecl, ok := decl.(*ast.GenDecl); ok {
+
 				for _, genDeclSpec := range genDecl.Specs {
-					switch s := genDeclSpec.(type) {
-					case *ast.ImportSpec:
+					if s, ok := genDeclSpec.(*ast.ImportSpec); ok {
+
 						if s.Path == spec.(*ast.ImportSpec).Path {
 							importSpecs = importSpecs[:len(importSpecs)-1]
 							break

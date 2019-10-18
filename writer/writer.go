@@ -1,6 +1,7 @@
 package writer
 
 import (
+	"fmt"
 	"go/ast"
 	"go/printer"
 	"go/token"
@@ -13,7 +14,11 @@ func Node(node ast.Node, path string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println("Error while closing file")
+		}
+	}()
 	fset := token.NewFileSet()
 	cfg := printer.Config{
 		Mode:     printer.UseSpaces,

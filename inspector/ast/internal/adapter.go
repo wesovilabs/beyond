@@ -26,14 +26,17 @@ func (a *ASTAdapter) importName(path string) string {
 	return a.imports[path]
 }
 
+// AddFunctionStatements adds statements
 func (a *ASTAdapter) AddFunctionStatements(statements []ast.Stmt) {
 	a.function.AddStatementsAtBegin(statements)
 }
 
+// FunctionParamsList return the function params
 func (a *ASTAdapter) FunctionParamsList() []*ast.Field {
 	return a.function.ParamsList()
 }
 
+// InPackage return true if aspect and function are in the same package
 func (a *ASTAdapter) InPackage() bool {
 	return a.function.Pkg() == a.aspect.Pkg()
 }

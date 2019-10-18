@@ -7,10 +7,12 @@ import (
 	"go/ast"
 )
 
+// AspectInspector struct
 type AspectInspector struct {
 	Node *ast.FuncDecl
 }
 
+// TakeAspects returns the aspect
 func (i *AspectInspector) TakeAspects(pkg string) []*aspect.Aspect {
 	output := make([]*aspect.Aspect, 0)
 	if i.Node.Name.Name == "Goa" {
@@ -27,6 +29,7 @@ func (i *AspectInspector) TakeAspects(pkg string) []*aspect.Aspect {
 	return output
 }
 
+// takeAspectFromCallExpr function used to find aspects by processing the ast
 func takeAspectFromCallExpr(pkg string, expr *ast.CallExpr) *aspect.Aspect {
 	found := false
 	aspect := &aspect.Aspect{}

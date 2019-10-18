@@ -133,11 +133,6 @@ linters-settings:
     range-loops: true # Report preallocation suggestions on range loops, true by default
     for-loops: false # Report preallocation suggestions on for loops, false by default
 issues:
-  exclude:
-    - G104
-    - Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*printf?|os\.(Un)?Setenv). is not checked
-    - not declared by package utf8
-    - unicode/utf8/utf8.go
   exclude-use-default: false
 
 linters:
@@ -145,4 +140,4 @@ linters:
   disable:
     - gochecknoglobals
     - goimports
-  fast: false
+  fast: true

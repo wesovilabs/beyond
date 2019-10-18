@@ -40,7 +40,7 @@ benchmark: ; @ ## Run benchmark tests
 
 .PHONY: build
 build: ; @ ## build exeutable for your current osm
-	$(GOBUILD) -o build/goa.darwin
+	$(GOBUILD) -o build/goa
 
 
 .PHONY: build-all

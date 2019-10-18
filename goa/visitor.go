@@ -1,9 +1,10 @@
 package goa
 
+/**
 type Visitor struct {
 }
 
-/**
+
 func (v Visitor) Visit(node ast.Node) ast.Visitor {
 	if node == nil {
 		return nil
@@ -13,7 +14,7 @@ func (v Visitor) Visit(node ast.Node) ast.Visitor {
 		inspector := inspector.NewInspector(n)
 		functions := inspector.SearchFunctions()
 		if functions != nil {
-			Goa().WithFunctions(functions)
+			Init().WithFunctions(functions)
 		}
 	}
 	return v

@@ -4,31 +4,34 @@ import (
 	"context"
 )
 
-type Key int32
+type contextKey int32
 
 const (
-	funcName Key = iota
+	funcName contextKey = iota
 	pkgName
 	funcIn
 	funcOut
 )
 
+// New constructor for goa context
 func New(ctx context.Context, p ...func(*builder)) (*Ctx, error) {
-	builder := defaultBuilder
+	b := defaultBuilder
 	for _, fn := range p {
-		fn(&builder)
+		fn(&b)
 	}
-	ctx = context.WithValue(ctx, funcName, builder.funcName)
-	ctx = context.WithValue(ctx, pkgName, builder.pkgName)
-	ctx = context.WithValue(ctx, funcIn, builder.input)
-	ctx = context.WithValue(ctx, funcOut, builder.output)
+	ctx = context.WithValue(ctx, funcName, b.funcName)
+	ctx = context.WithValue(ctx, pkgName, b.pkgName)
+	ctx = context.WithValue(ctx, funcIn, b.input)
+	ctx = context.WithValue(ctx, funcOut, b.output)
 	return &Ctx{ctx}, nil
 }
 
+// Ctx context for goa
 type Ctx struct {
 	ctx context.Context
 }
 
+// In returns the Input arguments
 func (c *Ctx) In() Input {
 	if input := c.ctx.Value(funcIn); input != nil {
 		return input.(Input)
@@ -36,6 +39,7 @@ func (c *Ctx) In() Input {
 	return nil
 }
 
+// Out returns the Output arguments
 func (c *Ctx) Out() *Output {
 	if output := c.ctx.Value(funcOut); output != nil {
 		return output.(*Output)
@@ -43,6 +47,7 @@ func (c *Ctx) Out() *Output {
 	return nil
 }
 
+// Name returns the function name
 func (c *Ctx) Name() string {
 	if name := c.ctx.Value(funcName); name != nil {
 		return name.(string)
@@ -50,6 +55,7 @@ func (c *Ctx) Name() string {
 	return ""
 }
 
+// Pkg returns the package name
 func (c *Ctx) Pkg() string {
 	if pkg := c.ctx.Value(pkgName); pkg != nil {
 		return pkg.(string)

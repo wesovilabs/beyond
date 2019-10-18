@@ -6,19 +6,20 @@ import (
 	"strings"
 )
 
-type inspector struct {
+// Inspector struct for a inspecting a file
+type Inspector struct {
 	node *ast.File
 }
 
-// NewInspector creates an instance of struct inspector
-func NewInspector(node *ast.File) *inspector {
-	return &inspector{
+// NewInspector creates an instance of struct Inspector
+func NewInspector(node *ast.File) *Inspector {
+	return &Inspector{
 		node: node,
 	}
 }
 
 // SearchFunctions returns the list of functions
-func (i *inspector) SearchFunctions() []*Function {
+func (i *Inspector) SearchFunctions() []*Function {
 	functions := make([]*Function, 0)
 	for _, object := range i.node.Scope.Objects {
 		if isFun(object) {
@@ -30,7 +31,7 @@ func (i *inspector) SearchFunctions() []*Function {
 }
 
 // SearchImports return a dictionary key,value with the existing imports in the ast
-func (i *inspector) SearchImports() map[string]string {
+func (i *Inspector) SearchImports() map[string]string {
 	imports := make(map[string]string)
 	for _, im := range i.node.Imports {
 		if im.Name != nil {
@@ -44,7 +45,7 @@ func (i *inspector) SearchImports() map[string]string {
 }
 
 // SearchRegisteredAspects return the list of registere aspects
-func (i *inspector) SearchRegisteredAspects() []*aspect.Aspect {
+func (i *Inspector) SearchRegisteredAspects() []*aspect.Aspect {
 	aspects := make([]*aspect.Aspect, 0)
 	for _, object := range i.node.Scope.Objects {
 		if isFun(object) {
