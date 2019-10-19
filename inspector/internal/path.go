@@ -9,6 +9,9 @@ import (
 
 // BuildPath return the signature for the input
 func BuildPath(fileDecl *ast.File, funcDecl *ast.FuncDecl) string {
+	if funcDecl.Name.Name == "test5" {
+		fmt.Println("DEBUG")
+	}
 	in := pathForFieldList(funcDecl.Type.Params, true)
 	out := pathForFieldList(funcDecl.Type.Results, false)
 	return fmt.Sprintf("%s.%s%s%s", fileDecl.Name.Name, funcDecl.Name.String(), in, out)
@@ -63,6 +66,8 @@ func pathForSingleFieldList(field *ast.Field, forceParen bool) string {
 		params := pathForFieldList(fieldType.Params, true)
 		result := pathForFieldList(fieldType.Results, forceParen)
 		return fmt.Sprintf("func%s%s", params, result)
+	case *ast.Ellipsis:
+		return fmt.Sprintf("...%s", exprPath(fieldType.Elt))
 	default:
 		return ""
 	}

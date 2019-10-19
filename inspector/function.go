@@ -2,6 +2,7 @@ package inspector
 
 import (
 	"github.com/wesovilabs/goa/inspector/internal"
+	"github.com/wesovilabs/goa/logger"
 	"go/ast"
 )
 
@@ -14,6 +15,7 @@ type Function struct {
 
 func newFunction(fileDecl *ast.File, funcDecl *ast.FuncDecl) *Function {
 	path := internal.BuildPath(fileDecl, funcDecl)
+	logger.Infof("[function] %s as %s", funcDecl.Name.Name, path)
 	return &Function{
 		parent: fileDecl,
 		decl:   funcDecl,

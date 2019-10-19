@@ -1,9 +1,9 @@
 package inspector
 
 import (
-	"fmt"
 	"github.com/wesovilabs/goa/inspector/aspect"
 	"github.com/wesovilabs/goa/inspector/expression"
+	"github.com/wesovilabs/goa/logger"
 	"go/ast"
 )
 
@@ -15,17 +15,16 @@ type AspectInspector struct {
 // TakeAspects returns the aspect
 func (i *AspectInspector) TakeAspects(pkg string) []*aspect.Aspect {
 	output := make([]*aspect.Aspect, 0)
-	if i.Node.Name.Name == "Goa" {
-		for _, stmt := range i.Node.Body.List {
-			if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
-				if callExpr, ok := returnStmt.Results[0].(*ast.CallExpr); ok {
-					aspects := make([]*aspect.Aspect, 0)
-					aspects = i.takeAspects(pkg, callExpr, aspects)
-					output = append(output, aspects...)
-				}
+	for _, stmt := range i.Node.Body.List {
+		if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
+			if callExpr, ok := returnStmt.Results[0].(*ast.CallExpr); ok {
+				aspects := make([]*aspect.Aspect, 0)
+				aspects = i.takeAspects(pkg, callExpr, aspects)
+				output = append(output, aspects...)
 			}
 		}
 	}
+
 	return output
 }
 
@@ -41,7 +40,7 @@ func takeAspectFromCallExpr(pkg string, expr *ast.CallExpr) *aspect.Aspect {
 				found = true
 				continue
 			}
-			fmt.Printf("Invalid expression %s\n", e.Value)
+			logger.Errorf("Invalid expression %s\n", e.Value)
 			return nil
 		case *ast.Ident:
 			aspect.WithName(e.Obj.Name).WithPkg(pkg)
@@ -53,6 +52,7 @@ func takeAspectFromCallExpr(pkg string, expr *ast.CallExpr) *aspect.Aspect {
 		}
 	}
 	if found {
+		logger.Infof("Registering aspect %s.%s", aspect.Pkg(), aspect.Name())
 		return aspect
 	}
 	return nil

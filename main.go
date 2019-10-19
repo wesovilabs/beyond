@@ -8,6 +8,7 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"path/filepath"
 )
 
 type settings struct {
@@ -20,8 +21,9 @@ type settings struct {
 func parseInput() *settings {
 	var outputDir, inputFile string
 	var showBanner, verbose bool
-	flag.StringVar(&outputDir, "output", ".goa", "output directory")
-	flag.StringVar(&inputFile, "input", "main.go", "main file")
+	pwd, _ := os.Getwd()
+	flag.StringVar(&outputDir, "output", fmt.Sprintf("%s%s%s", pwd, filepath.Separator, ".goa"), "output directory")
+	flag.StringVar(&inputFile, "input", fmt.Sprintf("%s%s%s", "main.go"), "main file")
 	flag.BoolVar(&showBanner, "banner", true, "display goa banner")
 	flag.BoolVar(&verbose, "verbose", true, "print info level logs to stdout")
 	flag.Parse()
@@ -35,6 +37,7 @@ func parseInput() *settings {
 
 func main() {
 	settings := parseInput()
+
 	if settings.showBanner {
 		showBanner()
 	}
@@ -47,15 +50,15 @@ func main() {
 		//panic("error while creating output directory")
 	}
 	fileSet := token.NewFileSet()
-	logger.Log().Infof("parsing file %s", settings.input)
+	logger.Infof("parsing file %s", settings.input)
 	file, err := parser.ParseFile(fileSet, settings.input, nil, parser.ParseComments)
 	if err != nil {
-		logger.Log().Fatalf("error while parsing file: '%v'", err)
+		logger.Fatal("error while parsing file: '%v'", err)
 	}
 	if err := goa.Init().Execute(file); err != nil {
-		logger.Log().Fatalf("error while generating code: '%v'", err)
+		logger.Fatal("error while generating code: '%v'", err)
 	}
-	logger.Log().Info("code was generated successfully!")
+	logger.Info("code was generated successfully!")
 
 }
 

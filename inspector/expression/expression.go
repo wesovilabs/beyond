@@ -3,20 +3,36 @@ package expression
 import (
 	"errors"
 	"fmt"
+	"github.com/wesovilabs/goa/logger"
 	"regexp"
 	"strings"
 )
 
-const pkgChars = `[a-zA-Z0-9_\-*/]+`
-const modChars = `[a-zA-Z0-9_\-*]+\.`
-const funcChars = `[a-zA-Z0-9_\-*]+`
-const inChars = `[a-zA-Z0-9\[\]_\-*\,\.]*`
-const outChars = `[a-zA-Z0-9_\[\]\-*\,\.]*|\([a-zA-Z0-9_\[\]\-*\,\.]*\)`
+/**
+const typesChars = `[a-zA-Z0-9_*\.]*`
+const mapChars = `map\[`+typesChars+`\]`+typesChars
+const arrayChars = `\[\]`+typesChars
+const listChars = `...`+typesChars
+const structChars = `struct{}`
+const interfaceChars = `interface{}`
+const pointersChars = `*`+typesChars
+
+const all = mapChars+"|"+arrayChars+"|"+listChars+"|"+structChars+"|"+interfaceChars+"|"+pointersChars
+const funcChars = `func\(`+all+`\)\(*`+all+`\)*`
+
+**/
+//const pkgChars = `[a-zA-Z0-9_*/]+`
+/**
+const modChars = `[a-zA-Z0-9_*]+\.`
+
+const nameChars = `[a-zA-Z0-9_\-*]+`
+const outChars = all+`[a-zA-Z0-9_\[\]\-*\,\.]*|\([a-zA-Z0-9_\[\]\-*\,\.]*\)`
+const inChars = `[a-zA-Z0-9\[\]_\-*\,\.{}]*|func\([a-zA-Z0-9\[\]_\-*\,\.{}]\)\(*`+outChars+`\)*`
 
 func exprStr() string {
 	out := `^(` + `?P<pkg>` + pkgChars + `)\.`
 	out += `(` + `?P<mod>` + modChars + `)?`
-	out += `(` + `?P<func>` + funcChars + `)`
+	out += `(` + `?P<func>` + nameChars + `)`
 	out += `\((` + `?P<in>` + inChars + `)\)`
 	out += `[ ]*`
 	out += `(` + `?P<out>` + outChars + `)?$`
@@ -24,12 +40,13 @@ func exprStr() string {
 }
 
 var expRegExp = regexp.MustCompile(exprStr())
-
+**/
 // Expression contains the required attributes to define an expression
 type Expression struct {
 	expr *expression
 }
 
+/**
 type expression struct {
 	pkg      string
 	instance string
@@ -38,14 +55,22 @@ type expression struct {
 	out      string
 	regExp   *regexp.Regexp
 }
-
+**/
+/**
 func (e *expression) match(value string) bool {
 	return e.regExp.MatchString(value)
 }
+**/
 
 // Match checks if value match with expression
 func (e *Expression) Match(value string) bool {
-	return e.expr.match(value)
+	matched := e.expr.match(value)
+	func() {
+		if matched {
+			logger.Infof("Matched aspect: '%s' with '%s'", value, e.expr.regExp.String())
+		}
+	}()
+	return matched
 }
 
 const (
@@ -144,7 +169,9 @@ func regExp(e *expression) {
 	e.regExp = regexp.MustCompile(value)
 }
 
+/**
 func processExprStr(text string) *expression {
+	fmt.Println(expRegExp.String())
 	items := expRegExp.FindStringSubmatch(text)
 	if len(items) != 6 {
 		return nil
@@ -169,13 +196,14 @@ func processExprStr(text string) *expression {
 	regExp(e)
 	return e
 }
-
+**/
 // NewExpression create an instance of Expression from a given text
 func NewExpression(text string) (*Expression, error) {
-	expr := processExprStr(text)
+	expr := evaluate(text)
 	if expr == nil {
 		return nil, errors.New("invalid expression")
 	}
+	logger.Infof("Normalizing aspect, from '%s' to '%s'", text, expr.regExp.String())
 	return &Expression{
 		expr: expr,
 	}, nil

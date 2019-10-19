@@ -2,6 +2,7 @@ package inspector
 
 import (
 	"github.com/wesovilabs/goa/inspector/aspect"
+	"github.com/wesovilabs/goa/logger"
 	"go/ast"
 	"strings"
 )
@@ -48,9 +49,11 @@ func (i *Inspector) SearchImports() map[string]string {
 func (i *Inspector) SearchRegisteredAspects() []*aspect.Aspect {
 	aspects := make([]*aspect.Aspect, 0)
 	for _, object := range i.node.Scope.Objects {
-		if isFun(object) {
+		if isFun(object) && object.Name == "Goa" {
+			logger.Infof("Goa function was found!")
 			decl := object.Decl.(*ast.FuncDecl)
 			aspectInspector := &AspectInspector{decl}
+			logger.Info("Inspecting Goa function")
 			aspects = append(aspects, aspectInspector.TakeAspects(i.node.Name.Name)...)
 		}
 	}

@@ -1,6 +1,7 @@
 package expression
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
@@ -83,13 +84,24 @@ func Test_processExprStr(t *testing.T) {
 		},
 	}
 	for _, c := range cases {
-		exp := processExprStr(c.text)
+		fmt.Printf("[TEST] %s\n", c.text)
+		exp := evaluate(c.text)
 		assert.NotNil(t, exp)
-		assert.Equal(t, c.expression.pkg, exp.pkg)
-		assert.Equal(t, c.expression.instance, exp.instance)
-		assert.Equal(t, c.expression.function, exp.function)
-		assert.Equal(t, c.expression.in, exp.in)
-		assert.Equal(t, c.expression.out, exp.out)
+		if !assert.Equal(t, c.expression.pkg, exp.pkg) {
+			t.FailNow()
+		}
+		if !assert.Equal(t, c.expression.instance, exp.instance) {
+			t.FailNow()
+		}
+		if !assert.Equal(t, c.expression.function, exp.function) {
+			t.FailNow()
+		}
+		if !assert.Equal(t, c.expression.in, exp.in) {
+			t.FailNow()
+		}
+		if !assert.Equal(t, c.expression.out, exp.out) {
+			t.FailNow()
+		}
 	}
 
 }
@@ -168,6 +180,16 @@ func Test_calculateRegExps(t *testing.T) {
 				out:      "",
 			},
 			regExp: regexp.MustCompile(`pkg/\w+\.obj\.\w+\(\[\]int\,func\(int\,string\)\*int\)`),
+		},
+		{
+			expr: &expression{
+				pkg:      "*",
+				instance: "",
+				function: "*",
+				in:       "[]int,func(...interface{})(int,error)",
+				out:      "",
+			},
+			regExp: regexp.MustCompile(`\w+\.\w+\(\[\]int\,func\(\.\.\.interface{}\)\(int\,error\)\)`),
 		},
 	}
 	for _, c := range cases {

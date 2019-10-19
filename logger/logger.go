@@ -20,7 +20,22 @@ func Close() {
 	log.Close()
 }
 
-// Log return an instance of logger
-func Log() *logger.Logger {
-	return log
+// Infof the messages
+func Infof(text string, args ...interface{}) {
+	log.Infof(text, args...)
+}
+
+// Info the messages
+func Info(text string) {
+	log.Info(text)
+}
+
+// Errorf log error messages
+func Errorf(text string, args ...interface{}) {
+	log.Errorf(text, args...)
+}
+
+// Fatal log fatal messages
+func Fatal(text string, args ...interface{}) {
+	log.Fatalf(text, args...)
 }

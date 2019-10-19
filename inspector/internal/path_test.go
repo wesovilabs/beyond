@@ -139,14 +139,16 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 	}
 	for _, c := range cases {
-		if c.name == "singleParamMapStringPersonPointer" {
-			fmt.Println("debug")
-		}
+		fmt.Printf("[TEST] %s: %s \n",c.name, c.expected)
 		fieldList := funcs[c.name]
 		result := pathForFieldList(fieldList, true)
-		assert.EqualValues(t, c.expectedForce, result)
+		if !assert.EqualValues(t, c.expectedForce, result) {
+			t.FailNow()
+		}
 		result = pathForFieldList(fieldList, false)
-		assert.EqualValues(t, c.expected, result)
+		if !assert.EqualValues(t, c.expected, result) {
+			t.FailNow()
+		}
 	}
 
 }

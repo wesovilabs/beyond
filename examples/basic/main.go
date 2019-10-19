@@ -12,8 +12,8 @@ import (
 
 func Goa() *goa.Aspects {
 	return goa.New().
-		WithAspect("*.*(*)*", aspects.LogAspect).
-		WithAspect("*.*(string)*", ToUpper)
+		WithAspect("*.*(*)", aspects.LogAspect).
+		WithAspect("*.*(string,func(...interface{})(int,error))", ToUpper)
 
 }
 
@@ -26,7 +26,7 @@ func main() {
 	test3("John", "Doe")
 	fmt.Println("----------")
 	aspects.PrintCounter()
-
+	test5("John", fmt.Println)
 }
 
 func test1(name string) {
@@ -39,6 +39,10 @@ func test2(value int) {
 
 func test3(name string, surname string) {
 	fmt.Printf("    %s %s\n", name, surname)
+}
+
+func test5(value string, fn func(...interface{}) (int, error)) {
+	fn(value)
 }
 
 func AspectMultiply(ctx *context.Ctx) {

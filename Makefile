@@ -3,10 +3,10 @@ COMMIT = $(shell git log --pretty=format:'%H' -n 1)
 VERSION    = $(shell git describe --tags --always)
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 LDFLAGS   = -ldflags "\
- -X goa/goa.Commit=$(COMMIT) \
- -X goa/goa.Version=$(VERSION) \
- -X goa/goa.BuildDate=$(BUILD_DATE) \
- -X goa/goa.Compiler=$(GOLANG_VERSION)"
+ -X github.com/wesovilabs/goa/goa.Commit=$(COMMIT) \
+ -X github.com/wesovilabs/goa/goa.Version=$(VERSION) \
+ -X github.com/wesovilabs/goa/goa.BuildDate=$(BUILD_DATE) \
+ -X github.com/wesovilabs/goa/goa.Compiler=$(GOLANG_VERSION)"
 
 # Go
 GO  = GOFLAGS=-mod=vendor go

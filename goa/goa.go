@@ -5,6 +5,7 @@ import (
 	"github.com/wesovilabs/goa/inspector"
 	"github.com/wesovilabs/goa/inspector/aspect"
 	goaAST "github.com/wesovilabs/goa/inspector/ast"
+	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/writer"
 	"go/ast"
 	"sync"
@@ -27,6 +28,7 @@ func (g *Goa) Execute(node *ast.File) error {
 
 // Init returns an instance of goa structure
 func Init() *Goa {
+	logger.Infof("Initializing goa")
 	once.Do(func() {
 		instance = &Goa{
 			goa: &goa{
@@ -83,9 +85,12 @@ func (g *goa) normalize() {
 func (g *goa) Execute(node *ast.File) error {
 	inspector := inspector.NewInspector(node)
 	g.aspects = inspector.SearchRegisteredAspects()
+	logger.Infof("Registered aspects: %v", len(g.aspects))
 	g.functions = inspector.SearchFunctions()
+	logger.Infof("Total functions:%v ", len(g.functions))
 	g.imports = inspector.SearchImports()
 	g.normalize()
+	logger.Infof("Functions to be processed:  %v", len(g.functions))
 	g.run()
 	return writer.Node(node, fmt.Sprintf(".goa/main.go"))
 }

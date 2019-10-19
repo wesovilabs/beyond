@@ -17,6 +17,6 @@ type AspectFunc func(ctx *context.Ctx)
 
 // WithAspect registers a new aspect
 func (a *Aspects) WithAspect(string, AspectFunc) *Aspects {
-	// What did you expect to find here? This is just magic
+	// What did you expect to find here? Goa is just magic!
 	return a
 }
