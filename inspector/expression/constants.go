@@ -6,17 +6,20 @@ import (
 	"strings"
 )
 
-const types = `[a-zA-Z0-9_\.]+`
+const types = `[a-zA-Z0-9_*.]+`
 const maps = `map\[` + types + `\]` + types
 const arrays = `\[\]` + types
 const lists = `\.\.\.` + types
 const structs = `struct{}`
 const interfaces = `interface{}`
-const pointers = `\*` + types
+const instance = `\*?` + types
 
-const all = types + "|" + maps + "|" + arrays + "|" + lists + "|" + structs + "|" + interfaces + "|" + pointers
+//types + "|" +
+const all =  maps + "|" + arrays + "|" + lists + "|" + structs + "|" + interfaces + "|" + instance
 
-const funcs = `func\(` + all + "|" + `func\(` + all + `\)\(?` + all + `\)?` + `\)\(?` + all + `\)?`
+
+
+const funcs = `func\(` + "("+all+")" + "|" + `func\(` + "("+all+")" + `\)\(?` + "("+all+")" + `\)?` + `\)\(?` + "("+all+")" + `\)?`
 
 const packages = `[a-zA-Z0-9_*/]+`
 const instances = `[a-zA-Z0-9_*]+\.`
@@ -24,13 +27,17 @@ const names = `[a-zA-Z0-9_*]+\.`
 
 var funcRegExp = buildRegExp()
 
+
+const argInRegExp = `\((` + `?P<argIn>` + "("+all+")" + `)\)`
+const argOutRegExp = `\((` + `?P<argOut>` + "("+all+")" + `)\)`
+
 func buildRegExp() *regexp.Regexp {
 	exprStr := `^(` + `?P<package>` + packages + `)\.`
 	exprStr += `(` + `?P<instance>` + instances + `)?`
 	exprStr += `(` + `?P<function>` + names + `)`
-	exprStr += `\((` + `?P<argIn>` + all + `)\)`
+	exprStr += `\((` + `?P<argIn>` + "("+all+")" + `)\)`
 	exprStr += `[ ]*`
-	exprStr += `(` + `?P<argOut>` + all + `)?$`
+	exprStr += `(` + `?P<argOut>` + "("+all+")" + `)?$`
 	return regexp.MustCompile(exprStr)
 }
 

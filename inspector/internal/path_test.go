@@ -139,7 +139,7 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 	}
 	for _, c := range cases {
-		fmt.Printf("[TEST] %s: %s \n",c.name, c.expected)
+		fmt.Printf("[TEST] %s: %s \n", c.name, c.expected)
 		fieldList := funcs[c.name]
 		result := pathForFieldList(fieldList, true)
 		if !assert.EqualValues(t, c.expectedForce, result) {

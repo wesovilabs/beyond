@@ -30,6 +30,11 @@ func Info(text string) {
 	log.Info(text)
 }
 
+// Error log error messages
+func Error(text string) {
+	log.Error(text)
+}
+
 // Errorf log error messages
 func Errorf(text string, args ...interface{}) {
 	log.Errorf(text, args...)
