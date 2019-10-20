@@ -7,9 +7,6 @@ import (
 	"time"
 )
 
-
-
-
 func LogAspect(ctx *context.Ctx) {
 	t := time.Now()
 	args := []string{}

@@ -11,4 +11,3 @@ func (gp *goPath) string() string {
 func (gp *goPath) AbsPath(path string) string {
 	return filepath.Join(gp.string(), path)
 }
-

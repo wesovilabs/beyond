@@ -23,8 +23,8 @@ type Goa struct {
 }
 
 // Execute executes goa application
-func (g *Goa) Execute(pkgPath,fileName string,node *ast.File) error {
-	return g.goa.Execute(pkgPath,fileName,node)
+func (g *Goa) Execute(pkgPath, fileName string, node *ast.File) error {
+	return g.goa.Execute(pkgPath, fileName, node)
 }
 
 // Init returns an instance of goa structure
@@ -86,7 +86,7 @@ func (g *goa) normalize() {
 	g.functions = normalizedFunctions
 }
 
-func (g *goa) Execute(pkgPath,fileName string,node *ast.File) error {
+func (g *goa) Execute(pkgPath, fileName string, node *ast.File) error {
 	inspector := inspector.NewInspector(node)
 	g.aspects = inspector.SearchRegisteredAspects()
 	logger.Infof("Registered aspects: %v", len(g.aspects))
@@ -104,8 +104,8 @@ func (g *goa) Execute(pkgPath,fileName string,node *ast.File) error {
 		logger.Infof(`[aspect  ] %s.%s`, a.Pkg(), a.Name())
 	}
 	g.run()
-	if err := os.MkdirAll(filepath.Join("temporal","main-controller",pkgPath), os.ModePerm); err != nil {
-		logger.Errorf("Error creating path %s",filepath.Join(".goa",pkgPath))
+	if err := os.MkdirAll(filepath.Join("temporal", "main-controller", pkgPath), os.ModePerm); err != nil {
+		logger.Errorf("Error creating path %s", filepath.Join(".goa", pkgPath))
 	}
-	return writer.Node(node, filepath.Join("temporal","main-controller",pkgPath,fileName))
+	return writer.Node(node, filepath.Join("temporal", "main-controller", pkgPath, fileName))
 }

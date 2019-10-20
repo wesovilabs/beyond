@@ -6,8 +6,8 @@ type Settings struct {
 	data map[string]interface{}
 }
 
-func (s *Settings) With(key string,value interface{}) *Settings{
-	s.data[key]=value
+func (s *Settings) With(key string, value interface{}) *Settings {
+	s.data[key] = value
 	return s
 }
 
@@ -26,5 +26,3 @@ type Around interface {
 	Aspect
 	Around(string, string, *context.Input)
 }
-
-

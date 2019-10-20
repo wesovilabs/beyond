@@ -27,12 +27,12 @@ func Infof(text string, args ...interface{}) {
 
 // Info the messages
 func Info(text string) {
-	log.InfoDepth(1,text)
+	log.InfoDepth(1, text)
 }
 
 // Error log error messages
 func Error(text string) {
-	log.ErrorDepth(1,text)
+	log.ErrorDepth(1, text)
 }
 
 // Errorf log error messages
