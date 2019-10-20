@@ -38,7 +38,7 @@ func (g *goa) save(packages map[string]*ast.Package, outputDir string) {
 			logger.Infof("file %s  %s", filePath, pkgPath)
 			fileName := filepath.Base(filePath)
 			outputPath := filepath.Join(outputDir, pkgPath)
-			logger.Infof("output path: %s",outputPath)
+			logger.Infof("output path: %s", outputPath)
 			if err := os.MkdirAll(outputPath, os.ModePerm); err != nil {
 				logger.Errorf("error creating output directory %s", err.Error())
 			}

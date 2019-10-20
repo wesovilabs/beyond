@@ -8,7 +8,7 @@ type Functions struct {
 	functions []*Function
 }
 
-func (f *Functions) List() []*Function{
+func (f *Functions) List() []*Function {
 	return f.functions
 }
 
@@ -42,7 +42,6 @@ func (f *Function) Path() string {
 func (f *Function) Parent() *ast.File {
 	return f.parent
 }
-
 
 // ImportSpecs returns the list of imports
 func (f *Function) ImportSpecs() []*ast.ImportSpec {

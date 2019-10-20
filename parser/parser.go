@@ -50,9 +50,9 @@ func (pp *GoaParser) Parse(rootPath string) map[string]*ast.Package {
 		if _, ok := excludePaths[path]; !ok {
 			excludePaths[path] = path
 			for _, gp := range pp.goPaths() {
-				logger.Infof("[path] %s",path)
+				logger.Infof("[path] %s", path)
 				absPath := gp.AbsPath(path)
-				logger.Infof("[path] %s",absPath)
+				logger.Infof("[path] %s", absPath)
 				pkg, pkgImports := NewGoaPackage(absPath)
 				if pkg == nil {
 					continue

@@ -39,7 +39,7 @@ func findRegisteredAspects(expr *ast.CallExpr, pkg string, aspects *Aspects) {
 	if selExpr, ok := expr.Fun.(*ast.SelectorExpr); ok {
 		if selExpr.Sel.Name == aroundFn {
 			pattern := expr.Args[0].(*ast.BasicLit).Value
-			regExp, err := regexp.Compile(pattern[1:len(pattern)-1])
+			regExp, err := regexp.Compile(pattern[1 : len(pattern)-1])
 			if err != nil {
 				logger.Errorf("invalid regExp: %s ", pattern)
 				return
@@ -68,7 +68,7 @@ func findGoaFunction(file *ast.File, instanceName string) *ast.FuncDecl {
 			continue
 		}
 		funcDecl := obj.Decl.(*ast.FuncDecl)
-		if funcDecl.Type.Results==nil{
+		if funcDecl.Type.Results == nil {
 			continue
 		}
 		results := funcDecl.Type.Results.List

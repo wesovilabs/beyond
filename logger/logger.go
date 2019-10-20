@@ -22,8 +22,8 @@ func Close() {
 }
 
 // Infof the messages
-func Infof(text string,args ...interface{}) {
-	log.InfoDepth(1,fmt.Sprintf(text,args...))
+func Infof(text string, args ...interface{}) {
+	log.InfoDepth(1, fmt.Sprintf(text, args...))
 }
 
 // Info the messages

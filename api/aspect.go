@@ -19,4 +19,3 @@ func (s *Settings) GetString(key string) string {
 type Aspect interface {
 	SetUp(settings *Settings) Aspect
 }
-

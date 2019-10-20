@@ -36,7 +36,7 @@ func (a *AroundAspect) with(pkgPath, funcName string) *AroundAspect {
 }
 
 func (a *AroundAspect) Match(text string) bool {
-	logger.Infof("matching \"%s\" with \"%s\"",a.regExp.String(),text)
+	logger.Infof("matching \"%s\" with \"%s\"", a.regExp.String(), text)
 	return a.regExp.MatchString(text)
 }
 

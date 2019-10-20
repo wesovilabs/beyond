@@ -21,7 +21,6 @@ func LoggerAround(ctx *context.AroundCtx) {
 	fmt.Printf("    [%v] %s.%s with %s\n", t.Format("02/01/2006 15:04:05.999"), ctx.Pkg(), ctx.Name(), strings.Join(args, ","))
 }
 
-
 func Goa() *api.Goa {
 	return api.Init().
 		WithAround(`main\.test1\(string\)`, LoggerAround)
@@ -53,4 +52,3 @@ func test3(name string, surname string) {
 func test5(value string, fn func(...interface{}) (int, error)) {
 	fn(value)
 }
-

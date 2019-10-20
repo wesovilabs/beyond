@@ -92,4 +92,3 @@ func updateValue(field *ast.Field) string {
 	return ""
 
 }
-

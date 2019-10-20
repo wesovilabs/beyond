@@ -1,6 +1,5 @@
 package context
 
-
 type builder struct {
 	pkgName  string
 	funcName string
