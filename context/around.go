@@ -13,8 +13,8 @@ const (
 	funcOut
 )
 
-// New constructor for goa context
-func New(ctx context.Context, p ...func(*builder)) (*Ctx, error) {
+// NewAroundContext constructor for goa context
+func NewAroundContext(ctx context.Context, p ...func(*builder)) (*AroundCtx, error) {
 	b := defaultBuilder
 	for _, fn := range p {
 		fn(&b)
@@ -23,16 +23,16 @@ func New(ctx context.Context, p ...func(*builder)) (*Ctx, error) {
 	ctx = context.WithValue(ctx, pkgName, b.pkgName)
 	ctx = context.WithValue(ctx, funcIn, b.input)
 	ctx = context.WithValue(ctx, funcOut, b.output)
-	return &Ctx{ctx}, nil
+	return &AroundCtx{ctx}, nil
 }
 
-// Ctx context for goa
-type Ctx struct {
+// AroundCtx context for goa
+type AroundCtx struct {
 	ctx context.Context
 }
 
 // In returns the Input arguments
-func (c *Ctx) In() Input {
+func (c *AroundCtx) In() Input {
 	if input := c.ctx.Value(funcIn); input != nil {
 		return input.(Input)
 	}
@@ -40,7 +40,7 @@ func (c *Ctx) In() Input {
 }
 
 // Out returns the Output arguments
-func (c *Ctx) Out() *Output {
+func (c *AroundCtx) Out() *Output {
 	if output := c.ctx.Value(funcOut); output != nil {
 		return output.(*Output)
 	}
@@ -48,7 +48,7 @@ func (c *Ctx) Out() *Output {
 }
 
 // Name returns the function name
-func (c *Ctx) Name() string {
+func (c *AroundCtx) Name() string {
 	if name := c.ctx.Value(funcName); name != nil {
 		return name.(string)
 	}
@@ -56,28 +56,13 @@ func (c *Ctx) Name() string {
 }
 
 // Pkg returns the package name
-func (c *Ctx) Pkg() string {
+func (c *AroundCtx) Pkg() string {
 	if pkg := c.ctx.Value(pkgName); pkg != nil {
 		return pkg.(string)
 	}
 	return ""
 }
 
-type builder struct {
-	pkgName  string
-	funcName string
-	input    Input
-	output   Output
-}
-
-var defaultBuilder = builder{
-	pkgName: "",
-	input:   Input{},
-	output:  Output{},
-}
-
-// Builder builder type
-type Builder func(*builder)
 
 // WithPkg sets the package name
 func WithPkg(pkgName string) Builder {

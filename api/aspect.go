@@ -1,7 +1,5 @@
 package api
 
-import "github.com/wesovilabs/goa/context"
-
 type Settings struct {
 	data map[string]interface{}
 }
@@ -22,7 +20,3 @@ type Aspect interface {
 	SetUp(settings *Settings) Aspect
 }
 
-type Around interface {
-	Aspect
-	Around(string, string, *context.Input)
-}

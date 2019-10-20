@@ -44,15 +44,15 @@ func test5(value string, fn func(...interface{}) (int, error)) {
 	fn(value)
 }
 
-func AspectMultiply(ctx *context.Ctx) {
+func AspectMultiply(ctx *context.AroundCtx) {
 	ctx.In().List()[0].Update(ctx.In().List()[0].Value().(int) * 20)
 }
 
-func ToUpper(ctx *context.Ctx) {
+func ToUpper(ctx *context.AroundCtx) {
 	ctx.In().List()[0].Update(strings.ToUpper(ctx.In().List()[0].Value().(string)))
 }
 
-func ToLower(ctx *context.Ctx) {
+func ToLower(ctx *context.AroundCtx) {
 	ctx.In().List()[0].Update(strings.ToLower(ctx.In().List()[0].Value().(string)))
 	ctx.In().List()[1].Update(strings.ToLower(ctx.In().List()[1].Value().(string)))
 }

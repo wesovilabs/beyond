@@ -1,4 +1,4 @@
-package goa
+package internal
 
 // Version value
 var Version = "0.0.0"

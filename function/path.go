@@ -1,4 +1,4 @@
-package internal
+package function
 
 import (
 	"fmt"
@@ -7,11 +7,7 @@ import (
 	"strings"
 )
 
-// BuildPath return the signature for the input
-func BuildPath(fileDecl *ast.File, funcDecl *ast.FuncDecl) string {
-	if funcDecl.Name.Name == "test5" {
-		fmt.Println("DEBUG")
-	}
+func buildPath(fileDecl *ast.File, funcDecl *ast.FuncDecl) string {
 	in := pathForFieldList(funcDecl.Type.Params, true)
 	out := pathForFieldList(funcDecl.Type.Results, false)
 	return fmt.Sprintf("%s.%s%s%s", fileDecl.Name.Name, funcDecl.Name.String(), in, out)

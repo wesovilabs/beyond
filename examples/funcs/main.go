@@ -17,6 +17,6 @@ func main() {
 
 }
 
-func ToUpper(ctx *context.Ctx) {
+func ToUpper(ctx *context.AroundCtx) {
 	ctx.In().List()[0].Update(strings.ToUpper(ctx.In().List()[0].Value().(string)))
 }

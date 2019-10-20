@@ -7,13 +7,13 @@ import (
 // Aspects non-real struct
 type Aspects struct{}
 
-// New create aspects
+// NewAroundContext create aspects
 func New() *Aspects {
 	return &Aspects{}
 }
 
 // AspectFunc signature to be implemented by aspects
-type AspectFunc func(ctx *context.Ctx)
+type AspectFunc func(ctx *context.AroundCtx)
 
 // WithAspect registers a new aspect
 func (a *Aspects) WithAspect(string, AspectFunc) *Aspects {

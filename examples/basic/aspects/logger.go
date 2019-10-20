@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func LogAspect(ctx *context.Ctx) {
+func LogAspect(ctx *context.AroundCtx) {
 	t := time.Now()
 	args := []string{}
 	if ctx.In().Len() > 0 {

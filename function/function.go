@@ -1,26 +1,26 @@
-package inspector
+package function
 
 import (
-	"github.com/wesovilabs/goa/inspector/internal"
-	"github.com/wesovilabs/goa/logger"
 	"go/ast"
 )
+
+type Functions struct {
+	functions []*Function
+}
+
+func (f *Functions) List() []*Function{
+	return f.functions
+}
+
+func (a *Functions) withFunction(function *Function) {
+	a.functions = append(a.functions, function)
+}
 
 // Function struct with required info to efine a function
 type Function struct {
 	path   string
 	decl   *ast.FuncDecl
 	parent *ast.File
-}
-
-func newFunction(fileDecl *ast.File, funcDecl *ast.FuncDecl) *Function {
-	path := internal.BuildPath(fileDecl, funcDecl)
-	logger.Infof("[function] %s as %s", funcDecl.Name.Name, path)
-	return &Function{
-		parent: fileDecl,
-		decl:   funcDecl,
-		path:   path,
-	}
 }
 
 // Name returns the function name
@@ -37,6 +37,12 @@ func (f *Function) Pkg() string {
 func (f *Function) Path() string {
 	return f.path
 }
+
+// Path return the expression path
+func (f *Function) Parent() *ast.File {
+	return f.parent
+}
+
 
 // ImportSpecs returns the list of imports
 func (f *Function) ImportSpecs() []*ast.ImportSpec {

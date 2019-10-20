@@ -7,7 +7,7 @@ import (
 
 var counter = map[string]int{}
 
-func CalculateMetrics(ctx *context.Ctx) {
+func CalculateMetrics(ctx *context.AroundCtx) {
 	if _, ok := counter[ctx.Name()]; ok {
 		counter[ctx.Name()]++
 		return
