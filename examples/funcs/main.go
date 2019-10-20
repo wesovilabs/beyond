@@ -1,13 +1,13 @@
 package funcs
 
 import (
+	"github.com/wesovilabs/goa/api"
 	"github.com/wesovilabs/goa/context"
-	"github.com/wesovilabs/goa/goa"
 	"strings"
 )
 
-func Goa() *goa.Aspects {
-	return goa.New().
+func Goa() *api.Aspects {
+	return api.New().
 		WithAspect("*.*(func(string)string)*", ToUpper).
 		WithAspect("*.*(string)*", ToUpper)
 

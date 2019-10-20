@@ -2,7 +2,6 @@ package inspector
 
 import (
 	"github.com/wesovilabs/goa/inspector/aspect"
-	"github.com/wesovilabs/goa/inspector/expression"
 	"github.com/wesovilabs/goa/logger"
 	"go/ast"
 )
@@ -35,8 +34,8 @@ func takeAspectFromCallExpr(pkg string, expr *ast.CallExpr) *aspect.Aspect {
 	for _, a := range expr.Args {
 		switch e := a.(type) {
 		case *ast.BasicLit:
-			if expr, err := expression.NewExpression(e.Value[1 : len(e.Value)-1]); err == nil {
-				aspect.WithExpr(expr)
+
+			if _, err := aspect.WithPattern(e.Value[1 : len(e.Value)-1]); err == nil {
 				found = true
 				continue
 			}

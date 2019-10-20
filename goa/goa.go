@@ -1,13 +1,14 @@
 package goa
 
 import (
-	"fmt"
 	"github.com/wesovilabs/goa/inspector"
 	"github.com/wesovilabs/goa/inspector/aspect"
 	goaAST "github.com/wesovilabs/goa/inspector/ast"
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/writer"
 	"go/ast"
+	"os"
+	"path/filepath"
 	"sync"
 )
 
@@ -22,8 +23,8 @@ type Goa struct {
 }
 
 // Execute executes goa application
-func (g *Goa) Execute(node *ast.File) error {
-	return g.goa.Execute(node)
+func (g *Goa) Execute(pkgPath,fileName string,node *ast.File) error {
+	return g.goa.Execute(pkgPath,fileName,node)
 }
 
 // Init returns an instance of goa structure
@@ -50,9 +51,12 @@ func (g *goa) run() {
 	for _, aspect := range g.aspects {
 		for _, function := range g.functions {
 			if aspect.Match(function.Path()) {
+				logger.Info("matched!")
 				// TODO all the aspects applied to a function should be passes together.
 				// We must  avoid more than a if-else  per function in generated code
 				goaAST.Transform(g.imports, function, aspect)
+			} else {
+				logger.Info("no matched!")
 			}
 		}
 	}
@@ -82,15 +86,26 @@ func (g *goa) normalize() {
 	g.functions = normalizedFunctions
 }
 
-func (g *goa) Execute(node *ast.File) error {
+func (g *goa) Execute(pkgPath,fileName string,node *ast.File) error {
 	inspector := inspector.NewInspector(node)
 	g.aspects = inspector.SearchRegisteredAspects()
 	logger.Infof("Registered aspects: %v", len(g.aspects))
 	g.functions = inspector.SearchFunctions()
-	logger.Infof("Total functions:%v ", len(g.functions))
 	g.imports = inspector.SearchImports()
 	g.normalize()
-	logger.Infof("Functions to be processed:  %v", len(g.functions))
+	logger.Infof(`%s`, node.Name.String())
+	for k, v := range g.imports {
+		logger.Infof(`[import  ] %s "%s`, k, v)
+	}
+	for _, f := range g.functions {
+		logger.Infof(`[function] %s.%s => %s`, f.Pkg(), f.Name(), f.Path())
+	}
+	for _, a := range g.aspects {
+		logger.Infof(`[aspect  ] %s.%s`, a.Pkg(), a.Name())
+	}
 	g.run()
-	return writer.Node(node, fmt.Sprintf(".goa/main.go"))
+	if err := os.MkdirAll(filepath.Join("temporal","main-controller",pkgPath), os.ModePerm); err != nil {
+		logger.Errorf("Error creating path %s",filepath.Join(".goa",pkgPath))
+	}
+	return writer.Node(node, filepath.Join("temporal","main-controller",pkgPath,fileName))
 }

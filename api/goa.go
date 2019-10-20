@@ -1,4 +1,4 @@
-package goa
+package api
 
 import (
 	"github.com/wesovilabs/goa/context"

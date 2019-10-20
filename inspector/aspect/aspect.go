@@ -1,7 +1,8 @@
 package aspect
 
 import (
-	"github.com/wesovilabs/goa/inspector/expression"
+	"github.com/wesovilabs/goa/logger"
+	"regexp"
 )
 
 // Aspects array of aspect
@@ -9,9 +10,10 @@ type Aspects []*Aspect
 
 // Aspect attributes for an aspect
 type Aspect struct {
-	pkg  string
-	name string
-	expr *expression.Expression
+	pkg     string
+	name    string
+	pattern string
+	regExp  *regexp.Regexp
 }
 
 // WithPkg sets the package name
@@ -26,10 +28,15 @@ func (a *Aspect) WithName(name string) *Aspect {
 	return a
 }
 
-// WithExpr sets the expression
-func (a *Aspect) WithExpr(expr *expression.Expression) *Aspect {
-	a.expr = expr
-	return a
+// WithPattern sets the expression
+func (a *Aspect) WithPattern(pattern string) (*Aspect, error) {
+	a.pattern = pattern
+	if regExp, err := regexp.Compile(pattern); err != nil {
+		return nil, err
+	} else {
+		a.regExp = regExp
+	}
+	return a, nil
 }
 
 // Pkg returns the package name
@@ -42,12 +49,8 @@ func (a *Aspect) Name() string {
 	return a.name
 }
 
-// Expression returns the expression
-func (a *Aspect) Expression() *expression.Expression {
-	return a.expr
-}
-
 // Match checks if the fiven text matches with the aspect expression
 func (a *Aspect) Match(text string) bool {
-	return a.expr.Match(text)
+	logger.Infof("[check] %s with %s", a.regExp.String(), text)
+	return a.regExp.MatchString(text)
 }

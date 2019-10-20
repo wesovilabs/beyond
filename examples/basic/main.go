@@ -4,17 +4,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/wesovilabs/goa/api"
 	"github.com/wesovilabs/goa/context"
 	"github.com/wesovilabs/goa/examples/basic/aspects"
-	"github.com/wesovilabs/goa/goa"
 	"strings"
 )
 
-func Goa() *goa.Aspects {
-	return goa.New().
-		WithAspect("*.*(*)", aspects.LogAspect).
-		WithAspect("*.*(string,func(...interface{})(int,error))", ToUpper)
-
+func Goa() *api.Aspects {
+	return api.New().
+		WithAspect(`main\.test1\(string\)`, aspects.LogAspect)
+	//WithAspect("*.*(string,func(...interface{})(int,error))", ToUpper)
 }
 
 func main() {

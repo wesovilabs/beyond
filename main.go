@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"github.com/wesovilabs/goa/goa"
 	"github.com/wesovilabs/goa/logger"
-	"go/parser"
-	"go/token"
+	goaParser "github.com/wesovilabs/goa/parser"
+	"go/ast"
 	"os"
 	"path/filepath"
 )
 
 type settings struct {
 	input      string
+	mainPkg    string
+	project    string
 	outputDir  string
 	showBanner bool
 	verbose    bool
@@ -37,7 +39,6 @@ func parseInput() *settings {
 
 func main() {
 	settings := parseInput()
-
 	if settings.showBanner {
 		showBanner()
 	}
@@ -45,23 +46,35 @@ func main() {
 		logger.Enable()
 		defer logger.Close()
 	}
-
 	if err := os.Mkdir(settings.outputDir, os.ModePerm); err != nil {
 		//panic("error while creating output directory")
 	}
-	fileSet := token.NewFileSet()
-	logger.Infof("parsing file %s", settings.input)
-	file, err := parser.ParseFile(fileSet, settings.input, nil, parser.ParseComments)
-	if err != nil {
-		logger.Fatal("error while parsing file: '%v'", err)
-	}
-	if err := goa.Init().Execute(file); err != nil {
-		logger.Fatal("error while generating code: '%v'", err)
+	rootDir := "/Users/ivan/Workspace/BBVA/ECSKERNEL/main-controller"
+	rootPath := "cmd/main-controller"
+	project := "main-controller" // // This values must be taken from go.mod in `path`
+	packages := findPackages(rootDir, rootPath, project)
+	goaApp := goa.Init()
+	for pkgName, pkg := range packages {
+		logger.Infof("applying changes in %s", pkgName)
+		for filePath, file := range pkg.Files {
+			logger.Infof("file %s  %s", filePath, pkgName)
+			fileName := filepath.Base(filePath)
+			if err := goaApp.Execute(pkgName, fileName, file); err != nil {
+				logger.Fatal("error while generating code: '%v'", err)
+			}
+		}
 	}
 	logger.Info("code was generated successfully!")
+	fmt.Println("____________________")
 
 }
 
 func showBanner() {
 	fmt.Println(goa.Banner)
+}
+
+func findPackages(rootDir, rootPath, project string) map[string]*ast.Package {
+	return goaParser.
+		New(rootDir, project, false).
+		Parse(rootPath)
 }
