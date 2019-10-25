@@ -17,7 +17,7 @@ func SaveNode(node ast.Node, path string) error {
 	}
 	defer func() {
 		if err := f.Close(); err != nil {
-			logger.Errorf("Errorf while closing file: '%v'", err)
+			logger.Errorf("error while closing file: '%v'", err)
 		}
 	}()
 	fileSet := token.NewFileSet()

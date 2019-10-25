@@ -1,21 +1,20 @@
 package api
 
-type Settings struct {
-	data map[string]interface{}
-}
-
-func (s *Settings) With(key string, value interface{}) *Settings {
-	s.data[key] = value
-	return s
-}
-
-func (s *Settings) GetString(key string) string {
-	if v, ok := s.data[key]; ok {
-		return v.(string)
-	}
-	return ""
-}
+import "github.com/wesovilabs/goa/api/context"
 
 type Aspect interface {
-	SetUp(settings *Settings) Aspect
+
+}
+
+type Before interface {
+	Before(ctx *context.Context)
+}
+
+type Returning interface {
+	Returning(ctx *context.Context)
+}
+
+type Around interface {
+	Before
+	Returning
 }

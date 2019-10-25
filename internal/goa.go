@@ -13,18 +13,18 @@ import (
 )
 
 type goa struct {
-	functions *function.Functions
-	aspects   *aspect.Aspects
+	functions   *function.Functions
+	definitions *aspect.Definitions
 }
 
 func Run(packages map[string]*ast.Package, outputDir string) {
 	goa := &goa{}
-	goa.aspects = aspect.GetAspects(packages)
+	goa.definitions = aspect.GetDefinitions(packages)
 	goa.functions = function.GetFunctions(packages)
 	for _, f := range goa.functions.List() {
 		logger.Infof(`[function] %s.%s => %s`, f.Pkg(), f.Name(), f.Path())
 	}
-	for _, a := range goa.aspects.AroundAspects() {
+	for _, a := range goa.definitions.List() {
 		logger.Infof(`[aspect  ] %s.%s`, a.Pkg(), a.Name())
 	}
 	goa.applyAroundAspects()
@@ -48,13 +48,13 @@ func (g *goa) save(packages map[string]*ast.Package, outputDir string) {
 }
 
 func (g *goa) applyAroundAspects() {
-	for _, aspect := range g.aspects.AroundAspects() {
+	for _, definition := range g.definitions.List() {
 		for _, function := range g.functions.List() {
-			if aspect.Match(function.Path()) {
+			if definition.Match(function.Path()) {
 				logger.Info("matched!")
 				executor := &goaAST.AroundExecutor{
 					Function:       function,
-					Aspect:         aspect,
+					Definition:     definition,
 					CurrentImports: imports.GetImports(function.Parent()),
 				}
 				executor.Execute()

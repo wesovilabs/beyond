@@ -59,9 +59,6 @@ func main() {
 
 	// // This values must be taken from go.mod in `path`
 	packages := findPackages(settings)
-	for _, pkg := range packages {
-		logger.Infof("[package] %s", pkg)
-	}
 	internal.Run(packages, settings.outputDir)
 	logger.Info("code was generated successfully!")
 

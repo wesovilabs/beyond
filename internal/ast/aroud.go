@@ -11,7 +11,7 @@ import (
 type AroundExecutor struct {
 	CurrentImports map[string]string
 	Function       *function.Function
-	Aspect         aspect.Aspect
+	Definition     *aspect.Definition
 }
 
 func (e *AroundExecutor) requiredImports() map[string]string {
@@ -154,13 +154,13 @@ func (e *AroundExecutor) callWithInput() *ast.CallExpr {
 
 func (e *AroundExecutor) createAspectCallStatement() ast.Stmt {
 	var aspectCall *ast.CallExpr
-	if e.Function.Pkg() != e.Aspect.Pkg() {
+	if e.Function.Pkg() != e.Definition.Pkg() {
 		aspectCall = &ast.CallExpr{
 			Fun: &ast.SelectorExpr{
 				Sel: &ast.Ident{
-					Name: e.Aspect.Name(),
+					Name: e.Definition.Name(),
 				},
-				X: &ast.BasicLit{Kind: token.INTERFACE, Value: e.Aspect.Pkg()},
+				X: &ast.BasicLit{Kind: token.INTERFACE, Value: e.Definition.Pkg()},
 			},
 			Args: []ast.Expr{
 				ast.NewIdent("goaCtx"),
@@ -168,7 +168,7 @@ func (e *AroundExecutor) createAspectCallStatement() ast.Stmt {
 		}
 	} else {
 		aspectCall = &ast.CallExpr{
-			Fun: ast.NewIdent(e.Aspect.Name()),
+			Fun: ast.NewIdent(e.Definition.Name()),
 			Args: []ast.Expr{
 				ast.NewIdent("goaCtx"),
 			},

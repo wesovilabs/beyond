@@ -1,16 +1,21 @@
 package api
 
-import "github.com/wesovilabs/goa/context"
-
 type Goa struct{}
 
 func Init() *Goa {
 	return &Goa{}
 }
 
-func (g *Goa) WithAround(expr string, around Around) *Goa {
-	// What did you expect to find here? Goa is just magic!
+func (g *Goa) WithAround(string, func() Around) *Goa {
 	return g
 }
 
-type Around func(ctx *context.AroundCtx)
+type BeforeFn func() Before
+
+func (g *Goa) WithBefore(string, BeforeFn) *Goa {
+	return g
+}
+
+func (g *Goa) WithReturning(string, func() Returning) *Goa {
+	return g
+}
