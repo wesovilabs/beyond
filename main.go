@@ -6,7 +6,6 @@ import (
 	"github.com/wesovilabs/goa/internal"
 	"github.com/wesovilabs/goa/logger"
 	goaParser "github.com/wesovilabs/goa/parser"
-	"go/ast"
 	"os"
 	"path/filepath"
 )
@@ -29,11 +28,13 @@ func parseInput() *settings {
 	flag.StringVar(&path, "path", "", "path")
 	flag.StringVar(&outputDir, "output", filepath.Join(pwd, ".goa"), "output directory")
 	flag.StringVar(&goPath, "goPath", pwd, "go path")
-	flag.BoolVar(&showBanner, "banner", true, "display goa banner")
-	flag.BoolVar(&verbose, "verbose", true, "print info level logs to stdout")
+	flag.BoolVar(&showBanner, "banner", false, "display goa banner")
+	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
 	flag.BoolVar(&vendor, "vendor", false, "add vendor files to be transoformed")
 	flag.Parse()
 	fmt.Println(goPath)
+	fmt.Println(verbose)
+
 	return &settings{
 		goPath:     goPath,
 		project:    project,
@@ -49,6 +50,7 @@ func main() {
 	if settings.showBanner {
 		showBanner()
 	}
+	fmt.Println(settings.verbose)
 	if settings.verbose {
 		logger.Enable()
 		defer logger.Close()
@@ -59,7 +61,7 @@ func main() {
 
 	// // This values must be taken from go.mod in `path`
 	packages := findPackages(settings)
-	internal.Run(packages, settings.outputDir)
+	internal.Run(settings.project, packages, settings.outputDir)
 	logger.Info("code was generated successfully!")
 
 }
@@ -68,8 +70,8 @@ func showBanner() {
 	fmt.Println(internal.Banner)
 }
 
-func findPackages(settings *settings) map[string]*ast.Package {
+func findPackages(settings *settings) map[string]*goaParser.Package {
 	return goaParser.
 		New(settings.goPath, settings.project, settings.vendor).
-		Parse(settings.path)
+		Parse(settings.project, settings.path)
 }

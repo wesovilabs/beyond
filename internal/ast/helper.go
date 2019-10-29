@@ -47,18 +47,14 @@ func addImportSpec(function *function.Function, name, path string) *ast.ImportSp
 			Kind:  token.STRING,
 		},
 	}
-	function.AddImport(spec)
+	function.AddImportSpec(spec)
 	return spec
 }
 
 func updateImportSpec(function *function.Function, specs []ast.Spec) {
 	specs = cleanUpImportSpec(function, specs)
 	if len(specs) > 0 {
-		importsSpecDecl := []ast.Decl{&ast.GenDecl{
-			Tok:   token.IMPORT,
-			Specs: cleanUpImportSpec(function, specs),
-		}}
-		function.AddDeclsBefore(importsSpecDecl)
+		function.AddImportSpecs(specs)
 	}
 }
 

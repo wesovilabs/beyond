@@ -26,6 +26,6 @@ func SaveNode(node ast.Node, path string) error {
 		Indent:   0,
 		Tabwidth: 8,
 	}
-	logger.Infof("Saving content into file %v", path)
+	logger.Infof("[output] %s", path)
 	return cfg.Fprint(f, fileSet, node)
 }

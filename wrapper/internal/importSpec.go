@@ -1,4 +1,4 @@
-package imports
+package internal
 
 import (
 	"go/ast"
@@ -8,7 +8,7 @@ import (
 func GetImports(file *ast.File) map[string]string {
 	imports := make(map[string]string)
 	for _, im := range file.Imports {
-		value:=im.Path.Value[1:len(im.Path.Value)-1]
+		value := im.Path.Value[1 : len(im.Path.Value)-1]
 		if im.Name != nil {
 			imports[value] = im.Name.Name
 			continue

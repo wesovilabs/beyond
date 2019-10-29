@@ -58,5 +58,12 @@ docker-%: ; @ ## Run commands inside a docker container
 	docker run --rm --workdir /app -v $(CURDIR):/app golang:$(GOLANG_VERSION) \
 	make $*
 
+run:
+	go run main.go \
+		--project github.com/wesovilabs/goa/testdata/basic \
+		--goPath /Users/ivan/Workspace/Wesovilabs/goa/testdata/basic \
+		--output /Users/ivan/Workspace/Wesovilabs/goa/testdata/generated \
+		--verbose
+
 help:
 	@grep -E '^[a-zA-Z_-]+[%]?:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

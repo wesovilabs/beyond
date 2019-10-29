@@ -3,28 +3,29 @@ package context
 import (
 	"context"
 	"github.com/stretchr/testify/assert"
+	"reflect"
 	"testing"
 	"time"
 )
 
 func Test_Context(t *testing.T) {
 	ctx := context.Background()
-	goaCtx := NewContext(ctx,
-		WithPkg("parent/child"),
-		WithName("function"),
-		WithIn(&Args{
+	goaCtx := NewContext(ctx)
+	goaCtx.WithPkg("parent/child").
+		WithName("function").
+		WithIn([]*Arg{
 			NewArg("firstname", "John"),
-		}),
-		WithOut(&Args{
+		}).
+		WithOut([]*Arg{
 			NewArg("salary", 1200.23),
 			NewArg("retired", false),
-		}))
+		})
 	assert := assert.New(t)
 	assert.Equal("parent/child", goaCtx.Pkg())
 	assert.Equal("function", goaCtx.Function())
-	assert.Equal("John", goaCtx.In().Get("firstname"))
-	assert.Equal(1200.23, goaCtx.Out().Get("salary"))
-	assert.Equal(false, goaCtx.Out().Get("retired"))
+	assert.Equal("John", goaCtx.In().Get("firstname").value)
+	assert.Equal(1200.23, goaCtx.Out().Get("salary").value)
+	assert.Equal(false, goaCtx.Out().Get("retired").value)
 	now := time.Now()
 	goaCtx.Set("start.time", now)
 	assert.Equal(now, goaCtx.Get("start.time"))
@@ -48,6 +49,48 @@ func Test_Context(t *testing.T) {
 	goaCtx = NewContext(context.Background())
 	assert.Empty(goaCtx.Function())
 	assert.Empty(goaCtx.Pkg())
-	assert.Equal(&Args{},goaCtx.In())
-	assert.Equal(&Args{},goaCtx.Out())
+	assert.Empty(goaCtx.In().items)
+	assert.Empty(goaCtx.Out().items)
+}
+
+func TestContext_GetIn(t *testing.T) {
+	ctx := context.Background()
+	goaCtx := NewContext(ctx)
+	goaCtx.WithPkg("parent/child").
+		WithName("function").
+		WithIn([]*Arg{
+			NewArg("firstname", "John"),
+		}).
+		WithOut([]*Arg{
+			NewArg("salary", 1200.23),
+			NewArg("retired", false),
+		})
+	assert := assert.New(t)
+	assert.Equal("John", goaCtx.GetIn("firstname").value)
+	assert.Nil(nil, goaCtx.GetIn("unknown"))
+
+	assert.Equal("John", goaCtx.GetInAt(0).value)
+	assert.Nil(nil, goaCtx.GetInAt(20))
+
+	assert.Equal(1200.23, goaCtx.GetOutAt(0).value)
+	assert.Nil(nil, goaCtx.GetOutAt(10))
+
+	goaCtx.SetIn("name", "tom")
+	assert.Equal("tom", goaCtx.GetIn("name").value)
+	goaCtx.SetIn("name", "Tim")
+	assert.Equal("Tim", goaCtx.GetIn("name").value)
+
+	goaCtx.SetOut("name", "tom")
+	assert.Equal("tom", goaCtx.GetOut("name").value)
+	goaCtx.SetOut("name", "Tim")
+	assert.Equal("Tim", goaCtx.GetOut("name").value)
+
+	goaCtx.SetInAt(0, "tom")
+	assert.Equal("tom", goaCtx.GetIn("firstname").value)
+	goaCtx.SetInAt(20, "Tim")
+
+	goaCtx.SetOutAt(0, "tom")
+	assert.Equal("tom", goaCtx.GetOut("salary").value)
+	assert.Equal(reflect.TypeOf("tom"), goaCtx.GetOut("salary").kind)
+
 }

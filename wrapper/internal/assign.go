@@ -1,0 +1,54 @@
+package internal
+
+import (
+	"go/ast"
+	"go/token"
+)
+
+const (
+	varGoaContext = "goaContext"
+)
+
+func AssignGoaContext(imports map[string]string) *ast.AssignStmt {
+
+	return &ast.AssignStmt{
+		Lhs: []ast.Expr{
+			NewIdentObjVar(varGoaContext),
+		},
+		Rhs: []ast.Expr{
+			CallCreateGoaContext(imports),
+		},
+		Tok: token.DEFINE,
+	}
+}
+
+func AssignAspect(name, pkg, function string) *ast.AssignStmt {
+	return &ast.AssignStmt{
+		Lhs: []ast.Expr{
+			NewIdentObjVar(name),
+		},
+		Rhs: []ast.Expr{
+			CallCreateAspect(pkg, function),
+		},
+		Tok: token.DEFINE,
+	}
+}
+
+func CallFunctionAndAssign(currentPkg, pkg, name string, params, results []*FieldDef) ast.Stmt {
+	if len(results) > 0 {
+		outputVariables := make([]ast.Expr, len(results))
+		for index, field := range results {
+			outputVariables[index] = NewIdentObj(field.name)
+		}
+		return &ast.AssignStmt{
+			Tok: token.DEFINE,
+			Lhs: outputVariables,
+			Rhs: []ast.Expr{
+				CallFunction(currentPkg, pkg, name, params),
+			},
+		}
+	}
+	return &ast.ExprStmt{
+		X: CallFunction(currentPkg, pkg, name, params),
+	}
+}

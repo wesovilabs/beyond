@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"github.com/wesovilabs/goa/logger"
 	"go/ast"
 	"path/filepath"
@@ -36,10 +37,22 @@ func (pp *GoaParser) goPaths() []goPath {
 	return []goPath{pp.path}
 }
 
-func (pp *GoaParser) Parse(rootPath string) map[string]*ast.Package {
+type Package struct {
+	node *ast.Package
+	path string
+}
+
+func (p *Package) Node() *ast.Package {
+	return p.node
+}
+func (p *Package) Path() string {
+	return p.path
+}
+
+func (pp *GoaParser) Parse(project, rootPath string) map[string]*Package {
 	pendingPaths := []string{rootPath}
 	excludePaths := map[string]string{}
-	packages := make(map[string]*ast.Package)
+	packages := make(map[string]*Package)
 	for {
 		if len(pendingPaths) == 0 {
 			return packages
@@ -50,7 +63,6 @@ func (pp *GoaParser) Parse(rootPath string) map[string]*ast.Package {
 		if _, ok := excludePaths[path]; !ok {
 			excludePaths[path] = path
 			for _, gp := range pp.goPaths() {
-				logger.Infof("[path] %s", path)
 				absPath := gp.AbsPath(path)
 				logger.Infof("[path] %s", absPath)
 				pkg, pkgImports := NewGoaPackage(absPath)
@@ -62,7 +74,10 @@ func (pp *GoaParser) Parse(rootPath string) map[string]*ast.Package {
 						pendingPaths = append(pendingPaths, pkg)
 					}
 				}
-				packages[path] = pkg
+				packages[path] = &Package{
+					node: pkg,
+					path: fmt.Sprintf("%s%s", project, path),
+				}
 			}
 		}
 

@@ -23,6 +23,20 @@ func TestMatch(t *testing.T) {
 			noMatches: []string{
 				"a/b.c.d(string)",
 				"a.c.d(string)",
+				"a/b.b()(int,*string)",
+			},
+		},
+		{
+			regExp: internal.NormalizeExpression("*.*(...)..."),
+			matches: []string{
+				"a.b(string)int",
+				"a.b(map[string]interface{})(int,*string)",
+				"a/b.b(map[string]interface{})(int,*string)",
+				"a/b.b()(int,*string)",
+			},
+			noMatches: []string{
+				"a/b.c.d(string)",
+				"a.c.d(string)",
 			},
 		},
 	}

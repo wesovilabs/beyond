@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"path/filepath"
 )
 
@@ -12,6 +11,5 @@ func (gp *goPath) string() string {
 }
 
 func (gp *goPath) AbsPath(path string) string {
-	fmt.Println(gp.string())
 	return filepath.Join(gp.string(), path)
 }

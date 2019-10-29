@@ -1,44 +1,63 @@
 package context
 
 // Args struct
-type Args []*Arg
-
-// List returns the list of arguments
-func (args Args) List() []*Arg {
-	return []*Arg(args)
+type Args struct {
+	items []*Arg
 }
 
-func (args Args) UpdateAt(index int, value interface{}) {
-	if index >= 0 && index < len(args.List()) {
-		args.List()[index].Update(value)
+// List returns the list of arguments
+func (args *Args) List() []*Arg {
+	return args.items
+}
+
+func (args *Args) UpdateAt(index int, value interface{}) {
+	if index >= 0 && index < args.Len() {
+		arg := args.items[index]
+		arg.Update(value)
+		args.items[index] = arg
 	}
 }
 
-func (args Args) IsEmpty() bool {
-	return args.Len() == 0
+func (args *Args) IsEmpty() bool {
+	return len(args.items) == 0
 }
 
 // Len return the number of arguments
-func (args Args) Len() int {
-	return len(args)
+func (args *Args) Len() int {
+	return len(args.items)
 }
 
 // Get returns an element with the given name
-func (args Args) Get(name string) interface{} {
-	for _, arg := range args.List() {
+func (args *Args) Get(name string) *Arg {
+	for _, arg := range args.items {
 		if arg.name == name {
-			return arg.Value()
+			return arg
 		}
 	}
 	return nil
 }
 
+func (args *Args) At(index int) *Arg {
+	if len(args.items) > index && index >= 0 {
+		return args.items[index]
+	}
+	return nil
+}
+
+func (args *Args) SetAt(index int, value interface{}) {
+	if args.Len() > index && index >= 0 {
+		args.items[index].Update(value)
+	}
+}
+
 // Set sets the value for the argument if it's found
-func (args Args) Set(name string, value interface{}) {
-	for _, arg := range args.List() {
+func (args *Args) Set(name string, value interface{}) {
+	for _, arg := range args.items {
 		if arg.name == name {
-			arg.value = value
+			arg.Update(value)
 			return
 		}
 	}
+	args.items = append(args.items, NewArg(name, value))
+
 }

@@ -3,6 +3,7 @@ package aspect
 import (
 	"fmt"
 	"github.com/wesovilabs/goa/aspect/internal"
+	"github.com/wesovilabs/goa/parser"
 	"go/ast"
 	"strings"
 )
@@ -15,12 +16,12 @@ const (
 	apiPath      = "github.com/wesovilabs/goa/api"
 )
 
-func GetDefinitions(rootPkg string, packages map[string]*ast.Package) *Definitions {
+func GetDefinitions(rootPkg string, packages map[string]*parser.Package) *Definitions {
 	defs := &Definitions{
 		items: make([]*Definition, 0),
 	}
 	for _, pkg := range packages {
-		for _, file := range pkg.Files {
+		for _, file := range pkg.Node().Files {
 			searchDefinitions(rootPkg, file, defs)
 		}
 	}
@@ -64,8 +65,8 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, pkg string, definitions *
 	if selExpr, ok := expr.Fun.(*ast.SelectorExpr); ok {
 		if kind, ok := aspectTypes[selExpr.Sel.Name]; ok {
 			definition := &Definition{
-				kind:    kind,
-				pkgPath: rootPkg,
+				kind: kind,
+				pkg:  rootPkg,
 			}
 			switch arg := expr.Args[0].(type) {
 			case *ast.BasicLit:
@@ -81,7 +82,7 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, pkg string, definitions *
 				definition.name = arg.Sel.Name
 				switch x := arg.X.(type) {
 				case *ast.Ident:
-					definition.pkgPath = pkgPathForType(x.Name, importSpecs)
+					definition.pkg = pkgPathForType(x.Name, importSpecs)
 				}
 			}
 			definitions.Add(definition)

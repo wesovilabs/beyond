@@ -1,7 +1,9 @@
 package function
 
 import (
+	"fmt"
 	"go/ast"
+	"go/token"
 )
 
 type Functions struct {
@@ -12,7 +14,7 @@ func (f *Functions) List() []*Function {
 	return f.functions
 }
 
-func (a *Functions) withFunction(function *Function) {
+func (a *Functions) WithFunction(function *Function) {
 	a.functions = append(a.functions, function)
 }
 
@@ -21,6 +23,7 @@ type Function struct {
 	path   string
 	decl   *ast.FuncDecl
 	parent *ast.File
+	pkg    string
 }
 
 // Name returns the function name
@@ -28,9 +31,13 @@ func (f *Function) Name() string {
 	return f.decl.Name.Name
 }
 
+func (f *Function) RenameToInternal() {
+	f.decl.Name = ast.NewIdent(fmt.Sprintf("%sInternal", f.decl.Name))
+}
+
 // Pkg returns the package name
 func (f *Function) Pkg() string {
-	return f.parent.Name.Name
+	return f.pkg
 }
 
 // Path return the expression path
@@ -48,14 +55,24 @@ func (f *Function) ImportSpecs() []*ast.ImportSpec {
 	return f.parent.Imports
 }
 
-// AddImport add imports to the file
-func (f *Function) AddImport(importSpec *ast.ImportSpec) {
-	f.parent.Imports = append(f.parent.Imports, importSpec)
+// AddImportSpec add imports to the file
+func (f *Function) AddImportSpec(importSpec *ast.ImportSpec) {
+	f.AddImportSpecs([]ast.Spec{importSpec})
+
 }
 
-// AddDeclsBefore adds decls at the top of the parent
-func (f *Function) AddDeclsBefore(decls []ast.Decl) {
-	f.parent.Decls = append(decls, f.parent.Decls...)
+// AddImportSpecs adds decls at the top of the parent
+func (f *Function) AddImportSpecs(decls []ast.Spec) {
+
+	f.parent.Decls = append([]ast.Decl{&ast.GenDecl{
+		Tok:   token.IMPORT,
+		Specs: decls,
+	}}, f.parent.Decls...)
+
+	for _, d := range decls {
+		f.parent.Imports = append(f.parent.Imports, d.(*ast.ImportSpec))
+	}
+
 }
 
 // FileDecls return the lis tof ast.decl of the file
@@ -71,4 +88,12 @@ func (f *Function) AddStatementsAtBegin(statements []ast.Stmt) {
 // ParamsList return the list of params that belong to the function
 func (f *Function) ParamsList() []*ast.Field {
 	return f.decl.Type.Params.List
+}
+
+// ResultsList return the list of params that are returned by the function
+func (f *Function) ResultsList() []*ast.Field {
+	if f.decl.Type.Results != nil {
+		return f.decl.Type.Results.List
+	}
+	return []*ast.Field{}
 }

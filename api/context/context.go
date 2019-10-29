@@ -15,14 +15,23 @@ const (
 )
 
 func (c *Context) Pkg() string {
-	return c.ctx.Value(pkg).(string)
+	if v := c.ctx.Value(pkg); v != nil {
+		return v.(string)
+	}
+	return ""
 }
 func (c *Context) Function() string {
-	return c.ctx.Value(name).(string)
+	if v := c.ctx.Value(name); v != nil {
+		return v.(string)
+	}
+	return ""
 }
 
 func (c *Context) In() *Args {
-	return c.ctx.Value(in).(*Args)
+	if v := c.ctx.Value(in); v != nil {
+		return v.(*Args)
+	}
+	return &Args{}
 }
 
 type Context struct {
@@ -30,48 +39,39 @@ type Context struct {
 }
 
 func (c *Context) Out() *Args {
-	return c.ctx.Value(out).(*Args)
+	if v := c.ctx.Value(out); v != nil {
+		return v.(*Args)
+	}
+	return &Args{}
 }
 
 // NewContext constructor for goa context
-func NewContext(ctx context.Context, p ...func(*builder)) *Context {
-	b := defaultBuilder
-	for _, fn := range p {
-		fn(&b)
-	}
-	ctx = context.WithValue(ctx, name, b.funcName)
-	ctx = context.WithValue(ctx, pkg, b.pkgName)
-	ctx = context.WithValue(ctx, in, b.input)
-	ctx = context.WithValue(ctx, out, b.output)
+func NewContext(ctx context.Context) *Context {
+
 	return &Context{ctx}
 }
-
-// WithPkg sets the package name
-func WithPkg(pkgName string) Builder {
-	return func(b *builder) {
-		b.pkgName = pkgName
-	}
+func (c *Context) WithPkg(v string) *Context {
+	c.ctx = context.WithValue(c.ctx, pkg, v)
+	return c
 }
 
-// WithName sets the name
-func WithName(name string) Builder {
-	return func(b *builder) {
-		b.funcName = name
-	}
+func (c *Context) WithName(v string) *Context {
+	c.ctx = context.WithValue(c.ctx, name, v)
+	return c
 }
 
-// WithInput sets the input
-func WithIn(args *Args) Builder {
-	return func(b *builder) {
-		b.input = args
-	}
+func (c *Context) WithIn(args []*Arg) *Context {
+	c.ctx = context.WithValue(c.ctx, in, &Args{
+		items: args,
+	})
+	return c
 }
 
-// WithOutput sets the output
-func WithOut(args *Args) Builder {
-	return func(b *builder) {
-		b.output = args
-	}
+func (c *Context) WithOut(args []*Arg) *Context {
+	c.ctx = context.WithValue(c.ctx, out, &Args{
+		items: args,
+	})
+	return c
 }
 
 func (c *Context) Set(key string, value interface{}) {
@@ -110,17 +110,34 @@ func (c *Context) Get(key string) interface{} {
 	return c.ctx.Value(key)
 }
 
-type builder struct {
-	pkgName  string
-	funcName string
-	input    *Args
-	output   *Args
+func (c *Context) GetIn(name string) *Arg {
+	return c.In().Get(name)
 }
 
-var defaultBuilder = builder{
-	input:    &Args{},
-	output:   &Args{},
+func (c *Context) GetInAt(index int) *Arg {
+	return c.In().At(index)
 }
 
-// Builder builder type
-type Builder func(*builder)
+func (c *Context) GetOut(name string) *Arg {
+	return c.Out().Get(name)
+}
+
+func (c *Context) GetOutAt(index int) *Arg {
+	return c.Out().At(index)
+}
+
+func (c *Context) SetOut(name string, value interface{}) {
+	c.Out().Set(name, value)
+}
+
+func (c *Context) SetIn(name string, value interface{}) {
+	c.In().Set(name, value)
+}
+
+func (c *Context) SetInAt(index int, value interface{}) {
+	c.In().SetAt(index, value)
+}
+
+func (c *Context) SetOutAt(index int, value interface{}) {
+	c.Out().SetAt(index, value)
+}
