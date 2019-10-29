@@ -3,8 +3,6 @@ package internal
 import (
 	"github.com/wesovilabs/goa/aspect"
 	"github.com/wesovilabs/goa/function"
-	"github.com/wesovilabs/goa/imports"
-	goaAST "github.com/wesovilabs/goa/internal/ast"
 	"github.com/wesovilabs/goa/internal/writer"
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/matcher"
@@ -68,24 +66,6 @@ func (g *goa) save(packages map[string]*parser.Package, outputDir string) {
 				logger.Errorf("error creating output directory %s", err.Error())
 			}
 			writer.SaveNode(file, filepath.Join(outputPath, fileName))
-		}
-	}
-}
-
-func (g *goa) applyAroundAspects() {
-	for _, definition := range g.definitions.List() {
-		for _, function := range g.functions.List() {
-			if definition.Match(function.Path()) {
-				logger.Info("matched!")
-				executor := &goaAST.AroundExecutor{
-					Function:       function,
-					Definition:     definition,
-					CurrentImports: imports.GetImports(function.Parent()),
-				}
-				executor.Execute()
-			} else {
-				logger.Info("no matched!")
-			}
 		}
 	}
 }

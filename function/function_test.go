@@ -1,7 +1,9 @@
 package function
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	goaParser "github.com/wesovilabs/goa/parser"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -33,4 +35,47 @@ func TestFunction(t *testing.T) {
 	assert.Equal(3, len(function.FileDecls()))
 	assert.Equal(file, function.Parent())
 
+}
+
+func TestFunction_AddImportSpecs(t *testing.T) {
+	assert := assert.New(t)
+	packages := goaParser.
+		New("testdata", "testdata", false).
+		Parse("testdata", "")
+	functions := GetFunctions("testdata", packages)
+	assert.NotNil(functions)
+	assert.Len(functions.List(), 23)
+	function := functions.List()[0]
+	currentImports := len(function.ImportSpecs())
+	function.AddImportSpec(&ast.ImportSpec{
+		Name: ast.NewIdent("test"),
+	},
+	)
+	assert.Equal(currentImports+1, len(function.ImportSpecs()))
+}
+
+func TestFunction_RenameToInternal(t *testing.T) {
+	assert := assert.New(t)
+	packages := goaParser.
+		New("testdata", "testdata", false).
+		Parse("testdata", "")
+	functions := GetFunctions("testdata", packages)
+	assert.NotNil(functions)
+	assert.Len(functions.List(), 23)
+	function := functions.List()[0]
+	name := function.Name()
+	function.RenameToInternal()
+	assert.Equal(fmt.Sprintf("%sInternal", name), function.Name())
+}
+
+func TestFunction_ResultsList(t *testing.T) {
+	assert := assert.New(t)
+	packages := goaParser.
+		New("testdata", "testdata", false).
+		Parse("testdata", "")
+	functions := GetFunctions("testdata", packages)
+	assert.NotNil(functions)
+	assert.Len(functions.List(), 23)
+	function := functions.List()[0]
+	assert.Len(function.ResultsList(), 0)
 }

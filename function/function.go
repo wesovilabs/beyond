@@ -63,7 +63,6 @@ func (f *Function) AddImportSpec(importSpec *ast.ImportSpec) {
 
 // AddImportSpecs adds decls at the top of the parent
 func (f *Function) AddImportSpecs(decls []ast.Spec) {
-
 	f.parent.Decls = append([]ast.Decl{&ast.GenDecl{
 		Tok:   token.IMPORT,
 		Specs: decls,
