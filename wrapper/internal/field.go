@@ -5,11 +5,13 @@ import (
 	"go/ast"
 )
 
+// FieldDef struct
 type FieldDef struct {
 	name string
 	kind ast.Expr
 }
 
+// Params return the params
 func Params(fields []*ast.Field) []*FieldDef {
 	params := make([]*FieldDef, 0)
 	for _, arg := range fields {
@@ -23,6 +25,7 @@ func Params(fields []*ast.Field) []*FieldDef {
 	return params
 }
 
+// Results return the results
 func Results(fields []*ast.Field) []*FieldDef {
 	results := make([]*FieldDef, 0)
 	for index, arg := range fields {

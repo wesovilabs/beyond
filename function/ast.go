@@ -5,7 +5,8 @@ import (
 	"go/ast"
 )
 
-func GetFunctions(rootPkg string, packages map[string]*parser.Package) *Functions {
+// GetFunctions return the functions
+func GetFunctions(packages map[string]*parser.Package) *Functions {
 	functions := &Functions{}
 	for _, pkg := range packages {
 		for _, file := range pkg.Node().Files {
@@ -17,10 +18,9 @@ func GetFunctions(rootPkg string, packages map[string]*parser.Package) *Function
 
 func searchFunctions(pkg string, file *ast.File, functions *Functions) {
 	for _, obj := range file.Scope.Objects {
-		switch decl := obj.Decl.(type) {
-		case *ast.FuncDecl:
+		if decl, ok := obj.Decl.(*ast.FuncDecl); ok {
 			path := buildPath(file, decl)
-			functions.WithFunction(&Function{
+			functions.AddFunction(&Function{
 				parent: file,
 				decl:   decl,
 				path:   path,

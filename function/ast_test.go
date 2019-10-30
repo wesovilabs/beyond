@@ -11,7 +11,7 @@ func TestGetFunctions(t *testing.T) {
 	packages := parser.
 		New("testdata", "testdata", false).
 		Parse("testdata", "")
-	functions := GetFunctions("testdata", packages)
+	functions := GetFunctions(packages)
 	assert.NotNil(functions)
 	assert.NotNil(functions.List())
 	assert.Equal(23, len(functions.List()))

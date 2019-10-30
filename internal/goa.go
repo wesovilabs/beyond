@@ -29,16 +29,17 @@ func (g *goa) cleanInvalidFunctions() {
 			}
 		}
 		if valid {
-			output.WithFunction(f)
+			output.AddFunction(f)
 		}
 	}
 	g.functions = output
 }
 
+// Run main function in charge of orchestrating code generation
 func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) {
 	goa := &goa{}
 	goa.definitions = aspect.GetDefinitions(rootPkg, packages)
-	goa.functions = function.GetFunctions(rootPkg, packages)
+	goa.functions = function.GetFunctions(packages)
 	goa.cleanInvalidFunctions()
 	for _, f := range goa.functions.List() {
 		logger.Infof(`[function] %s.%s => %s`, f.Pkg(), f.Name(), f.Path())
@@ -65,7 +66,9 @@ func (g *goa) save(packages map[string]*parser.Package, outputDir string) {
 			if err := os.MkdirAll(outputPath, os.ModePerm); err != nil {
 				logger.Errorf("error creating output directory %s", err.Error())
 			}
-			writer.SaveNode(file, filepath.Join(outputPath, fileName))
+			if err := writer.SaveNode(file, filepath.Join(outputPath, fileName)); err != nil {
+				logger.Error(err.Error())
+			}
 		}
 	}
 }

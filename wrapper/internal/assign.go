@@ -9,6 +9,7 @@ const (
 	varGoaContext = "goaContext"
 )
 
+// AssignGoaContext create a new assignment
 func AssignGoaContext(imports map[string]string) *ast.AssignStmt {
 
 	return &ast.AssignStmt{
@@ -22,6 +23,7 @@ func AssignGoaContext(imports map[string]string) *ast.AssignStmt {
 	}
 }
 
+// AssignAspect create a new assignment
 func AssignAspect(name, pkg, function string) *ast.AssignStmt {
 	return &ast.AssignStmt{
 		Lhs: []ast.Expr{
@@ -34,6 +36,7 @@ func AssignAspect(name, pkg, function string) *ast.AssignStmt {
 	}
 }
 
+// CallFunctionAndAssign create a new assignment
 func CallFunctionAndAssign(currentPkg, pkg, name string, params, results []*FieldDef) ast.Stmt {
 	if len(results) > 0 {
 		outputVariables := make([]ast.Expr, len(results))

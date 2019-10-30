@@ -10,6 +10,7 @@ var requiredImports = map[string]string{
 	"github.com/wesovilabs/goa/api/context": "goaContext",
 }
 
+// Wrap function that create the ast for the intercepted function
 func Wrap(function *function.Function, definitions map[string]*aspect.Definition) {
 	file := function.Parent()
 

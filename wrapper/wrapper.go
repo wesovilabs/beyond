@@ -11,7 +11,6 @@ import (
 
 const (
 	functionSuffix = ""
-	resultPrefix   = "out"
 )
 
 func hasAnyBefore(definitions map[string]*aspect.Definition) bool {
@@ -29,6 +28,39 @@ func hasAnyReturning(definitions map[string]*aspect.Definition) bool {
 		}
 	}
 	return false
+}
+
+func wrapBeforeStatements(definitions map[string]*aspect.Definition, params []*internal.FieldDef) []ast.Stmt {
+	stmts := make([]ast.Stmt, 0)
+	// set values to context
+	stmts = append(stmts, setValuesToContextIn(params)...)
+	// call aspects
+	for name, d := range definitions {
+		if d.HasBefore() {
+			stmts = append(stmts, &ast.ExprStmt{
+				X: internal.CallAspectBefore(name),
+			})
+		}
+	}
+	stmts = append(stmts, internal.AssignValuesFromContextIn(params)...)
+	return stmts
+}
+func wrapReturningStatements(definitions map[string]*aspect.Definition, results []*internal.FieldDef) []ast.Stmt {
+	stmts := make([]ast.Stmt, 0)
+	if len(results) > 0 {
+		stmts = append(stmts, setValuesToContextOut(results)...)
+	}
+	for name, d := range definitions {
+		if d.HasReturning() {
+			stmts = append(stmts, &ast.ExprStmt{
+				X: internal.CallAspectReturning(name),
+			})
+		}
+	}
+	if len(results) > 0 {
+		stmts = append(stmts, internal.AssignValuesFromContextOut(results)...)
+	}
+	return stmts
 }
 
 func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect.Definition) *ast.FuncDecl {
@@ -57,38 +89,18 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 	params := internal.Params(function.ParamsList())
 	results := internal.Results(function.ResultsList())
 	if hasAnyBefore(definitions) {
-		// set values to context
-		stmts = append(stmts, setValuesToContextIn(params)...)
-		// call aspects
-		for name, d := range definitions {
-			if d.HasBefore() {
-				stmts = append(stmts, &ast.ExprStmt{
-					X: internal.CallAspectBefore(name),
-				})
-			}
-		}
-		stmts = append(stmts, internal.AssignValuesFromContextIn(params)...)
+		stmts = append(stmts, wrapBeforeStatements(definitions, params)...)
 	}
 	// Call function
-	stmts = append(stmts, internal.CallFunctionAndAssign(function.Parent().Name.String(), "", fmt.Sprintf("%sInternal", function.Name()), params, results))
+	stmts = append(stmts, internal.CallFunctionAndAssign(function.Parent().Name.String(), "",
+		fmt.Sprintf("%sInternal", function.Name()), params, results))
 
 	if hasAnyReturning(definitions) {
-		if len(results) > 0 {
-			stmts = append(stmts, setValuesToContextOut(results)...)
-		}
-		for name, d := range definitions {
-			if d.HasReturning() {
-				stmts = append(stmts, &ast.ExprStmt{
-					X: internal.CallAspectReturning(name),
-				})
-			}
-		}
-		if len(results) > 0 {
-			stmts = append(stmts, internal.AssignValuesFromContextOut(results)...)
-		}
+		stmts = append(stmts, wrapReturningStatements(definitions, results)...)
 	}
 	stmts = append(stmts, internal.ReturnValuesStmt(results))
-	return internal.FuncDecl(fmt.Sprintf("%s%s", function.Name(), functionSuffix), function.ParamsList(), function.ResultsList(), stmts)
+	return internal.FuncDecl(fmt.Sprintf("%s%s", function.Name(), functionSuffix), function.ParamsList(),
+		function.ResultsList(), stmts)
 }
 
 func setValuesToContextIn(params []*internal.FieldDef) []ast.Stmt {

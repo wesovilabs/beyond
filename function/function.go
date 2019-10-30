@@ -6,16 +6,19 @@ import (
 	"go/token"
 )
 
+// Functions struct
 type Functions struct {
 	functions []*Function
 }
 
+// List return the list of functions
 func (f *Functions) List() []*Function {
 	return f.functions
 }
 
-func (a *Functions) WithFunction(function *Function) {
-	a.functions = append(a.functions, function)
+// AddFunction add a new function
+func (f *Functions) AddFunction(function *Function) {
+	f.functions = append(f.functions, function)
 }
 
 // Function struct with required info to efine a function
@@ -31,6 +34,7 @@ func (f *Function) Name() string {
 	return f.decl.Name.Name
 }
 
+// RenameToInternal update the function name
 func (f *Function) RenameToInternal() {
 	f.decl.Name = ast.NewIdent(fmt.Sprintf("%sInternal", f.decl.Name))
 }
@@ -45,7 +49,7 @@ func (f *Function) Path() string {
 	return f.path
 }
 
-// Path return the expression path
+// Parent return the parent node
 func (f *Function) Parent() *ast.File {
 	return f.parent
 }

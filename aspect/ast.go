@@ -16,6 +16,7 @@ const (
 	apiPath      = "github.com/wesovilabs/goa/api"
 )
 
+// GetDefinitions return the list of definitions (aspects)
 func GetDefinitions(rootPkg string, packages map[string]*parser.Package) *Definitions {
 	defs := &Definitions{
 		items: make([]*Definition, 0),
@@ -61,15 +62,16 @@ var aspectTypes = map[string]definitionKind{
 	"WithAround":    around,
 }
 
-func addDefinition(rootPkg string, expr *ast.CallExpr, pkg string, definitions *Definitions, importSpecs []*ast.ImportSpec) {
+func addDefinition(rootPkg string, expr *ast.CallExpr, pkg string, definitions *Definitions,
+	importSpecs []*ast.ImportSpec) {
 	if selExpr, ok := expr.Fun.(*ast.SelectorExpr); ok {
 		if kind, ok := aspectTypes[selExpr.Sel.Name]; ok {
 			definition := &Definition{
 				kind: kind,
 				pkg:  rootPkg,
 			}
-			switch arg := expr.Args[0].(type) {
-			case *ast.BasicLit:
+			if arg, ok := expr.Args[0].(*ast.BasicLit); ok {
+
 				if len(arg.Value) < 2 {
 					return
 				}
@@ -80,8 +82,7 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, pkg string, definitions *
 				definition.name = arg.Name
 			case *ast.SelectorExpr:
 				definition.name = arg.Sel.Name
-				switch x := arg.X.(type) {
-				case *ast.Ident:
+				if x, ok := arg.X.(*ast.Ident); ok {
 					definition.pkg = pkgPathForType(x.Name, importSpecs)
 				}
 			}

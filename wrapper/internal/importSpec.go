@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// GetImports return the imports
 func GetImports(file *ast.File) map[string]string {
 	imports := make(map[string]string)
 	for _, im := range file.Imports {

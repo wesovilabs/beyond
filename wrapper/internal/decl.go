@@ -4,6 +4,7 @@ import (
 	"go/ast"
 )
 
+// FuncDecl create a new FuncDecl
 func FuncDecl(name string, params, results []*ast.Field, stmts []ast.Stmt) *ast.FuncDecl {
 	return &ast.FuncDecl{
 		Name: NewIdentObj(name),

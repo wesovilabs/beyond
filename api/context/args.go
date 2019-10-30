@@ -10,6 +10,7 @@ func (args *Args) List() []*Arg {
 	return args.items
 }
 
+// UpdateAt updates the value for the argument in the provided position
 func (args *Args) UpdateAt(index int, value interface{}) {
 	if index >= 0 && index < args.Len() {
 		arg := args.items[index]
@@ -18,6 +19,7 @@ func (args *Args) UpdateAt(index int, value interface{}) {
 	}
 }
 
+// IsEmpty returns true if there's no elements, false in other case
 func (args *Args) IsEmpty() bool {
 	return len(args.items) == 0
 }
@@ -37,6 +39,7 @@ func (args *Args) Get(name string) *Arg {
 	return nil
 }
 
+// At returns the argument in the given position
 func (args *Args) At(index int) *Arg {
 	if len(args.items) > index && index >= 0 {
 		return args.items[index]
@@ -44,6 +47,7 @@ func (args *Args) At(index int) *Arg {
 	return nil
 }
 
+// SetAt sets value for the argument in the given position
 func (args *Args) SetAt(index int, value interface{}) {
 	if args.Len() > index && index >= 0 {
 		args.items[index].Update(value)
@@ -59,5 +63,4 @@ func (args *Args) Set(name string, value interface{}) {
 		}
 	}
 	args.items = append(args.items, NewArg(name, value))
-
 }

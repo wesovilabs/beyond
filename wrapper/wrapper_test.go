@@ -6,6 +6,7 @@ import (
 	"github.com/wesovilabs/goa/aspect"
 	"github.com/wesovilabs/goa/function"
 	"github.com/wesovilabs/goa/internal/writer"
+	goaParser "github.com/wesovilabs/goa/parser"
 	"go/parser"
 	"go/token"
 	"testing"
@@ -13,8 +14,9 @@ import (
 
 func Test(t *testing.T) {
 	assert := assert.New(t)
-	packages, err := parser.ParseDir(&token.FileSet{}, "testdata", nil, parser.ParseComments)
-	assert.Nil(err)
+	packages := goaParser.
+		New("testdata", "testdata", false).
+		Parse("testdata", "")
 	assert.NotNil(packages)
 	defs := aspect.GetDefinitions("", packages)
 	functions := function.GetFunctions(packages)

@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"errors"
 	"fmt"
 	"github.com/wesovilabs/goa/logger"
 	"go/ast"
@@ -9,18 +8,16 @@ import (
 	"strings"
 )
 
-var ErrTooManyPackages = errors.New("more than one package found in a directory")
-
 const vendorDir = "vendor"
 
-// goPath is project root path
+// GoaParser struct
 type GoaParser struct {
 	project string
 	path    goPath
 	vendor  bool
-	//packages map[string]*internal.GoaPackage
 }
 
+// New instance a new GoaParser
 func New(path string, project string, vendor bool) *GoaParser {
 	return &GoaParser{
 		project: project,
@@ -37,18 +34,23 @@ func (pp *GoaParser) goPaths() []goPath {
 	return []goPath{pp.path}
 }
 
+// Package struct
 type Package struct {
 	node *ast.Package
 	path string
 }
 
+// Node return the node instance
 func (p *Package) Node() *ast.Package {
 	return p.node
 }
+
+// Path return the package path
 func (p *Package) Path() string {
 	return p.path
 }
 
+// Parse parse the input
 func (pp *GoaParser) Parse(project, rootPath string) map[string]*Package {
 	pendingPaths := []string{rootPath}
 	excludePaths := map[string]string{}

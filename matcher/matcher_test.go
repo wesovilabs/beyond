@@ -14,7 +14,7 @@ func TestFindMatches(t *testing.T) {
 		New("testdata", "testdata", false).
 		Parse("testdata", "")
 	definitions := aspect.GetDefinitions("testdata", packages)
-	functions := function.GetFunctions("testdata", packages)
+	functions := function.GetFunctions(packages)
 	matches := FindMatches(functions, definitions)
 	assert.Len(matches, 2)
 	assert.Len(matches[0].Definitions, 2)

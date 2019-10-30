@@ -5,6 +5,7 @@ import (
 	"github.com/wesovilabs/goa/function"
 	"go/ast"
 	"go/token"
+	"strings"
 )
 
 func ensureImports(currentImports, requiredImports map[string]string, function *function.Function) {
@@ -27,6 +28,9 @@ func findImportName(imports map[string]string, name, path string) string {
 			return name
 		}
 	}
+	if name == "" {
+		name = path[strings.LastIndex(path, "/")+1:]
+	}
 	return findAvailableImportName(imports, name)
 }
 
@@ -43,6 +47,7 @@ func addImportSpec(function *function.Function, name, path string) *ast.ImportSp
 }
 
 func findAvailableImportName(imports map[string]string, name string) string {
+
 	for _, n := range imports {
 		if n == name {
 			return findAvailableImportName(imports, fmt.Sprintf("_%s", name))

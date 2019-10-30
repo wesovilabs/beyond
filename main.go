@@ -23,18 +23,18 @@ type settings struct {
 func parseInput() *settings {
 	var outputDir, goPath, project, path string
 	var showBanner, verbose, vendor bool
-	pwd, _ := os.Getwd()
+	pwd, err := os.Getwd()
+	if err != nil {
+		logger.Error(err.Error())
+	}
 	flag.StringVar(&project, "project", "", "project name")
 	flag.StringVar(&path, "path", "", "path")
-	flag.StringVar(&outputDir, "output", filepath.Join(pwd, ".goa"), "output directory")
 	flag.StringVar(&goPath, "goPath", pwd, "go path")
+	flag.StringVar(&outputDir, "output", filepath.Join(goPath, ".goa"), "output directory")
 	flag.BoolVar(&showBanner, "banner", false, "display goa banner")
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
 	flag.BoolVar(&vendor, "vendor", false, "add vendor files to be transoformed")
 	flag.Parse()
-	fmt.Println(goPath)
-	fmt.Println(verbose)
-
 	return &settings{
 		goPath:     goPath,
 		project:    project,
@@ -47,10 +47,10 @@ func parseInput() *settings {
 
 func main() {
 	settings := parseInput()
+	fmt.Printf("%#v", settings)
 	if settings.showBanner {
 		showBanner()
 	}
-	fmt.Println(settings.verbose)
 	if settings.verbose {
 		logger.Enable()
 		defer logger.Close()

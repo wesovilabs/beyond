@@ -27,6 +27,7 @@ var regExp = func() *regexp.Regexp {
 	return regexp.MustCompile(expr)
 }()
 
+// NormalizeExpression normalizes the provided expressions
 func NormalizeExpression(text string) *regexp.Regexp {
 	items := regExp.FindStringSubmatch(text)
 	if len(items) != 5 {
@@ -48,12 +49,13 @@ func NormalizeExpression(text string) *regexp.Regexp {
 		regExpStr += fmt.Sprintf(`\(%s\)`, res)
 	}
 	regExpStr += `$`
-	if rg, err := regexp.Compile(regExpStr); err != nil {
+	rg, err := regexp.Compile(regExpStr)
+	if err != nil {
 		logger.Errorf("error processing `%s: %s", text, err.Error())
 		return nil
-	} else {
-		return rg
 	}
+	return rg
+
 }
 
 func processPkg(text string) string {
@@ -80,9 +82,9 @@ func processArgsInOut(text string) (string, string) {
 	for i := 1; i < len(text); i++ {
 		switch text[i] {
 		case '(':
-			openParen += 1
+			openParen++
 		case ')':
-			openParen -= 1
+			openParen--
 		}
 		if openParen == 0 {
 			inEnd = i

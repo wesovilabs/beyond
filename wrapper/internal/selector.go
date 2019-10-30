@@ -13,10 +13,10 @@ const (
 )
 
 var (
-	SelectorOutGet = selectorContextOperation(contextOut, get)
-	SelectorOutSet = selectorContextOperation(contextOut, set)
-	SelectorInGet  = selectorContextOperation(contextIn, get)
-	SelectorInSet  = selectorContextOperation(contextIn, set)
+	selectorOutGet = selectorContextOperation(contextOut, get)
+	selectorOutSet = selectorContextOperation(contextOut, set)
+	selectorInGet  = selectorContextOperation(contextIn, get)
+	selectorInSet  = selectorContextOperation(contextIn, set)
 )
 
 func selectorContextOperation(name string, op string) *ast.SelectorExpr {

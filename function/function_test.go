@@ -42,7 +42,7 @@ func TestFunction_AddImportSpecs(t *testing.T) {
 	packages := goaParser.
 		New("testdata", "testdata", false).
 		Parse("testdata", "")
-	functions := GetFunctions("testdata", packages)
+	functions := GetFunctions(packages)
 	assert.NotNil(functions)
 	assert.Len(functions.List(), 23)
 	function := functions.List()[0]
@@ -59,7 +59,7 @@ func TestFunction_RenameToInternal(t *testing.T) {
 	packages := goaParser.
 		New("testdata", "testdata", false).
 		Parse("testdata", "")
-	functions := GetFunctions("testdata", packages)
+	functions := GetFunctions(packages)
 	assert.NotNil(functions)
 	assert.Len(functions.List(), 23)
 	function := functions.List()[0]
@@ -73,7 +73,7 @@ func TestFunction_ResultsList(t *testing.T) {
 	packages := goaParser.
 		New("testdata", "testdata", false).
 		Parse("testdata", "")
-	functions := GetFunctions("testdata", packages)
+	functions := GetFunctions(packages)
 	assert.NotNil(functions)
 	assert.Len(functions.List(), 23)
 	function := functions.List()[0]

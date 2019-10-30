@@ -6,13 +6,16 @@ import (
 	"github.com/wesovilabs/goa/function"
 )
 
+// Matches struct
 type Matches []*Match
 
+// Match struct
 type Match struct {
 	Function    *function.Function
 	Definitions map[string]*aspect.Definition
 }
 
+// FindMatches return the list of existing matches
 func FindMatches(functions *function.Functions, definitions *aspect.Definitions) Matches {
 	matches := Matches{}
 	for _, f := range functions.List() {

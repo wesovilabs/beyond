@@ -13,13 +13,17 @@ const (
 	opNewContext = "NewContext"
 )
 
+// CallAspectBefore reutrn the call expression
 func CallAspectBefore(name string) *ast.CallExpr {
 	return goaInterceptor(name, opBefore)
 }
+
+// CallAspectReturning reutrn the call expression
 func CallAspectReturning(name string) *ast.CallExpr {
 	return goaInterceptor(name, opReturning)
 }
 
+// CallCreateGoaContext reutrn the call expression
 func CallCreateGoaContext(imports map[string]string) *ast.CallExpr {
 
 	return &ast.CallExpr{
@@ -50,6 +54,7 @@ func goaInterceptor(name string, operation string) *ast.CallExpr {
 	}
 }
 
+// CallCreateAspect return the call expression
 func CallCreateAspect(pkg, name string) *ast.CallExpr {
 	if pkg != "" {
 		return &ast.CallExpr{
@@ -64,16 +69,14 @@ func CallCreateAspect(pkg, name string) *ast.CallExpr {
 	}
 }
 
+// SetCtxIn return the call expression
 func SetCtxIn(field *FieldDef) *ast.CallExpr {
-	return setContext(SelectorInSet, field.name)
+	return setContext(selectorInSet, field.name)
 }
 
-func GetCtxIn(field *FieldDef) *ast.CallExpr {
-	return getContext(SelectorInGet, field.name)
-}
-
+// SetCtxOut return the call expression
 func SetCtxOut(field *FieldDef) *ast.CallExpr {
-	return setContext(SelectorOutSet, field.name)
+	return setContext(selectorOutSet, field.name)
 }
 
 func setContext(selector *ast.SelectorExpr, name string) *ast.CallExpr {
@@ -89,19 +92,7 @@ func setContext(selector *ast.SelectorExpr, name string) *ast.CallExpr {
 	}
 }
 
-func getContext(selector *ast.SelectorExpr, name string) *ast.CallExpr {
-	return &ast.CallExpr{
-		Fun: selector,
-		Args: []ast.Expr{
-			&ast.BasicLit{
-				Kind:  token.STRING,
-				Value: fmt.Sprintf(`"%s"`, name),
-			},
-			NewIdentObjVar(name),
-		},
-	}
-}
-
+// CallFunction return the call expression
 func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExpr {
 	args := make([]ast.Expr, len(fields))
 	for index, field := range fields {
@@ -123,6 +114,7 @@ func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExp
 
 }
 
+// SetUpGoaContext return the list of required statements
 func SetUpGoaContext(f *function.Function) []ast.Stmt {
 	stmts := make([]ast.Stmt, 2)
 	stmts[0] = &ast.ExprStmt{

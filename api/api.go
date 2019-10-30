@@ -1,21 +1,24 @@
 package api
 
+// Goa struct used to register the aspects
 type Goa struct{}
 
+// Init initialize the Goa type
 func Init() *Goa {
 	return &Goa{}
 }
 
-func (g *Goa) WithAround(string, func() Around) *Goa {
+// WithAround registers around aspects
+func (g *Goa) WithAround(func() Around, string) *Goa {
 	return g
 }
 
-type BeforeFn func() Before
-
-func (g *Goa) WithBefore(string, BeforeFn) *Goa {
+// WithBefore registers before aspects
+func (g *Goa) WithBefore(func() Before, string) *Goa {
 	return g
 }
 
-func (g *Goa) WithReturning(string, func() Returning) *Goa {
+// WithReturning registers returning aspects
+func (g *Goa) WithReturning(func() Returning, string) *Goa {
 	return g
 }

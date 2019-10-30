@@ -6,18 +6,20 @@ import (
 	"go/token"
 )
 
+// AssignValuesFromContextIn return the list of statements
 func AssignValuesFromContextIn(fields []*FieldDef) []ast.Stmt {
 	stmts := make([]ast.Stmt, len(fields))
 	for index, f := range fields {
-		stmts[index] = getFromContext(SelectorInGet, f)
+		stmts[index] = getFromContext(selectorInGet, f)
 	}
 	return stmts
 }
 
+// AssignValuesFromContextOut return the list of statements
 func AssignValuesFromContextOut(fields []*FieldDef) []ast.Stmt {
 	stmts := make([]ast.Stmt, len(fields))
 	for index, field := range fields {
-		stmts[index] = getFromContext(SelectorOutGet, field)
+		stmts[index] = getFromContext(selectorOutGet, field)
 	}
 	return stmts
 }
@@ -45,6 +47,7 @@ func getFromContext(selector *ast.SelectorExpr, field *FieldDef) *ast.AssignStmt
 	}
 }
 
+// ReturnValuesStmt return the list of statements
 func ReturnValuesStmt(fields []*FieldDef) ast.Stmt {
 	results := make([]ast.Expr, len(fields))
 	for index, field := range fields {
