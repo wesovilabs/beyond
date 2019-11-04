@@ -91,4 +91,4 @@ See also the list of [contributors](https://github.com/wesovilabs/goa/contributo
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
+# Acknowledgments
