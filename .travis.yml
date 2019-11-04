@@ -1,0 +1,21 @@
+anguage: go
+
+go:
+  - "1.13"
+
+install:
+  - make build
+
+script:
+  - make deps
+  - make test-coverage
+  - make check
+  - make build
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
