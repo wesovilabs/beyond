@@ -39,6 +39,8 @@ Once you forked the repository you can checkout it locally.
 git clone https://github.com/<user>/goa.git
 ```
 
+> Keep in mind that for approval a Pull Request the test coverage must be equal or higher than the existing one.
+
 ## Setup Git hooks
 
 All the commited code must pass tests and linter checks. These are defined with golangci. To ensure
