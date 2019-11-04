@@ -12,7 +12,7 @@ Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-o
 ## Goals
 
 - Provide a handy tool that helps us to build reusable aspects.
-- AOP based in AST modifications
+- Code generation based in AST modifications
 - A mechanism to build golang applications under AOP paradigm. 
 
 # Getting Started
