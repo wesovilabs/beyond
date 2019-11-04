@@ -80,14 +80,14 @@ Linters configuration can be found [here](https://github.com/wesovilabs/goa/blob
     
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/wesovilabs/goa/tags).
 
-## Authors
+# Authors
 
 - **Iván Corrales Solera <ivan.corrales.solera@gmail.com>** 
 
 See also the list of [contributors](https://github.com/wesovilabs/goa/contributors) who participated in this project.
 
 
-## License
+# License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
