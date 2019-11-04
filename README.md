@@ -63,6 +63,34 @@ go get github.com/wesovilabs/goa
 
 ## Usage
 
+1. Register your aspects
+
+Define a Goa function 
+
+```go
+package main
+
+import "github.com/wesovilabs/goa/api"
+
+func Goa()*api.Goa{
+	return api.Init().
+		WithBefore("*.*(...)...",TracingAspect).
+		WithAround("*.StringUtils.*(string)string",MemorizeAspect)
+}
+```
+
+2. Code generation
+- Add the `go:generate` comment to your main file. (For example, to your main.go)
+
+```go
+//go:generate  go run github.com/wesovilabs/goa --project <your-project-name> --goPath ../
+```
+and run command
+
+```bash
+go run <main.go>
+```
+
 ## Guides & Tutorials
 
 ## Roadmap
