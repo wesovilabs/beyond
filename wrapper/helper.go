@@ -10,15 +10,19 @@ import (
 
 func ensureImports(currentImports, requiredImports map[string]string, function *function.Function) {
 	specs := make([]ast.Spec, 0)
+
 	for path, name := range requiredImports {
 		currentName := findImportName(currentImports, name, path)
+
 		if _, ok := currentImports[path]; !ok {
 			if spec := addImportSpec(function, currentName, path); spec != nil {
 				specs = append(specs, spec)
 			}
 		}
+
 		currentImports[path] = currentName
 	}
+
 	updateImportSpec(function, specs)
 }
 
@@ -28,9 +32,11 @@ func findImportName(imports map[string]string, name, path string) string {
 			return name
 		}
 	}
+
 	if name == "" {
 		name = path[strings.LastIndex(path, "/")+1:]
 	}
+
 	return findAvailableImportName(imports, name)
 }
 
@@ -43,16 +49,17 @@ func addImportSpec(function *function.Function, name, path string) *ast.ImportSp
 		},
 	}
 	function.AddImportSpec(spec)
+
 	return spec
 }
 
 func findAvailableImportName(imports map[string]string, name string) string {
-
 	for _, n := range imports {
 		if n == name {
 			return findAvailableImportName(imports, fmt.Sprintf("_%s", name))
 		}
 	}
+
 	return name
 }
 
@@ -65,8 +72,10 @@ func updateImportSpec(function *function.Function, specs []ast.Spec) {
 
 func cleanUpImportSpec(function *function.Function, specs []ast.Spec) []ast.Spec {
 	importSpecs := make([]ast.Spec, 0)
+
 	for _, spec := range specs {
 		importSpecs = append(importSpecs, spec)
+
 		for _, decl := range function.FileDecls() {
 			if genDecl, ok := decl.(*ast.GenDecl); ok {
 				for _, genDeclSpec := range genDecl.Specs {
@@ -75,7 +84,9 @@ func cleanUpImportSpec(function *function.Function, specs []ast.Spec) []ast.Spec
 							if len(importSpecs) == 0 {
 								break
 							}
+
 							importSpecs = importSpecs[:len(importSpecs)-1]
+
 							break
 						}
 					}
@@ -83,5 +94,6 @@ func cleanUpImportSpec(function *function.Function, specs []ast.Spec) []ast.Spec
 			}
 		}
 	}
+
 	return importSpecs
 }

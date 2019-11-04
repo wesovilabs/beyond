@@ -32,7 +32,7 @@ fmt: ; @ ## Format code
 	${GO} fmt ./...
 
 lint: fmt ; @ ## Format code and run linter
-	golangci-lint run
+	${GO} run github.com/golangci/golangci-lint/cmd/golangci-lint run --verbose
 
 benchmark: ; @ ## Run benchmark tests
 	${GO} test -bench Benchmark.+ -failfast -run -Benchmark.+ -v ./benchmark/...

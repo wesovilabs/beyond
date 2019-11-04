@@ -44,6 +44,7 @@ func (a *Arg) AsString() string {
 	if a != nil && a.value != nil {
 		return a.value.(string)
 	}
+
 	return ""
 }
 
@@ -52,6 +53,7 @@ func (a *Arg) AsStringPtr() *string {
 	if a.value != nil {
 		return a.value.(*string)
 	}
+
 	return nil
 }
 
@@ -60,6 +62,7 @@ func (a *Arg) AsInt() int {
 	if a.value != nil {
 		return a.value.(int)
 	}
+
 	return 0
 }
 
@@ -68,6 +71,7 @@ func (a *Arg) AsIntPtr() *int {
 	if a.value != nil {
 		return a.value.(*int)
 	}
+
 	return nil
 }
 
@@ -76,6 +80,7 @@ func (a *Arg) AsInt16() int16 {
 	if a.value != nil {
 		return a.value.(int16)
 	}
+
 	return 0
 }
 
@@ -84,6 +89,7 @@ func (a *Arg) AsInt16Ptr() *int16 {
 	if a.value != nil {
 		return a.value.(*int16)
 	}
+
 	return nil
 }
 
@@ -92,6 +98,7 @@ func (a *Arg) AsInt8() int8 {
 	if a.value != nil {
 		return a.value.(int8)
 	}
+
 	return 0
 }
 
@@ -100,6 +107,7 @@ func (a *Arg) AsInt8Ptr() *int8 {
 	if a.value != nil {
 		return a.value.(*int8)
 	}
+
 	return nil
 }
 
@@ -108,6 +116,7 @@ func (a *Arg) AsInt32() int32 {
 	if a.value != nil {
 		return a.value.(int32)
 	}
+
 	return 0
 }
 
@@ -116,6 +125,7 @@ func (a *Arg) AsInt32Ptr() *int32 {
 	if a.value != nil {
 		return a.value.(*int32)
 	}
+
 	return nil
 }
 
@@ -124,6 +134,7 @@ func (a *Arg) AsInt64() int64 {
 	if a.value != nil {
 		return a.value.(int64)
 	}
+
 	return 0
 }
 
@@ -132,6 +143,7 @@ func (a *Arg) AsInt64Ptr() *int64 {
 	if a.value != nil {
 		return a.value.(*int64)
 	}
+
 	return nil
 }
 
@@ -140,6 +152,7 @@ func (a *Arg) AsFloat32() float32 {
 	if a.value != nil {
 		return a.value.(float32)
 	}
+
 	return 0
 }
 
@@ -148,6 +161,7 @@ func (a *Arg) AsFloat32Ptr() *float32 {
 	if a.value != nil {
 		return a.value.(*float32)
 	}
+
 	return nil
 }
 
@@ -156,6 +170,7 @@ func (a *Arg) AsFloat64() float64 {
 	if a.value != nil {
 		return a.value.(float64)
 	}
+
 	return 0
 }
 
@@ -164,6 +179,7 @@ func (a *Arg) AsFloat64Ptr() *float64 {
 	if a.value != nil {
 		return a.value.(*float64)
 	}
+
 	return nil
 }
 
@@ -172,6 +188,7 @@ func (a *Arg) AsBool() bool {
 	if a.value != nil {
 		return a.value.(bool)
 	}
+
 	return false
 }
 
@@ -180,5 +197,6 @@ func (a *Arg) AsBoolPtr() *bool {
 	if a.value != nil {
 		return a.value.(*bool)
 	}
+
 	return nil
 }

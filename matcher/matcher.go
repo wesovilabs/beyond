@@ -18,13 +18,16 @@ type Match struct {
 // FindMatches return the list of existing matches
 func FindMatches(functions *function.Functions, definitions *aspect.Definitions) Matches {
 	matches := Matches{}
+
 	for _, f := range functions.List() {
 		aspects := make(map[string]*aspect.Definition)
+
 		for index, d := range definitions.List() {
 			if d.Match(f.Path()) {
 				aspects[fmt.Sprintf("aspect%v", index)] = d
 			}
 		}
+
 		if len(aspects) > 0 {
 			matches = append(matches, &Match{
 				Function:    f,
@@ -32,5 +35,6 @@ func FindMatches(functions *function.Functions, definitions *aspect.Definitions)
 			})
 		}
 	}
+
 	return matches
 }

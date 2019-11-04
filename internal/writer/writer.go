@@ -15,17 +15,21 @@ func SaveNode(node ast.Node, path string) error {
 		logger.Errorf("Errorf while creating file: '%v'", err)
 		return err
 	}
+
 	defer func() {
 		if err := f.Close(); err != nil {
 			logger.Errorf("error while closing file: '%v'", err)
 		}
 	}()
+
 	fileSet := token.NewFileSet()
 	cfg := printer.Config{
 		Mode:     printer.UseSpaces,
 		Indent:   0,
 		Tabwidth: 8,
 	}
+
 	logger.Infof("[output] %s", path)
+
 	return cfg.Fprint(f, fileSet, node)
 }

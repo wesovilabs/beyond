@@ -46,29 +46,38 @@ func (pp *GoaParser) Parse(rootPath string) map[string]*Package {
 	pendingPaths := []string{rootPath}
 	excludePaths := map[string]string{}
 	packages := make(map[string]*Package)
+
 	for {
 		if len(pendingPaths) == 0 {
 			return packages
 		}
+
 		path := pendingPaths[0]
 		path = strings.TrimPrefix(path, pp.project)
+
 		if len(path) > 0 && path[0] == '/' {
 			path = path[1:]
 		}
+
 		pendingPaths = pendingPaths[1:]
+
 		if _, ok := excludePaths[path]; !ok {
 			excludePaths[path] = path
+
 			for _, gp := range pp.goPaths() {
 				absPath := gp.AbsPath(path)
 				pkg, pkgImports := NewGoaPackage(absPath)
+
 				if pkg == nil {
 					continue
 				}
+
 				for _, pkg := range pkgImports {
 					if _, ok := excludePaths[pkg]; !ok {
 						pendingPaths = append(pendingPaths, pkg)
 					}
 				}
+
 				logger.Infof("[path] %s", fmt.Sprintf("%s/%s", pp.project, path))
 
 				packages[path] = &Package{
@@ -77,6 +86,5 @@ func (pp *GoaParser) Parse(rootPath string) map[string]*Package {
 				}
 			}
 		}
-
 	}
 }

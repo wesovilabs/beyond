@@ -14,6 +14,7 @@ type FieldDef struct {
 // Params return the params
 func Params(fields []*ast.Field) []*FieldDef {
 	params := make([]*FieldDef, 0)
+
 	for _, arg := range fields {
 		for _, argName := range arg.Names {
 			params = append(params, &FieldDef{
@@ -22,6 +23,7 @@ func Params(fields []*ast.Field) []*FieldDef {
 			})
 		}
 	}
+
 	return params
 }
 
@@ -34,5 +36,6 @@ func Results(fields []*ast.Field) []*FieldDef {
 			kind: arg.Type,
 		})
 	}
+
 	return results
 }

@@ -20,5 +20,6 @@ func applyPkgFilters(packages map[string]*ast.Package, filters ...pkgFilter) *as
 			}
 		}
 	}
+
 	return nil
 }

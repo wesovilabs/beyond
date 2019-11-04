@@ -13,6 +13,7 @@ func NewIdentObj(name string) *ast.Ident {
 	ident.Obj = &ast.Object{
 		Name: name,
 	}
+
 	return ident
 }
 
@@ -20,5 +21,6 @@ func NewIdentObj(name string) *ast.Ident {
 func NewIdentObjVar(name string) *ast.Ident {
 	ident := NewIdentObj(name)
 	ident.Obj.Kind = ast.Var
+
 	return ident
 }

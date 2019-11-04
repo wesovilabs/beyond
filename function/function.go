@@ -62,7 +62,6 @@ func (f *Function) ImportSpecs() []*ast.ImportSpec {
 // AddImportSpec add imports to the file
 func (f *Function) AddImportSpec(importSpec *ast.ImportSpec) {
 	f.AddImportSpecs([]ast.Spec{importSpec})
-
 }
 
 // AddImportSpecs adds decls at the top of the parent
@@ -75,7 +74,6 @@ func (f *Function) AddImportSpecs(decls []ast.Spec) {
 	for _, d := range decls {
 		f.parent.Imports = append(f.parent.Imports, d.(*ast.ImportSpec))
 	}
-
 }
 
 // FileDecls return the lis tof ast.decl of the file
@@ -98,5 +96,6 @@ func (f *Function) ResultsList() []*ast.Field {
 	if f.decl.Type.Results != nil {
 		return f.decl.Type.Results.List
 	}
+
 	return []*ast.Field{}
 }

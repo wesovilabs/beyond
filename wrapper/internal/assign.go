@@ -11,7 +11,6 @@ const (
 
 // AssignGoaContext create a new assignment
 func AssignGoaContext(imports map[string]string) *ast.AssignStmt {
-
 	return &ast.AssignStmt{
 		Lhs: []ast.Expr{
 			NewIdentObjVar(varGoaContext),
@@ -43,6 +42,7 @@ func CallFunctionAndAssign(currentPkg, pkg, name string, params, results []*Fiel
 		for index, field := range results {
 			outputVariables[index] = NewIdentObj(field.name)
 		}
+
 		return &ast.AssignStmt{
 			Tok: token.DEFINE,
 			Lhs: outputVariables,
@@ -51,6 +51,7 @@ func CallFunctionAndAssign(currentPkg, pkg, name string, params, results []*Fiel
 			},
 		}
 	}
+
 	return &ast.ExprStmt{
 		X: CallFunction(currentPkg, pkg, name, params),
 	}

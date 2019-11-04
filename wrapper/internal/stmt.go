@@ -12,6 +12,7 @@ func AssignValuesFromContextIn(fields []*FieldDef) []ast.Stmt {
 	for index, f := range fields {
 		stmts[index] = getFromContext("GetInValue", f)
 	}
+
 	return stmts
 }
 
@@ -21,6 +22,7 @@ func AssignValuesFromContextOut(fields []*FieldDef) []ast.Stmt {
 	for index, field := range fields {
 		stmts[index] = getFromContext("GetOutValue", field)
 	}
+
 	return stmts
 }
 
@@ -53,9 +55,11 @@ func getFromContext(op string, field *FieldDef) *ast.AssignStmt {
 // ReturnValuesStmt return the list of statements
 func ReturnValuesStmt(fields []*FieldDef) ast.Stmt {
 	results := make([]ast.Expr, len(fields))
+
 	for index, field := range fields {
 		results[index] = NewIdentObjVar(field.name)
 	}
+
 	return &ast.ReturnStmt{
 		Results: results,
 	}

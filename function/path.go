@@ -11,12 +11,15 @@ func buildPath(pkg, objType string, funcDecl *ast.FuncDecl, imports map[string]s
 	in := pathForFieldList(funcDecl.Type.Params, imports, true)
 	out := pathForFieldList(funcDecl.Type.Results, imports, false)
 	result := fmt.Sprintf("%s%s%s", funcDecl.Name.String(), in, out)
+
 	if objType != "" {
 		result = fmt.Sprintf("%s.%s", getValue(objType, imports), result)
 	}
+
 	if pkg != "" {
 		result = fmt.Sprintf("%s.%s", pkg, result)
 	}
+
 	return result
 }
 
@@ -43,8 +46,10 @@ func exprPath(expr ast.Expr, imports map[string]string) string {
 	case *ast.FuncType:
 		params := pathForFieldList(val.Params, imports, true)
 		result := pathForFieldList(val.Results, imports, false)
+
 		return fmt.Sprintf("func%s%s", params, result)
 	}
+
 	return ""
 }
 
@@ -57,7 +62,6 @@ func pathForSingleFieldList(field *ast.Field, imports map[string]string, forcePa
 		return fmt.Sprintf("*%s", exprPath(fieldType.X, imports))
 	case *ast.SelectorExpr:
 		return fmt.Sprintf("%s.%s", exprPath(fieldType.X, imports), fieldType.Sel.Name)
-
 	case *ast.InterfaceType:
 		return "interface{}"
 	case *ast.StructType:
@@ -66,10 +70,10 @@ func pathForSingleFieldList(field *ast.Field, imports map[string]string, forcePa
 		return fmt.Sprintf("[]%s", exprPath(fieldType.Elt, imports))
 	case *ast.MapType:
 		return fmt.Sprintf("map[%s]%s", exprPath(fieldType.Key, imports), exprPath(fieldType.Value, imports))
-
 	case *ast.FuncType:
 		params := pathForFieldList(fieldType.Params, imports, true)
 		result := pathForFieldList(fieldType.Results, imports, forceParen)
+
 		return fmt.Sprintf("func%s%s", params, result)
 	case *ast.Ellipsis:
 		return fmt.Sprintf("[]%s", exprPath(fieldType.Elt, imports))
@@ -82,23 +86,28 @@ func getValue(name string, imports map[string]string) string {
 	if i, ok := imports[name]; ok {
 		return i
 	}
+
 	return name
 }
 
 func lenFields(fields []*ast.Field) int {
 	totalLen := 0
+
 	for _, f := range fields {
 		if len(f.Names) == 0 {
 			totalLen++
 		}
+
 		totalLen += len(f.Names)
 	}
+
 	return totalLen
 }
 
 func pathForSomeFieldsList(fields []*ast.Field, imports map[string]string, forceParen bool) string {
 	values := make([]string, lenFields(fields))
 	index := 0
+
 	for _, field := range fields {
 		if len(field.Names) > 0 {
 			for range field.Names {
@@ -110,11 +119,13 @@ func pathForSomeFieldsList(fields []*ast.Field, imports map[string]string, force
 			index++
 		}
 	}
+
 	return strings.Join(values, ",")
 }
 
 func pathForFieldList(fieldList *ast.FieldList, imports map[string]string, forceParen bool) string {
 	var value string
+
 	switch {
 	case fieldList == nil || lenFields(fieldList.List) == 0:
 		value = ""
@@ -123,8 +134,10 @@ func pathForFieldList(fieldList *ast.FieldList, imports map[string]string, force
 	default:
 		value = pathForSomeFieldsList(fieldList.List, imports, forceParen)
 	}
+
 	if forceParen || (fieldList != nil && lenFields(fieldList.List) > 1) {
 		return fmt.Sprintf("(%s)", value)
 	}
+
 	return value
 }

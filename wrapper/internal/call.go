@@ -25,7 +25,6 @@ func CallAspectReturning(name string) *ast.CallExpr {
 
 // CallCreateGoaContext reutrn the call expression
 func CallCreateGoaContext(imports map[string]string) *ast.CallExpr {
-
 	return &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
 			X:   NewIdent(imports[goaCtx]),
@@ -64,6 +63,7 @@ func CallCreateAspect(pkg, name string) *ast.CallExpr {
 			},
 		}
 	}
+
 	return &ast.CallExpr{
 		Fun: NewIdent(name),
 	}
@@ -101,12 +101,14 @@ func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExp
 	for index, field := range fields {
 		args[index] = NewIdentObj(field.name)
 	}
+
 	if currentPkg == pkg || pkg == "" {
 		return &ast.CallExpr{
 			Fun:  NewIdent(name),
 			Args: args,
 		}
 	}
+
 	return &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
 			X:   NewIdentObj(pkg),
@@ -114,7 +116,6 @@ func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExp
 		},
 		Args: args,
 	}
-
 }
 
 // SetUpGoaContext return the list of required statements
@@ -136,5 +137,6 @@ func SetUpGoaContext(f *function.Function) []ast.Stmt {
 			},
 		}),
 	}
+
 	return stmts
 }

@@ -15,6 +15,7 @@ func hasAnyBefore(definitions map[string]*aspect.Definition) bool {
 			return true
 		}
 	}
+
 	return false
 }
 func hasAnyReturning(definitions map[string]*aspect.Definition) bool {
@@ -23,6 +24,7 @@ func hasAnyReturning(definitions map[string]*aspect.Definition) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -38,7 +40,9 @@ func wrapBeforeStatements(definitions map[string]*aspect.Definition, params []*i
 			})
 		}
 	}
+
 	stmts = append(stmts, internal.AssignValuesFromContextIn(params)...)
+
 	return stmts
 }
 func wrapReturningStatements(definitions map[string]*aspect.Definition, results []*internal.FieldDef) []ast.Stmt {
@@ -46,6 +50,7 @@ func wrapReturningStatements(definitions map[string]*aspect.Definition, results 
 	if len(results) > 0 {
 		stmts = append(stmts, setValuesToContextOut(results)...)
 	}
+
 	for name, d := range definitions {
 		if d.HasReturning() {
 			stmts = append(stmts, &ast.ExprStmt{
@@ -53,15 +58,18 @@ func wrapReturningStatements(definitions map[string]*aspect.Definition, results 
 			})
 		}
 	}
+
 	if len(results) > 0 {
 		stmts = append(stmts, internal.AssignValuesFromContextOut(results)...)
 	}
+
 	return stmts
 }
 
 func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect.Definition) *ast.FuncDecl {
 	imports := internal.GetImports(function.Parent())
 	ensureImports(imports, requiredImports, function)
+
 	stmts := make([]ast.Stmt, 0)
 	stmts = append(stmts, internal.AssignGoaContext(imports))
 	stmts = append(stmts, internal.SetUpGoaContext(function)...)
@@ -71,6 +79,7 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 			index := strings.LastIndex(d.Pkg(), "/")
 			pkgName := findImportName(imports, d.Pkg()[index+1:], d.Pkg())
 			addImportSpec(function, importName, d.Pkg())
+
 			imports[d.Pkg()] = pkgName
 			stmts = append(stmts, internal.AssignAspect(name, pkgName, d.Name()))
 		} else {
@@ -80,10 +89,11 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 			}
 			stmts = append(stmts, internal.AssignAspect(name, importName, d.Name()))
 		}
-
 	}
+
 	params := internal.Params(function.ParamsList())
 	results := internal.Results(function.ResultsList())
+
 	if hasAnyBefore(definitions) {
 		stmts = append(stmts, wrapBeforeStatements(definitions, params)...)
 	}
@@ -94,7 +104,9 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 	if hasAnyReturning(definitions) {
 		stmts = append(stmts, wrapReturningStatements(definitions, results)...)
 	}
+
 	stmts = append(stmts, internal.ReturnValuesStmt(results))
+
 	return internal.FuncDecl(function.Name(), function.ParamsList(),
 		function.ResultsList(), stmts)
 }
@@ -106,6 +118,7 @@ func setValuesToContextIn(params []*internal.FieldDef) []ast.Stmt {
 			X: internal.SetCtxIn(param),
 		}
 	}
+
 	return statements
 }
 
@@ -116,5 +129,6 @@ func setValuesToContextOut(results []*internal.FieldDef) []ast.Stmt {
 			X: internal.SetCtxOut(result),
 		}
 	}
+
 	return stmts
 }
