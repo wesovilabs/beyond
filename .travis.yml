@@ -9,7 +9,7 @@ install:
 script:
   - make deps
   - make test-coverage
-  - make check
+  - make lint
   - make build
 
 after_success:
