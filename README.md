@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.org/wesovilabs/goa.svg?branch=master)](https://travis-ci.org/wesovilabs/goa)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wesovilabs/goa)](https://goreportcard.com/report/github.com/wesovilabs/goa)
+[![godoc](https://godoc.org/github.com/wesovilabs/goa?status.svg)](http://godoc.org/github.com/wesovilabs/goa)
+[![codecov](https://codecov.io/gh/wesovilabs/goa/branch/master/graph/badge.svg)](https://codecov.io/gh/wesovilabs/goa)
+
+
 # Goa
 
 Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-oriented programming (AOP).
