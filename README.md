@@ -91,6 +91,8 @@ and run command
 go run <main.go>
 ```
 
+By default, your generated code will be created into `.goa` directory.
+
 ## Guides & Tutorials
 
 ## Roadmap
