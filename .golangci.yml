@@ -140,4 +140,4 @@ linters:
   disable:
     - gochecknoglobals
     - goimports
-  fast: true
+  fast: false

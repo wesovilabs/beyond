@@ -39,8 +39,6 @@ Once you forked the repository you can checkout it locally.
 git clone https://github.com/<user>/goa.git
 ```
 
-> Keep in mind that for approval a Pull Request the test coverage must be equal or higher than the existing one.
-
 ## Setup Git hooks
 
 All the commited code must pass tests and linter checks. These are defined with golangci. To ensure
@@ -63,6 +61,18 @@ and to check the test coverage...
 ```bash
 make test-coverage
 ``` 
+
+> Keep in mind that for approval a Pull Request the test coverage must be equal or higher than the existing one.
+
+## Check your code
+
+As it was mentioned on the above, the code must pass all the defined linter checks. You can check it locally
+
+```bash
+make lint
+```
+
+Linters configuration can be found [here](https://github.com/wesovilabs/goa/blob/master/.golangci.yml)
 
 ## Contributing
 
