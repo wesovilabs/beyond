@@ -81,16 +81,25 @@ func Goa()*api.Goa{
 }
 ```
 
-2. Code generation
+2. Generate code
+
+2.1 With go generate
+
 - Add the `go:generate` comment to your main file. (For example, to your main.go)
 
 ```go
 //go:generate  go run github.com/wesovilabs/goa --project <your-project-name> --goPath ../
 ```
-and run command
+
+and then
 
 ```bash
-go run <main.go>
+go generate <main.go>
+```
+2.2 Run goa command
+
+```bash
+go run github.com/wesovilabs/goa --project <your-project-name> --goPath ../
 ```
 
 By default, your generated code will be created into `.goa` directory.
