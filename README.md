@@ -86,6 +86,20 @@ As it was mentioned on the above, the code must pass all the defined linter chec
 make lint
 ```
 
+## Build an executable
+
+To generate an executable of Goa for your current os you just need to run:
+
+```bash
+make run
+```
+Alternatively you can do cross compiling by running. The below command will generate Goa executables for linux, darwin and 
+windows.
+
+```bash
+make build-all
+``` 
+
 Linters configuration can be found [here](https://github.com/wesovilabs/goa/blob/master/.golangci.yml)
 
 ## Versioning
