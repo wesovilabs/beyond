@@ -43,7 +43,7 @@ require github.com/wesovilabs/goa <goa.version>
 
 > Released Goa versions are available [here](https://github.com/wesovilabs/goa/releases)
 
-In case of you're working with Glide or GoDeps you can add the dependency by
+In case of you're working with Glide or GoDeps you can add Goa to your project as described:
 
 **Glide**
 ```bash
