@@ -1,6 +1,7 @@
 package aspect
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/wesovilabs/goa/aspect/internal"
 	"regexp"
@@ -42,14 +43,19 @@ func TestMatch(t *testing.T) {
 	}
 	assert := assert.New(t)
 	for _, c := range cases {
+		fmt.Println(c.regExp.String())
 		def := &Definition{
 			regExp: c.regExp,
 		}
 		for _, m := range c.matches {
-			assert.True(def.Match(m))
+			if !assert.True(def.Match(m)) {
+				t.FailNow()
+			}
 		}
 		for _, m := range c.noMatches {
-			assert.False(def.Match(m))
+			if !assert.False(def.Match(m)) {
+				t.FailNow()
+			}
 		}
 	}
 }

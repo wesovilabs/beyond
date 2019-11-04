@@ -26,6 +26,9 @@ func (d *Definition) HasReturning() bool {
 
 // Match return if the given input matches with the definition
 func (d *Definition) Match(text string) bool {
+	if d.regExp == nil {
+		return false
+	}
 	return d.regExp.MatchString(text)
 }
 

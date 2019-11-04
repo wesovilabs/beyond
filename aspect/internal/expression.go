@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const exprPkg = `[a-zA-Z0-9_*\/]+`
+const exprPkg = `[a-zA-Z0-9_*\/]+\.`
 const exprObj = `[a-zA-Z0-9_*]+\.`
 const exprFunc = "[a-zA-Z0-9_*]+"
 const exprArgs = `[a-zA-Z0-9_*,.{}()[\]]+`
@@ -19,8 +19,8 @@ const argValidChars = `[a-zA-Z0-9_*.\[\]{}]+`
 
 var regExp = func() *regexp.Regexp {
 	expr := `^`
-	expr += fmt.Sprintf(`(?P<pkg>%s)\.`, exprPkg)
-	expr += fmt.Sprintf(`(?P<obj>%s)*`, exprObj)
+	expr += fmt.Sprintf(`(?P<pkg>%s)?`, exprPkg)
+	expr += fmt.Sprintf(`(?P<obj>%s)?`, exprObj)
 	expr += fmt.Sprintf(`(?P<func>%s)`, exprFunc)
 	expr += fmt.Sprintf(`(?P<args>\(%s)`, exprArgs)
 	expr += `$`
@@ -34,7 +34,9 @@ func NormalizeExpression(text string) *regexp.Regexp {
 		return nil
 	}
 	regExpStr := "^"
-	regExpStr += fmt.Sprintf(`%s\.`, processPkg(items[1]))
+	if items[1] != "" {
+		regExpStr += fmt.Sprintf(`%s\.`, processPkg(items[1]))
+	}
 	if items[2] != "" {
 		regExpStr += fmt.Sprintf(`%s\.`, processObj(items[2]))
 	}
@@ -59,7 +61,8 @@ func NormalizeExpression(text string) *regexp.Regexp {
 }
 
 func processPkg(text string) string {
-	out := strings.ReplaceAll(text, `*`, pkgValidChars)
+	out := text[:len(text)-1]
+	out = strings.ReplaceAll(out, `*`, pkgValidChars)
 	out = strings.ReplaceAll(out, `/`, `\/`)
 	return out
 }

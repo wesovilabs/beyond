@@ -14,7 +14,7 @@ var beforeFn = func() api.Before {
 }
 
 func Goa() *api.Goa {
-	return api.Init().
+	return api.New().
 		WithBefore("*database.CreatePerson(*model.Person)string", aspects.NewTracingAspect)
 		/**
 		WithReturning("*.Create*(...)string", aspects.NewNormalizeID).

@@ -3,8 +3,8 @@ package api
 // Goa struct used to register the aspects
 type Goa struct{}
 
-// Init initialize the Goa type
-func Init() *Goa {
+// New initialize the Goa type
+func New() *Goa {
 	return &Goa{}
 }
 

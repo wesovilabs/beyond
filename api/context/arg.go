@@ -34,14 +34,14 @@ func (a *Arg) Kind() reflect.Type {
 }
 
 // Update updates the argument value
-func (a *Arg) Update(value interface{}) {
+func (a *Arg) update(value interface{}) {
 	a.value = value
 	a.kind = reflect.TypeOf(value)
 }
 
 // AsString return argument value as string
 func (a *Arg) AsString() string {
-	if a.value != nil {
+	if a != nil && a.value != nil {
 		return a.value.(string)
 	}
 	return ""

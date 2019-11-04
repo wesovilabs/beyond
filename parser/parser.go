@@ -4,34 +4,25 @@ import (
 	"fmt"
 	"github.com/wesovilabs/goa/logger"
 	"go/ast"
-	"path/filepath"
 	"strings"
 )
-
-const vendorDir = "vendor"
 
 // GoaParser struct
 type GoaParser struct {
 	project string
-	path    goPath
-	vendor  bool
+	goPath  goPath
 }
 
 // New instance a new GoaParser
-func New(path string, project string, vendor bool) *GoaParser {
+func New(gopath string, project string) *GoaParser {
 	return &GoaParser{
 		project: project,
-		path:    goPath(path),
-		vendor:  vendor,
+		goPath:  goPath(gopath),
 	}
 }
 
 func (pp *GoaParser) goPaths() []goPath {
-	if pp.vendor {
-		vendorPath := filepath.Join(string(pp.path), vendorDir)
-		return []goPath{pp.path, goPath(vendorPath)}
-	}
-	return []goPath{pp.path}
+	return []goPath{pp.goPath}
 }
 
 // Package struct
@@ -51,7 +42,7 @@ func (p *Package) Path() string {
 }
 
 // Parse parse the input
-func (pp *GoaParser) Parse(project, rootPath string) map[string]*Package {
+func (pp *GoaParser) Parse(rootPath string) map[string]*Package {
 	pendingPaths := []string{rootPath}
 	excludePaths := map[string]string{}
 	packages := make(map[string]*Package)
@@ -61,12 +52,14 @@ func (pp *GoaParser) Parse(project, rootPath string) map[string]*Package {
 		}
 		path := pendingPaths[0]
 		path = strings.TrimPrefix(path, pp.project)
+		if len(path) > 0 && path[0] == '/' {
+			path = path[1:]
+		}
 		pendingPaths = pendingPaths[1:]
 		if _, ok := excludePaths[path]; !ok {
 			excludePaths[path] = path
 			for _, gp := range pp.goPaths() {
 				absPath := gp.AbsPath(path)
-				logger.Infof("[path] %s", absPath)
 				pkg, pkgImports := NewGoaPackage(absPath)
 				if pkg == nil {
 					continue
@@ -76,9 +69,11 @@ func (pp *GoaParser) Parse(project, rootPath string) map[string]*Package {
 						pendingPaths = append(pendingPaths, pkg)
 					}
 				}
+				logger.Infof("[path] %s", fmt.Sprintf("%s/%s", pp.project, path))
+
 				packages[path] = &Package{
 					node: pkg,
-					path: fmt.Sprintf("%s%s", project, path),
+					path: path,
 				}
 			}
 		}

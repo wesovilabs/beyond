@@ -12,6 +12,8 @@ import (
 
 var funcs = map[string]*ast.FieldList{}
 
+var imports = map[string]string{}
+
 func TestMain(m *testing.M) {
 	fileSet := token.NewFileSet()
 	file, err := parser.ParseFile(fileSet, "./testdata/sample.go", nil, parser.ParseComments)
@@ -23,15 +25,18 @@ func TestMain(m *testing.M) {
 			funcs[funcDecl.Name.Name] = funcDecl.Type.Params
 		}
 	}
+	imports = calculateImports(file.Imports)
 	m.Run()
 }
 
 func Test_pathForFieldList(t *testing.T) {
+
 	cases := []struct {
 		name          string
 		expected      string
 		expectedForce string
 	}{
+
 		{
 			name:          "noParams",
 			expected:      "",
@@ -59,8 +64,8 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamExternalPerson",
-			expected:      "_package.Person",
-			expectedForce: "(_package.Person)",
+			expected:      "github.com/wesovilabs/goa/function/testdata/package.Person",
+			expectedForce: "(github.com/wesovilabs/goa/function/testdata/package.Person)",
 		},
 		{
 			name:          "singleParamPersonPointer",
@@ -69,8 +74,8 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamExternalPersonPointer",
-			expected:      "*_package.Person",
-			expectedForce: "(*_package.Person)",
+			expected:      "*github.com/wesovilabs/goa/function/testdata/package.Person",
+			expectedForce: "(*github.com/wesovilabs/goa/function/testdata/package.Person)",
 		},
 		{
 			name:          "singleParamInterface",
@@ -109,13 +114,14 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamMapStringPerson",
-			expected:      "map[string]_package.Person",
-			expectedForce: "(map[string]_package.Person)",
+			expected:      "map[string]github.com/wesovilabs/goa/function/testdata/package.Person",
+			expectedForce: "(map[string]github.com/wesovilabs/goa/function/testdata/package.Person)",
 		},
+
 		{
 			name:          "singleParamMapStringPersonPointer",
-			expected:      "map[string]*_package.Person",
-			expectedForce: "(map[string]*_package.Person)",
+			expected:      "map[string]*github.com/wesovilabs/goa/function/testdata/package.Person",
+			expectedForce: "(map[string]*github.com/wesovilabs/goa/function/testdata/package.Person)",
 		},
 		{
 			name:          "singleParamFuncEmpty",
@@ -124,8 +130,8 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamFuncArg",
-			expected:      "func(*_package.Person)",
-			expectedForce: "(func(*_package.Person)())",
+			expected:      "func(*github.com/wesovilabs/goa/function/testdata/package.Person)",
+			expectedForce: "(func(*github.com/wesovilabs/goa/function/testdata/package.Person)())",
 		},
 		{
 			name:          "singleParamFuncArgStringInt",
@@ -134,18 +140,18 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamFuncArgStringPersonPointer",
-			expected:      "func(string,*_package.Person)",
-			expectedForce: "(func(string,*_package.Person)())",
+			expected:      "func(string,*github.com/wesovilabs/goa/function/testdata/package.Person)",
+			expectedForce: "(func(string,*github.com/wesovilabs/goa/function/testdata/package.Person)())",
 		},
 	}
 	for _, c := range cases {
 		fmt.Printf("[TEST] %s: %s \n", c.name, c.expected)
 		fieldList := funcs[c.name]
-		result := pathForFieldList(fieldList, true)
+		result := pathForFieldList(fieldList, imports, true)
 		if !assert.EqualValues(t, c.expectedForce, result) {
 			t.FailNow()
 		}
-		result = pathForFieldList(fieldList, false)
+		result = pathForFieldList(fieldList, imports, false)
 		if !assert.EqualValues(t, c.expected, result) {
 			t.FailNow()
 		}

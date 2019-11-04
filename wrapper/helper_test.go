@@ -8,11 +8,13 @@ import (
 	"testing"
 )
 
+const project = "github.com/wesovilabs/goa/wrapper/testdata"
+
 func Test_ensureImports(t *testing.T) {
 	assert := assert.New(t)
 	packages := parser.
-		New("testdata", "testdata", false).
-		Parse("testdata", "")
+		New("testdata", project).
+		Parse("")
 	functions := function.GetFunctions(packages)
 	function := functions.List()[0]
 	imports := function.ImportSpecs()
@@ -55,8 +57,8 @@ func Test_findImportName(t *testing.T) {
 func Test_updateImportSpect(t *testing.T) {
 	assert := assert.New(t)
 	packages := parser.
-		New("testdata", "testdata", false).
-		Parse("testdata", "")
+		New("testdata", project).
+		Parse("")
 	functions := function.GetFunctions(packages)
 	function := functions.List()[0]
 	currentImporSpecs := len(function.ImportSpecs())

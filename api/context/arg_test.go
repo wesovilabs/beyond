@@ -11,7 +11,7 @@ func Test_Arg(t *testing.T) {
 	arg := NewArg("name", "John")
 	assert.EqualValues("name", arg.Name())
 	assert.EqualValues("John", arg.Value())
-	arg.Update("Tom")
+	arg.update("Tom")
 	assert.EqualValues("Tom", arg.Value())
 	assert.EqualValues(reflect.TypeOf("Tom"), arg.Kind())
 }

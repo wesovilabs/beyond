@@ -9,16 +9,16 @@ var beforeFn = func() api.Before {
 }
 
 func Goa() *api.Goa {
-	return api.Init().
-		WithBefore("*.sayHello(...)...", beforeFn).
-		WithBefore("*.sayBye(...)...", beforeFn).
-		WithBefore("*.say*(...)...", beforeFn)
+	return api.New().
+		WithBefore(beforeFn, "sayHello(...)...").
+		WithBefore(beforeFn, "sayBye(...)...").
+		WithBefore(beforeFn, "say*(...)...")
 }
 
-func sayHello(){
+func sayHello() {
 
 }
 
-func sayBye(){
+func sayBye() {
 
 }

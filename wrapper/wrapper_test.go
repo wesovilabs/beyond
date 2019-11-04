@@ -15,8 +15,8 @@ import (
 func Test(t *testing.T) {
 	assert := assert.New(t)
 	packages := goaParser.
-		New("testdata", "testdata", false).
-		Parse("testdata", "")
+		New("testdata", "testdata").
+		Parse("")
 	assert.NotNil(packages)
 	defs := aspect.GetDefinitions("", packages)
 	functions := function.GetFunctions(packages)

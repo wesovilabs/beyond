@@ -63,8 +63,8 @@ func NewSampleReturning() api.Returning{
 	}
 }
 
-func Goa()*api.Goa{
-	return api.Init().
+func Goa()*api.Goa {
+	return api.New().
 		WithAround("*.*(...)(error,...)",NewSampleAspect).
 		WithBefore("*.*(...)...",NewSampleBefore).
 		WithReturning("*.*(...)...",NewSampleReturning)

@@ -70,14 +70,14 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, pkg string, definitions *
 				kind: kind,
 				pkg:  rootPkg,
 			}
-			if arg, ok := expr.Args[0].(*ast.BasicLit); ok {
+			if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
 
 				if len(arg.Value) < 2 {
 					return
 				}
 				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
 			}
-			switch arg := expr.Args[1].(type) {
+			switch arg := expr.Args[0].(type) {
 			case *ast.Ident:
 				definition.name = arg.Name
 			case *ast.SelectorExpr:

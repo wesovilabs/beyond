@@ -8,6 +8,7 @@ import (
 	goaParser "github.com/wesovilabs/goa/parser"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type settings struct {
@@ -17,24 +18,25 @@ type settings struct {
 	outputDir  string
 	showBanner bool
 	verbose    bool
-	vendor     bool
 }
 
 func parseInput() *settings {
 	var outputDir, goPath, project, path string
-	var showBanner, verbose, vendor bool
+	var showBanner, verbose bool
 	pwd, err := os.Getwd()
 	if err != nil {
 		logger.Error(err.Error())
 	}
 	flag.StringVar(&project, "project", "", "project name")
-	flag.StringVar(&path, "path", "", "path")
-	flag.StringVar(&goPath, "goPath", pwd, "go path")
+	flag.StringVar(&path, "path", pwd, "path")
+	flag.StringVar(&goPath, "goPath", "", "go path")
 	flag.StringVar(&outputDir, "output", filepath.Join(goPath, ".goa"), "output directory")
 	flag.BoolVar(&showBanner, "banner", false, "display goa banner")
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
-	flag.BoolVar(&vendor, "vendor", false, "add vendor files to be transoformed")
 	flag.Parse()
+	goPath = filepath.Join(pwd, goPath)
+	outputDir = filepath.Join(goPath, outputDir)
+	path = strings.TrimPrefix(path, goPath)
 	return &settings{
 		goPath:     goPath,
 		project:    project,
@@ -72,6 +74,6 @@ func showBanner() {
 
 func findPackages(settings *settings) map[string]*goaParser.Package {
 	return goaParser.
-		New(settings.goPath, settings.project, settings.vendor).
-		Parse(settings.project, settings.path)
+		New(settings.goPath, settings.project).
+		Parse(settings.path)
 }

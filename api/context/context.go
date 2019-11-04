@@ -129,40 +129,106 @@ func (c *Context) Get(key string) interface{} {
 
 // GetIn return the argument with the given name
 func (c *Context) GetIn(name string) *Arg {
-	return c.In().Get(name)
+	return c.In().get(name)
+}
+
+// GetInValue return the argument with the given name
+func (c *Context) GetInValue(name string) interface{} {
+	return c.In().get(name).value
 }
 
 // GetInAt return the argument in the given position
 func (c *Context) GetInAt(index int) *Arg {
-	return c.In().At(index)
+	return c.In().at(index)
+}
+
+// GetInValueAt return the argument with the given name
+func (c *Context) GetInValueAt(index int) interface{} {
+	return c.GetInAt(index).value
 }
 
 // GetOut return the argument with the given name
 func (c *Context) GetOut(name string) *Arg {
-	return c.Out().Get(name)
+	return c.Out().get(name)
+}
+
+// GetOutValue return the value for the argument with the given name
+func (c *Context) GetOutValue(name string) interface{} {
+	return c.Out().get(name).value
 }
 
 // GetOutAt return the argument in the given position
 func (c *Context) GetOutAt(index int) *Arg {
-	return c.Out().At(index)
+	return c.Out().at(index)
+}
+
+// ParamsLen return the number of input arguments
+func (c *Context) ParamsLen() int {
+	return c.In().len()
+}
+
+// HasParams returns true if there are input arguments
+func (c *Context) HasParams() bool {
+	return !c.In().isEmpty()
+}
+
+// ResultsLen return the number of output arguments
+func (c *Context) ResultsLen() int {
+	return c.Out().len()
+}
+
+// HasResults returns true if there are output arguments
+func (c *Context) HasResults() bool {
+	return !c.Out().isEmpty()
+}
+
+// GetOutValueAt return the argument with the given name
+func (c *Context) GetOutValueAt(index int) interface{} {
+	return c.GetOutAt(index).value
 }
 
 // SetOut set the value for the given argument
 func (c *Context) SetOut(name string, value interface{}) {
-	c.Out().Set(name, value)
+	args := c.Out().items
+	for _, arg := range args {
+		if arg.name == name {
+			arg.update(value)
+			c.WithOut(args)
+			return
+		}
+	}
+	args = append(args, NewArg(name, value))
+	c.WithOut(args)
 }
 
 // SetIn set the value for the given argument
 func (c *Context) SetIn(name string, value interface{}) {
-	c.In().Set(name, value)
+	args := c.In().items
+	for _, arg := range args {
+		if arg.name == name {
+			arg.update(value)
+			c.WithIn(args)
+			return
+		}
+	}
+	args = append(args, NewArg(name, value))
+	c.WithIn(args)
 }
 
 // SetInAt set the value for the argument in the given position
 func (c *Context) SetInAt(index int, value interface{}) {
-	c.In().SetAt(index, value)
+	args := c.In().items
+	if len(args) > index && index >= 0 {
+		args[index].update(value)
+	}
+	c.WithIn(args)
 }
 
 // SetOutAt set the value for the argument in the given position
 func (c *Context) SetOutAt(index int, value interface{}) {
-	c.Out().SetAt(index, value)
+	args := c.Out().items
+	if len(args) > index && index >= 0 {
+		args[index].update(value)
+	}
+	c.WithOut(args)
 }

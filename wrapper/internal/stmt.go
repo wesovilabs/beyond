@@ -10,7 +10,7 @@ import (
 func AssignValuesFromContextIn(fields []*FieldDef) []ast.Stmt {
 	stmts := make([]ast.Stmt, len(fields))
 	for index, f := range fields {
-		stmts[index] = getFromContext(selectorInGet, f)
+		stmts[index] = getFromContext("GetInValue", f)
 	}
 	return stmts
 }
@@ -19,12 +19,12 @@ func AssignValuesFromContextIn(fields []*FieldDef) []ast.Stmt {
 func AssignValuesFromContextOut(fields []*FieldDef) []ast.Stmt {
 	stmts := make([]ast.Stmt, len(fields))
 	for index, field := range fields {
-		stmts[index] = getFromContext(selectorOutGet, field)
+		stmts[index] = getFromContext("GetOutValue", field)
 	}
 	return stmts
 }
 
-func getFromContext(selector *ast.SelectorExpr, field *FieldDef) *ast.AssignStmt {
+func getFromContext(op string, field *FieldDef) *ast.AssignStmt {
 	return &ast.AssignStmt{
 		Tok: token.ASSIGN,
 		Lhs: []ast.Expr{
@@ -33,7 +33,10 @@ func getFromContext(selector *ast.SelectorExpr, field *FieldDef) *ast.AssignStmt
 		Rhs: []ast.Expr{
 			&ast.TypeAssertExpr{
 				X: &ast.CallExpr{
-					Fun: selector,
+					Fun: &ast.SelectorExpr{
+						X:   NewIdentObjVar(varGoaContext),
+						Sel: NewIdent(op),
+					},
 					Args: []ast.Expr{
 						&ast.BasicLit{
 							Kind:  token.STRING,

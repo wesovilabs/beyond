@@ -2,7 +2,7 @@ package aspect
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/context"
+	"github.com/wesovilabs/goa/api/context"
 	"strings"
 	"time"
 )

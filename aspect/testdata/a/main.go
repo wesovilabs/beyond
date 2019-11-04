@@ -13,7 +13,7 @@ type Tracing struct {
 	value2 int
 }
 
-func (t *Tracing) Before(ctx *context.BeforeCtx) {
+func (t *Tracing) Before(ctx *context.Context) {
 
 }
 
@@ -38,11 +38,11 @@ func Around() api.Around {
 }
 
 func Goa() *api.Goa {
-	return api.Init().
-		WithAround("*.*(*)...", a1.AroundA1).
-		WithAround("*.*(*)...", Around).
-		WithBefore("*.*(*)...", NewTracingBefore).
-		WithReturning("*.*(*)...", NewTracingReturning).
-		WithAround("*.*(*)...", a11.AroundA11).
-		WithAround("*.*(*)...", b2.AroundA2)
+	return api.New().
+		WithAround(a1.AroundA1, "*.*(*)...").
+		WithAround(Around, "*.*(*)...").
+		WithBefore(NewTracingBefore, "*.*(*)...").
+		WithReturning(NewTracingReturning, "*.*(*)...").
+		WithAround(a11.AroundA11, "*.*(*)...").
+		WithAround(b2.AroundA2, "*.*(*)...")
 }

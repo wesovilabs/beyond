@@ -13,7 +13,7 @@ var beforeFn = func() api.Before {
 }
 
 func Goa() *api.Goa {
-        return api.Init().WithBefore("*database.CreatePerson(*model.Person)string", aspects.NewTracingAspect)
+        return api.New().WithBefore("*database.CreatePerson(*model.Person)string", aspects.NewTracingAspect)
 }
 func main() {
         person := model.NewPerson("John", 20)

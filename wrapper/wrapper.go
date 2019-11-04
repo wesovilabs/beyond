@@ -9,10 +9,6 @@ import (
 	"strings"
 )
 
-const (
-	functionSuffix = ""
-)
-
 func hasAnyBefore(definitions map[string]*aspect.Definition) bool {
 	for _, d := range definitions {
 		if d.HasBefore() {
@@ -99,7 +95,7 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 		stmts = append(stmts, wrapReturningStatements(definitions, results)...)
 	}
 	stmts = append(stmts, internal.ReturnValuesStmt(results))
-	return internal.FuncDecl(fmt.Sprintf("%s%s", function.Name(), functionSuffix), function.ParamsList(),
+	return internal.FuncDecl(function.Name(), function.ParamsList(),
 		function.ResultsList(), stmts)
 }
 

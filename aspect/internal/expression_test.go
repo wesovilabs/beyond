@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -11,10 +11,12 @@ func Test_NormalizeExpression(t *testing.T) {
 		text    string
 		pattern string
 	}{
+		/**
 		{
 			text:    "a.b()",
 			pattern: `^a\.b\(\)$`,
 		},
+		**/
 		{
 			text:    "a.b.c()",
 			pattern: `^a\.b\.c\(\)$`,
@@ -117,9 +119,9 @@ func Test_NormalizeExpression(t *testing.T) {
 			pattern: `^a\/b\.c\.d\(string\,func\(\)string\)func\(\)int$`,
 		},
 	}
-
+	asssert := assert.New(t)
 	for _, c := range cases {
 		regExp := NormalizeExpression(c.text)
-		assert.Equal(t, c.pattern, regExp.String())
+		asssert.Equal(c.pattern, regExp.String())
 	}
 }

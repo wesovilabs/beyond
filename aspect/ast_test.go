@@ -26,6 +26,7 @@ func TestGetDefinitions(t *testing.T) {
 						kind:   around,
 						regExp: internal.NormalizeExpression("*.*(*)..."),
 					},
+
 					{
 						pkg:    "github.com/wesovilabs/goa/aspect/testdata/a/a1/a11",
 						name:   "AroundA11",
@@ -62,18 +63,17 @@ func TestGetDefinitions(t *testing.T) {
 	assert := assert.New(t)
 	for _, c := range cases {
 		packages := goaParser.
-			New(fmt.Sprintf("%s/%s", testdataPath, c.directory), "testdata", false).
-			Parse("testdata", "")
+			New(fmt.Sprintf("%s/%s", testdataPath, c.directory), fmt.Sprintf("github.com/wesovilabs/goa/aspect/testdata/%s", c.directory)).
+			Parse("")
 		assert.NotNil(packages)
 		defs := GetDefinitions(rootPkg, packages)
 		assert.Len(c.definitions.items, len(defs.items))
 		for index, definition := range c.definitions.List() {
-			if !(assert.Equal(definition.pkg, defs.items[index].Pkg()) &&
-				assert.Equal(definition.kind, defs.items[index].kind) &&
-				assert.Equal(definition.regExp.String(), defs.items[index].regExp.String()) &&
-				assert.Equal(definition.name, defs.items[index].Name())) {
-				assert.FailNow("error")
-			}
+			assert.Equal(definition.pkg, defs.items[index].Pkg())
+			assert.Equal(definition.kind, defs.items[index].kind)
+			assert.Equal(definition.regExp.String(), defs.items[index].regExp.String())
+			assert.Equal(definition.name, defs.items[index].Name())
+
 			if definition.kind == around || definition.kind == before {
 				assert.True(definition.HasBefore())
 			}

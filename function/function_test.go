@@ -10,6 +10,8 @@ import (
 	"testing"
 )
 
+const project = "github.com/wesovilabs/goa/function/testdata"
+
 func TestFunction(t *testing.T) {
 	assert := assert.New(t)
 	file, err := parser.ParseFile(&token.FileSet{}, "testdata/package/sample.go", nil, parser.ParseComments)
@@ -21,11 +23,11 @@ func TestFunction(t *testing.T) {
 	function := functions.List()[0]
 	assert.Equal("testdata/package", function.Pkg())
 	assert.Equal("sample", function.Name())
-	assert.Equal("_package.sample(Person)string", function.Path())
+	assert.Equal("testdata/package.sample(Person)string", function.Path())
 	function = functions.List()[1]
 	assert.Equal("testdata/package", function.Pkg())
 	assert.Equal("sample2", function.Name())
-	assert.Equal("_package.sample2(*other.Other)func(map[string]interface{})", function.Path())
+	assert.Equal("testdata/package.sample2(*github.com/wesovilabs/goa/function/testdata/other.Other)func(map[string]interface{})", function.Path())
 	assert.Equal(1, len(function.ImportSpecs()))
 	assert.Equal("\"github.com/wesovilabs/goa/function/testdata/other\"", function.ImportSpecs()[0].Path.Value)
 	stmt := &ast.EmptyStmt{}
@@ -38,10 +40,11 @@ func TestFunction(t *testing.T) {
 }
 
 func TestFunction_AddImportSpecs(t *testing.T) {
+	project := "testdata"
 	assert := assert.New(t)
 	packages := goaParser.
-		New("testdata", "testdata", false).
-		Parse("testdata", "")
+		New("testdata", project).
+		Parse("")
 	functions := GetFunctions(packages)
 	assert.NotNil(functions)
 	assert.Len(functions.List(), 23)
@@ -57,25 +60,13 @@ func TestFunction_AddImportSpecs(t *testing.T) {
 func TestFunction_RenameToInternal(t *testing.T) {
 	assert := assert.New(t)
 	packages := goaParser.
-		New("testdata", "testdata", false).
-		Parse("testdata", "")
+		New("testdata", project).
+		Parse("")
 	functions := GetFunctions(packages)
 	assert.NotNil(functions)
-	assert.Len(functions.List(), 23)
+	assert.Len(functions.List(), 25)
 	function := functions.List()[0]
 	name := function.Name()
 	function.RenameToInternal()
 	assert.Equal(fmt.Sprintf("%sInternal", name), function.Name())
-}
-
-func TestFunction_ResultsList(t *testing.T) {
-	assert := assert.New(t)
-	packages := goaParser.
-		New("testdata", "testdata", false).
-		Parse("testdata", "")
-	functions := GetFunctions(packages)
-	assert.NotNil(functions)
-	assert.Len(functions.List(), 23)
-	function := functions.List()[0]
-	assert.Len(function.ResultsList(), 0)
 }
