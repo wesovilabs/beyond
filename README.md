@@ -1,7 +1,7 @@
 # Goa
 
-Goa is a Golang library based in aspect-oriented programming (AOP).
-The main goal is aim to increase modularity by allowing the separation of cross-cutting concerns.
+Goa is a Golang library that provide us aspect-oriented programming (AOP).
+
 
 ## What's AOP?
 
