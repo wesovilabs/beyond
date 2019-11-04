@@ -25,14 +25,24 @@ Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-o
 
 ## Roadmap
 
-# For Developers
+# For Collaborators
 
 ## How does Goa work?
 
+## Checkout the code
+
+In order to work on a Goa enhancement or on a bug fix you just need to fork the repository.
+
+Once you forked the repository you can checkout it locally. 
+
+```bash
+git clone https://github.com/<user>/goa.git
+```
+
 ## Setup Git hooks
 
-All the commited code must pass tests and linter checks that are defined with golangci. To ensure
-your commited code will be valid to be pushed you can setup some Git hooks by running
+All the commited code must pass tests and linter checks. These are defined with golangci. To ensure
+your committed code will be valid to be merged you can setup some Git hooks by running
 
 ```bash
 make init
