@@ -4,10 +4,15 @@ Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-o
 
 ## What's AOP?
 
-
 > In computing, aspect-oriented programming (AOP) is a programming paradigm that aims to increase modularity by allowing the separation of cross-cutting concerns. It does so by adding additional behavior to existing code (an advice) without modifying the code itself, instead separately specifying which code is modified via a "pointcut" specification
 
 * Extracted  from [Wikipedia](https://en.wikipedia.org/wiki/Aspect-oriented_programming)
+
+
+## Goals
+
+- Provide a handy tool that takes advantage of AOP to help us to build better code.
+
 
 # Getting Started
 
@@ -19,8 +24,18 @@ Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-o
 
 ## Roadmap
 
-
 # For Developers
+
+## How does Goa work?
+
+## Setup Git hooks
+
+All the commited code must pass tests and linter checks that are defined with golangci. To ensure
+your commited code will be valid to be pushed you can setup some Git hooks by running
+
+```bash
+make init
+```
 
 ## Running the tests
 
