@@ -27,7 +27,9 @@ Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-o
 
 # For Collaborators
 
-## How does Goa work?
+## Contributing
+
+Please read [CONTRIBUTING.md](https://github.com/wesovilabs/goa/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Checkout the code
 
@@ -74,10 +76,6 @@ make lint
 
 Linters configuration can be found [here](https://github.com/wesovilabs/goa/blob/master/.golangci.yml)
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
 ## Versioning
     
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/wesovilabs/goa/tags).
@@ -87,6 +85,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 - **Iván Corrales Solera <ivan.corrales.solera@gmail.com>** 
 
 See also the list of [contributors](https://github.com/wesovilabs/goa/contributors) who participated in this project.
+
 
 ## License
 
