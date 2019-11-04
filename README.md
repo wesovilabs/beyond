@@ -31,6 +31,30 @@ The generated code is transparent for us, and this is completely functional.
 
 ## Installation
 
+Add Goa dependency to your go.mod
+
+**go.mod**
+```text
+module github.com/wesovilabs/goa-examples/greetings
+...
+require github.com/wesovilabs/goa <goa.version>
+...
+```
+
+> Released Goa versions are available [here](https://github.com/wesovilabs/goa/releases)
+
+In case of you're working with Glide or GoDeps you can add the dependency by
+
+**Glide**
+```bash
+glide get github.com/wesovilabs/goa
+```
+
+**Go dep**
+```bash
+go get github.com/wesovilabs/goa
+```
+
 ## Usage
 
 ## Guides & Tutorials
