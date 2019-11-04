@@ -133,7 +133,9 @@ linters-settings:
     range-loops: true # Report preallocation suggestions on range loops, true by default
     for-loops: false # Report preallocation suggestions on for loops, false by default
 issues:
-  exclude-use-default: false
+  exclude:
+    - "not declared by package utf8"
+    - "unicode/utf8/utf8.go"
 
 linters:
   enable-all: true
