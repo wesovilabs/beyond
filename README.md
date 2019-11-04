@@ -65,7 +65,9 @@ go get github.com/wesovilabs/goa
 
 1. Register your aspects
 
-Define a Goa function 
+Define a function named Goa that returns a `*api.Goa`. In this function
+we will define which aspects (before,returning or/and around) will be applied
+to the functions that match with the provided expression.
 
 ```go
 package main
