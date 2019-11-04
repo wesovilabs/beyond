@@ -3,6 +3,11 @@
 Goa is a Golang library based in aspect-oriented programming (AOP).
 The main goal is aim to increase modularity by allowing the separation of cross-cutting concerns.
 
+## What's AOP?
+
+"In computing, aspect-oriented programming (AOP) is a programming paradigm that aims to increase modularity by allowing the separation of cross-cutting concerns. It does so by adding additional behavior to existing code (an advice) without modifying the code itself, instead separately specifying which code is modified via a "pointcut" specification"
+
+
 # Getting Started
 
 ## Installation
@@ -47,6 +52,6 @@ See also the list of [contributors](https://github.com/wesovilabs/goa/contributo
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
