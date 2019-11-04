@@ -15,6 +15,18 @@ Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-o
 - Code generation based in AST modifications
 - A mechanism to build golang applications under AOP paradigm. 
 
+
+## How does Go work?
+
+Goa is mainly bassed in AST manipulation of our code. The steps are:
+
+1. Take the defined aspects in our code.
+2. Inspect both the functions and methods.
+3. Check which functions and methods match with defined aspects.
+4. From the current AST, It makes the required changes and save the generated code
+
+The generated code is transparent for us, and this is completely functional. 
+
 # Getting Started
 
 ## Installation
