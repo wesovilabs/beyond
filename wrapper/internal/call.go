@@ -118,6 +118,22 @@ func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExp
 	}
 }
 
+// CallMethod return the call expression
+func CallMethod(objName string, currentPkg, pkg, name string, fields []*FieldDef) ast.Expr {
+	args := make([]ast.Expr, len(fields))
+	for index, field := range fields {
+		args[index] = NewIdentObj(field.name)
+	}
+
+	return &ast.CallExpr{
+		Fun: &ast.SelectorExpr{
+			X:   NewIdentObjVar(objName),
+			Sel: NewIdent(name),
+		},
+		Args: args,
+	}
+}
+
 // SetUpGoaContext return the list of required statements
 func SetUpGoaContext(f *function.Function) []ast.Stmt {
 	stmts := make([]ast.Stmt, 2)
@@ -136,6 +152,19 @@ func SetUpGoaContext(f *function.Function) []ast.Stmt {
 				kind: NewIdent(f.Name()),
 			},
 		}),
+	}
+
+	if f.GetRecv() != nil {
+		objName := f.GetRecv().List[0].Names[0].String()
+		//objType:=f.GetRecv().List[0].Type
+		stmts = append(stmts, &ast.ExprStmt{
+			X: CallFunction("", varGoaContext, "WithType", []*FieldDef{
+				{
+					name: objName,
+					kind: NewIdent(f.Name()),
+				},
+			}),
+		})
 	}
 
 	return stmts

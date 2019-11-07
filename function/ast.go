@@ -40,17 +40,34 @@ func calculateImports(imports []*ast.ImportSpec) map[string]string {
 	return paths
 }
 
+// This function must check if really returns an Aspect
+func isAspectFunction(decl *ast.FuncDecl) bool {
+	results := decl.Type.Results
+	if results != nil && len(results.List) == 1 {
+		if sel, ok := results.List[0].Type.(*ast.SelectorExpr); ok {
+			if sel.Sel.Name == "Around" || sel.Sel.Name == "Returning" || sel.Sel.Name == "Before" {
+				return true
+			}
+		}
+	}
+
+	if decl.Name.Name == "Before" || decl.Name.Name == "Returning" {
+		return true
+	}
+
+	return false
+}
+
 func searchFunctions(pkg string, file *ast.File, functions *Functions) {
 	imports := calculateImports(file.Imports)
 
 	for _, obj := range file.Decls {
-		switch decl := obj.(type) {
-		case *ast.FuncDecl:
-			objType := ""
-
-			if decl.Name.Name == "j" {
-				fmt.Println("stop")
+		if decl, ok := obj.(*ast.FuncDecl); ok {
+			if isAspectFunction(decl) {
+				continue
 			}
+
+			objType := ""
 
 			if decl.Recv != nil {
 				switch p := decl.Recv.List[0].Type.(type) {
@@ -71,10 +88,6 @@ func searchFunctions(pkg string, file *ast.File, functions *Functions) {
 				path:   path,
 				pkg:    pkg,
 			})
-		default:
-			fmt.Println(decl)
-
-			continue
 		}
 	}
 }

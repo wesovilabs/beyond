@@ -2,6 +2,7 @@ package function
 
 import (
 	"fmt"
+	"github.com/wesovilabs/goa/logger"
 	"go/ast"
 	"reflect"
 	"strings"
@@ -41,7 +42,7 @@ func exprPath(expr ast.Expr, imports map[string]string) string {
 		case *ast.SelectorExpr:
 			return fmt.Sprintf("*%s.%s", exprPath(t2.X, imports), t2.Sel.Name)
 		default:
-			fmt.Println(fmt.Sprintf("*%s", reflect.TypeOf(t2)))
+			logger.Infof("*%s", reflect.TypeOf(t2))
 		}
 	case *ast.FuncType:
 		params := pathForFieldList(val.Params, imports, true)

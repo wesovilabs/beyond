@@ -29,6 +29,10 @@ type Function struct {
 	pkg    string
 }
 
+func (f *Function) GetRecv() *ast.FieldList {
+	return f.decl.Recv
+}
+
 // Name returns the function name
 func (f *Function) Name() string {
 	return f.decl.Name.Name

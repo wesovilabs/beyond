@@ -11,12 +11,11 @@ func Test_NormalizeExpression(t *testing.T) {
 		text    string
 		pattern string
 	}{
-		/**
+
 		{
 			text:    "a.b()",
 			pattern: `^a\.b\(\)$`,
 		},
-		**/
 		{
 			text:    "a.b.c()",
 			pattern: `^a\.b\.c\(\)$`,
@@ -83,7 +82,7 @@ func Test_NormalizeExpression(t *testing.T) {
 		},
 		{
 			text:    "a/test/*.*.*()",
-			pattern: `^a\/test\/[a-zA-Z0-9_\\/]+\.[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+\(\)$`,
+			pattern: `^a\/test\/[a-zA-Z0-9_\\/]+\.[a-zA-Z0-9_*]+\.[a-zA-Z0-9_]+\(\)$`,
 		},
 		{
 			text:    "a.b(*)",

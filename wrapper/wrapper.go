@@ -69,7 +69,8 @@ func wrapReturningStatements(definitions map[string]*aspect.Definition, results 
 func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect.Definition) *ast.FuncDecl {
 	imports := internal.GetImports(function.Parent())
 	ensureImports(imports, requiredImports, function)
-
+	recv := function.GetRecv()
+	imports[function.Pkg()] = ""
 	stmts := make([]ast.Stmt, 0)
 	stmts = append(stmts, internal.AssignGoaContext(imports))
 	stmts = append(stmts, internal.SetUpGoaContext(function)...)
@@ -97,18 +98,27 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 	if hasAnyBefore(definitions) {
 		stmts = append(stmts, wrapBeforeStatements(definitions, params)...)
 	}
-	// Call function
-	stmts = append(stmts, internal.CallFunctionAndAssign(function.Parent().Name.String(), "",
-		fmt.Sprintf("%sInternal", function.Name()), params, results))
+
+	if recv != nil {
+		// Call function
+		stmts = append(stmts, internal.CallMethodAndAssign(recv, function.Parent().Name.String(), "",
+			fmt.Sprintf("%sInternal", function.Name()), params, results))
+	} else {
+		// Call function
+		stmts = append(stmts, internal.CallFunctionAndAssign(function.Parent().Name.String(), "",
+			fmt.Sprintf("%sInternal", function.Name()), params, results))
+	}
 
 	if hasAnyReturning(definitions) {
 		stmts = append(stmts, wrapReturningStatements(definitions, results)...)
 	}
 
 	stmts = append(stmts, internal.ReturnValuesStmt(results))
-
-	return internal.FuncDecl(function.Name(), function.ParamsList(),
+	funcDecl := internal.FuncDecl(function.Name(), function.ParamsList(),
 		function.ResultsList(), stmts)
+	funcDecl.Recv = recv
+
+	return funcDecl
 }
 
 func setValuesToContextIn(params []*internal.FieldDef) []ast.Stmt {

@@ -8,10 +8,11 @@ import (
 type contextKey string
 
 const (
-	name contextKey = "_goaFunction"
-	pkg  contextKey = "_goaPkg"
-	in   contextKey = "_goaIn"
-	out  contextKey = "_goaOut"
+	funcType contextKey = "_goaFunctionType"
+	name     contextKey = "_goaFunction"
+	pkg      contextKey = "_goaPkg"
+	in       contextKey = "_goaIn"
+	out      contextKey = "_goaOut"
 )
 
 // Pkg returns the package
@@ -30,6 +31,15 @@ func (c *Context) Function() string {
 	}
 
 	return ""
+}
+
+// Type returns the type
+func (c *Context) Type() interface{} {
+	if v := c.ctx.Value(funcType); v != nil {
+		return v
+	}
+
+	return nil
 }
 
 // In returns the input arguments
@@ -69,6 +79,12 @@ func (c *Context) WithPkg(v string) *Context {
 // WithName set the function name
 func (c *Context) WithName(v string) *Context {
 	c.ctx = context.WithValue(c.ctx, name, v)
+	return c
+}
+
+// WithType set the function type
+func (c *Context) WithType(v interface{}) *Context {
+	c.ctx = context.WithValue(c.ctx, funcType, v)
 	return c
 }
 

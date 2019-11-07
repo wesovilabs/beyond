@@ -90,11 +90,14 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, definitions *Definitions,
 				definition.name = arg.Name
 			case *ast.SelectorExpr:
 				definition.name = arg.Sel.Name
-
 				if x, ok := arg.X.(*ast.Ident); ok {
 					definition.pkg = pkgPathForType(x.Name, importSpecs)
 				}
+			case *ast.BasicLit:
+				fmt.Printf("%#v", arg)
+				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
 			}
+			fmt.Printf("%#v", definition)
 			definitions.Add(definition)
 		}
 

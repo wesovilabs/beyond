@@ -56,3 +56,27 @@ func CallFunctionAndAssign(currentPkg, pkg, name string, params, results []*Fiel
 		X: CallFunction(currentPkg, pkg, name, params),
 	}
 }
+
+// CallMethodAndAssign create a new assignment
+func CallMethodAndAssign(recv *ast.FieldList, currentPkg, pkg, name string, params, results []*FieldDef) ast.Stmt {
+	objName := recv.List[0].Names[0].String()
+
+	if len(results) > 0 {
+		outputVariables := make([]ast.Expr, len(results))
+		for index, field := range results {
+			outputVariables[index] = NewIdentObj(field.name)
+		}
+
+		return &ast.AssignStmt{
+			Tok: token.DEFINE,
+			Lhs: outputVariables,
+			Rhs: []ast.Expr{
+				CallMethod(objName, currentPkg, pkg, name, params),
+			},
+		}
+	}
+
+	return &ast.ExprStmt{
+		X: CallMethod(objName, currentPkg, pkg, name, params),
+	}
+}
