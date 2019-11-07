@@ -8,12 +8,31 @@ aux_links:
 heading_anchors: true
 footer_content: "Copyright &copy; 2019 Iván Corrales Solera. Distributed by an <a href=\"https://github.com/wesovilabs/goa/tree/master/LICENSE.md\">MIT license.</a>"
 email: ivan.corrales.solera@gmail.com
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: wesovilabs
+
+permalink: pretty
+
+ga_tracking:
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed
+
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false
+
 github_username:  wesovilabs
 
+#baseurl: "" # the subpath of your site, e.g. /blog
+#url: "" # the base hostname & protocol for your site, e.g. http://example.com
+#twitter_username: wesovilabs
+
+
 # Build settings
-markdown: kramdown
-plugins:
-  - jekyll-feed
+#markdown: kramdown
+#plugins:
+#  - jekyll-feed
