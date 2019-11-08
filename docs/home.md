@@ -40,9 +40,6 @@ Available Goa releases can be found [here](https://github.com/wesovilabs/goa/rel
 
 ---
 
-## About the project
-Goa is © 2019 by Iván Corrales Solera.
-
 ## License
 Goa is distributed by an [MIT license](https://github.com/wesovilabs/goa/tree/master/LICENSE.md).
 

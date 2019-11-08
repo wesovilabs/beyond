@@ -253,8 +253,5 @@ DEPENDENCIES
   jekyll-seo-tag
   just-the-docs
 
-RUBY VERSION
-   ruby 2.4.2p198
-
 BUNDLED WITH
    1.17.3
