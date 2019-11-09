@@ -250,6 +250,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   jekyll-feed
+  jekyll-remote-theme
   jekyll-seo-tag
   just-the-docs
 

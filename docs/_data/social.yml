@@ -1,0 +1,13 @@
+reddit:
+  title: Have a look at Goa, an awesome Golang library that provides us with AOP.
+  message: Goa is a Golang library that drives us to the AOP paradigm, You can check it on
+    https://github.com/wesovilabs/goa by @wesovi
+twitter:
+  username: wesovilabs
+  url: https://github.com/wesovilabs/goa
+  message: Goa is an awesome Golang library that drives us to the AOP paradigm
+linkedin:
+  title: Have a look at Goa, an awesome Golang library that drives us to the AOP paradigm.
+  url: https://github.com/wesovilabs/goa
+medium:
+  url: https://medium.com/

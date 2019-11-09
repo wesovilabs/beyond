@@ -1,0 +1,43 @@
+.socialme {
+  margin: 0 auto;
+  ul {
+    margin: 20px 0 0 0;
+    text-align: center;
+    li {
+        :before {
+            content: "" !important;
+        }
+        display: inline;
+        margin: 0 15px 0 0;
+
+        a {
+            text-decoration: none;
+        }
+        svg {
+            width: 50px;
+            height: 50px;
+        }
+    }
+  }
+  .github svg {
+      fill: #181717;
+    }
+  .medium svg {
+    fill: #F0652F;
+  }
+  .reddit svg {
+    fill: #FF4500;
+  }
+
+  .twitter svg {
+    fill: #1DA1F2;
+  }
+
+  .linkedin svg {
+    fill: #0077B5;
+  }
+}
+
+.socialme ul > li::before {
+    content:"" !important;
+}
