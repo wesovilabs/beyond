@@ -14,14 +14,15 @@ GoaContext is the cornerstone that will help you to build handy and useful advic
 {: .fs-6 .fw-300 }
 
 
-## Resource model
+{: .text-blue-200}
+## API
 
-GoaContext contains information about the intercepted functions  by the advices. It means, that it contains
-the path to the package where the function is found, the name of the function, the list of params and the list of results.
+GoaContext provides us with methods to obtain all the information from the intercepted functions.
 
-We can make use of GoaContext to share data between Before and Returning methods when you code an Around Advice.
+We can also make use of GoaContext to share data between Before and Returning methods. This is so useful when we code 
+an Around Advice.
 
-
+{: .text-yellow-300}
 #### GoaContext
 
 | Method                     | Description               |
@@ -34,31 +35,24 @@ We can make use of GoaContext to share data between Before and Returning methods
 | Set(string,interface{})    | It saves a value that is shareable along the advice cycle|
 | Get(string):interface{}    | It obtains a value from the Goaontext|
 
+{: .text-yellow-300}
 #### Args
 
+| Method                                    | Description               |
+|:------------------------------------------|:-------------------------|:
+| ForEach(fn func(int, *Arg))               | It exexutes the provided function for all the arguments |
+| Find(func(int,*Arg) bool) (int,*Arg)      | It returns the first index and argument that match with the given function|
+| Count() int                               | It returns the number or arguments|
+| At(index int) *Arg                        | It returns the [Arg](#Arg) int the given position|
+| Get(name string):*Args                    | It returns the [Arg](#Arg) with the given name|
+| Set(string,interface{})                   | It update the value for the [Arg](#Arg) with the given name|
+| SetAt(int,interface{})                    | It updates the value for the [Arg](#Arg) in the given position|
 
+{: .text-yellow-300}
 #### Arg
 
-- Params() *Args: It returns the list of params
-
-
-##
-
-
-
-## Api
-
-
-- **Pkg()**: It returns the package of the intercepted function.
-
-- **Function()**: It returns the name of the intercepted function.
-
-- **Type()**: It returns the object of the intercepted method.
-
-- **In() \*Args**: It returns a pointer of Args. It contains details from the function arguments.
-
-- **Out() \*Args**: It returns a pointer of Args. It contains details from the function results.
-
-- **Set(key string, value interface{})**: It permits to set custom data to the Goa context.
-
-- **Get(key string) interface{}**: It returns a data that is stored in the Goa Context.
+| Method                                    | Description                          |
+|:------------------------------------------|:-------------------------------------|:
+| Name():string                             | It returns the name of the argument  |
+| Value():interface{}                       | It returns the value of the argument |
+| Kind():reflect.Type                       | It returns the type of the argument  |

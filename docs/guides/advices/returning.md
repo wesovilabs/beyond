@@ -60,7 +60,7 @@ func (a *ErrorAdvice) Returning(ctx *context.GoaContext) {
         }
         return false
     });index>=0 {
-        ctx.UpdateResultAt(index, &InterceptedError{
+        ctx.Results().SetAt(index, &InterceptedError{
             err:      result.Value().(error),
             pkg:      ctx.Pkg(),
             function: ctx.Function(),

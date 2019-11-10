@@ -13,13 +13,13 @@ func Test_Context(t *testing.T) {
 	goaCtx := NewContext(ctx)
 	goaCtx.WithPkg("parent/child").
 		WithName("function").
-		WithIn([]*Arg{
+		SetParams(&Args{items: []*Arg{
 			NewArg("firstname", "John"),
-		}).
-		WithOut([]*Arg{
+		}}).
+		SetResults(&Args{[]*Arg{
 			NewArg("salary", 1200.23),
 			NewArg("retired", false),
-		})
+		}})
 	assert := assert.New(t)
 	assert.Equal("parent/child", goaCtx.Pkg())
 	assert.Equal("function", goaCtx.Function())
@@ -50,13 +50,13 @@ func TestContext_ParamsGet(t *testing.T) {
 	goaCtx := NewContext(ctx)
 	goaCtx.WithPkg("parent/child").
 		WithName("function").
-		WithIn([]*Arg{
+		SetParams(&Args{[]*Arg{
 			NewArg("firstname", "John"),
-		}).
-		WithOut([]*Arg{
+		}}).
+		SetResults(&Args{[]*Arg{
 			NewArg("salary", 1200.23),
 			NewArg("retired", false),
-		})
+		}})
 	assert := assert.New(t)
 	assert.Equal("John", goaCtx.Params().Get("firstname").value)
 	assert.Nil(nil, goaCtx.Params().Get("unknown"))

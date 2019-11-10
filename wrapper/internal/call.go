@@ -69,28 +69,19 @@ func CallCreateAspect(pkg, name string) *ast.CallExpr {
 	}
 }
 
-// SetCtxIn return the call expression
-func SetCtxIn(field *FieldDef) *ast.CallExpr {
-	return setContext("SetIn", field.name)
-}
-
-// SetCtxOut return the call expression
-func SetCtxOut(field *FieldDef) *ast.CallExpr {
-	return setContext("SetOut", field.name)
-}
-
-func setContext(op string, name string) *ast.CallExpr {
+// SetArgValue set value to context
+func SetArgValue(argsType string, field *FieldDef) ast.Expr {
 	return &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
-			X:   NewIdentObjVar(varGoaContext),
-			Sel: NewIdent(op),
+			X:   NewIdentObjVar(argsType),
+			Sel: NewIdent("Set"),
 		},
 		Args: []ast.Expr{
 			&ast.BasicLit{
 				Kind:  token.STRING,
-				Value: fmt.Sprintf(`"%s"`, name),
+				Value: fmt.Sprintf(`"%s"`, field.name),
 			},
-			NewIdentObjVar(name),
+			NewIdentObjVar(field.name),
 		},
 	}
 }

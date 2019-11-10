@@ -6,57 +6,57 @@ import (
 	"go/token"
 )
 
-// AssignValuesFromContextIn return the list of statements
-func AssignValuesFromContextIn(fields []*FieldDef) []ast.Stmt {
-	stmts := make([]ast.Stmt, len(fields))
+// ArgsToFunctionArgs return the list of statements
+func ArgsToFunctionArgs(name string, fields []*FieldDef) []ast.Stmt {
+	stmts := make([]ast.Stmt, 0)
+
 	for index, f := range fields {
-		stmts[index] = getFromContext("GetInValue", f)
+		resultName := fmt.Sprintf("%s%v", name, index)
+
+		stmts = append(stmts, &ast.AssignStmt{
+			Lhs: []ast.Expr{
+				NewIdentObj(resultName),
+			},
+			Tok: token.DEFINE,
+			Rhs: []ast.Expr{
+				&ast.CallExpr{
+					Fun: &ast.SelectorExpr{
+						X:   NewIdentObjVar(name),
+						Sel: NewIdent("Get"),
+					},
+					Args: []ast.Expr{
+						&ast.BasicLit{
+							Kind:  token.STRING,
+							Value: fmt.Sprintf(`"%s"`, f.name),
+						},
+					},
+				},
+			},
+		})
+		stmts = append(stmts, argumentToVariable(resultName, f))
 	}
 
 	return stmts
 }
 
-// AssignValuesFromContextOut return the list of statements
-func AssignValuesFromContextOut(fields []*FieldDef) []ast.Stmt {
-	stmts := make([]ast.Stmt, len(fields))
-	for index, field := range fields {
-		stmts[index] = getFromContext("GetOutValue", field)
-	}
-
-	return stmts
-}
-
-/**
-if goaContext.GetOutValue("result1")!=nil{
-                result1 = goaContext.GetOutValue("result1").(error)
-        }
-*/
-
-func checkIfValueIsNotNil(op string, field *FieldDef, stmt ast.Stmt) ast.Stmt {
+func ifArgumentValueIsNotNil(variable string, stmt ast.Stmt) ast.Stmt {
 	return &ast.IfStmt{
 		Cond: &ast.BinaryExpr{
 			X: &ast.CallExpr{
 				Fun: &ast.SelectorExpr{
-					X:   NewIdentObjVar(varGoaContext),
-					Sel: NewIdent(op),
-				},
-				Args: []ast.Expr{
-					&ast.BasicLit{
-						Kind:  token.STRING,
-						Value: fmt.Sprintf(`"%s"`, field.name),
-					},
+					X:   NewIdentObjVar(variable),
+					Sel: NewIdent("Value"),
 				},
 			},
 			Op: token.NEQ,
 			Y:  NewIdent("nil"),
 		},
-
 		Body: &ast.BlockStmt{List: []ast.Stmt{stmt}},
 	}
 }
 
-func getFromContext(op string, field *FieldDef) ast.Stmt {
-	return checkIfValueIsNotNil(op, field, &ast.AssignStmt{
+func argumentToVariable(variable string, field *FieldDef) ast.Stmt {
+	return ifArgumentValueIsNotNil(variable, &ast.AssignStmt{
 		Tok: token.ASSIGN,
 		Lhs: []ast.Expr{
 			NewIdentObjVar(field.name),
@@ -65,14 +65,8 @@ func getFromContext(op string, field *FieldDef) ast.Stmt {
 			&ast.TypeAssertExpr{
 				X: &ast.CallExpr{
 					Fun: &ast.SelectorExpr{
-						X:   NewIdentObjVar(varGoaContext),
-						Sel: NewIdent(op),
-					},
-					Args: []ast.Expr{
-						&ast.BasicLit{
-							Kind:  token.STRING,
-							Value: fmt.Sprintf(`"%s"`, field.name),
-						},
+						X:   NewIdentObjVar(variable),
+						Sel: NewIdent("Value"),
 					},
 				},
 				Type: field.kind,
@@ -91,5 +85,36 @@ func ReturnValuesStmt(fields []*FieldDef) ast.Stmt {
 
 	return &ast.ReturnStmt{
 		Results: results,
+	}
+}
+
+func TakeArgs(name string, method string) ast.Stmt {
+	return &ast.AssignStmt{
+		Lhs: []ast.Expr{
+			NewIdentObj(name),
+		},
+		Rhs: []ast.Expr{
+			&ast.CallExpr{
+				Fun: &ast.SelectorExpr{
+					X:   NewIdentObjVar(varGoaContext),
+					Sel: NewIdentObj(method),
+				},
+			},
+		},
+		Tok: token.DEFINE,
+	}
+}
+
+func SetArgs(method string, name string) ast.Stmt {
+	return &ast.ExprStmt{
+		X: &ast.CallExpr{
+			Fun: &ast.SelectorExpr{
+				X:   NewIdentObjVar(varGoaContext),
+				Sel: NewIdentObj(method),
+			},
+			Args: []ast.Expr{
+				NewIdentObj(name),
+			},
+		},
 	}
 }

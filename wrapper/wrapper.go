@@ -20,9 +20,10 @@ func hasAnyReturning(definitions map[string]*aspect.Definition) bool {
 }
 
 func wrapBeforeStatements(definitions map[string]*aspect.Definition, params []*internal.FieldDef) []ast.Stmt {
+	argsVariable := "functionParams"
 	stmts := make([]ast.Stmt, 0)
 	// set values to context
-	stmts = append(stmts, setValuesToContextIn(params)...)
+	stmts = append(stmts, setArgsValues(argsVariable, "Params", params)...)
 	// call aspects
 	for name, d := range definitions {
 		if d.HasBefore() {
@@ -32,14 +33,16 @@ func wrapBeforeStatements(definitions map[string]*aspect.Definition, params []*i
 		}
 	}
 
-	stmts = append(stmts, internal.AssignValuesFromContextIn(params)...)
+	stmts = append(stmts, internal.ArgsToFunctionArgs(argsVariable, params)...)
 
 	return stmts
 }
 func wrapReturningStatements(definitions map[string]*aspect.Definition, results []*internal.FieldDef) []ast.Stmt {
+	argsVariable := "functionResults"
 	stmts := make([]ast.Stmt, 0)
+
 	if len(results) > 0 {
-		stmts = append(stmts, setValuesToContextOut(results)...)
+		stmts = append(stmts, setArgsValues(argsVariable, "Results", results)...)
 	}
 
 	for name, d := range definitions {
@@ -51,7 +54,7 @@ func wrapReturningStatements(definitions map[string]*aspect.Definition, results 
 	}
 
 	if len(results) > 0 {
-		stmts = append(stmts, internal.AssignValuesFromContextOut(results)...)
+		stmts = append(stmts, internal.ArgsToFunctionArgs(argsVariable, results)...)
 	}
 
 	return stmts
@@ -111,24 +114,17 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 	return funcDecl
 }
 
-func setValuesToContextIn(params []*internal.FieldDef) []ast.Stmt {
-	statements := make([]ast.Stmt, len(params))
+func setArgsValues(name string, argsType string, params []*internal.FieldDef) []ast.Stmt {
+	stmts := make([]ast.Stmt, len(params)+2)
+	stmts[0] = internal.TakeArgs(name, argsType)
+
 	for index, param := range params {
-		statements[index] = &ast.ExprStmt{
-			X: internal.SetCtxIn(param),
+		stmts[index+1] = &ast.ExprStmt{
+			X: internal.SetArgValue(name, param),
 		}
 	}
 
-	return statements
-}
-
-func setValuesToContextOut(results []*internal.FieldDef) []ast.Stmt {
-	stmts := make([]ast.Stmt, len(results))
-	for index, result := range results {
-		stmts[index] = &ast.ExprStmt{
-			X: internal.SetCtxOut(result),
-		}
-	}
+	stmts[len(params)+1] = internal.SetArgs(fmt.Sprintf("Set%s", argsType), name)
 
 	return stmts
 }
