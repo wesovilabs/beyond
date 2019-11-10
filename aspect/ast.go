@@ -3,6 +3,7 @@ package aspect
 import (
 	"fmt"
 	"github.com/wesovilabs/goa/aspect/internal"
+	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/parser"
 	"go/ast"
 	"reflect"
@@ -70,13 +71,62 @@ var aspectTypes = map[string]definitionKind{
 }
 
 func selectorToString(sel *ast.SelectorExpr) string {
-	switch x:=sel.X.(type) {
+	switch x := sel.X.(type) {
 	case *ast.Ident:
-		return fmt.Sprintf("%s.%s",x,sel.Sel.Name)
+		return fmt.Sprintf("%s.%s", x, sel.Sel.Name)
 	default:
-		fmt.Println("selector")
-		fmt.Println(reflect.TypeOf(x))
-		return fmt.Sprintf("%s.%s",x,sel.Sel.Name)
+		logger.Error("unsupported type")
+
+		return fmt.Sprintf("%s.%s", "?", sel.Sel.Name)
+	}
+}
+
+func addDefinitionCallExpr(arg *ast.CallExpr, definition *Definition, importSpecs []*ast.ImportSpec) {
+	args := make([]string, 0)
+
+	for _, arg := range arg.Args {
+		switch a := arg.(type) {
+		case *ast.BasicLit:
+			args = append(args, a.Value)
+		case *ast.SelectorExpr:
+			args = append(args, selectorToString(a))
+		default:
+			fmt.Println(reflect.TypeOf(a))
+		}
+	}
+
+	funcName := ""
+
+	switch f := arg.Fun.(type) {
+	case *ast.SelectorExpr:
+		funcName = f.Sel.Name
+
+		if x, ok := f.X.(*ast.Ident); ok {
+			definition.pkg = pkgPathForType(x.Name, importSpecs)
+		}
+	default:
+		fmt.Println(reflect.TypeOf(f))
+	}
+
+	definition.name = fmt.Sprintf("%s(%s)", funcName, strings.Join(args, ","))
+}
+
+func takeAdvice(expr ast.Expr, definition *Definition, importSpecs []*ast.ImportSpec) {
+	switch arg := expr.(type) {
+	case *ast.Ident:
+		definition.name = arg.Name
+	case *ast.SelectorExpr:
+		definition.name = arg.Sel.Name
+		if x, ok := arg.X.(*ast.Ident); ok {
+			definition.pkg = pkgPathForType(x.Name, importSpecs)
+		}
+	case *ast.BasicLit:
+		fmt.Printf("%#v", arg)
+		definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
+	case *ast.CallExpr:
+		addDefinitionCallExpr(arg, definition, importSpecs)
+	default:
+		fmt.Println(reflect.TypeOf(arg))
 	}
 }
 
@@ -88,50 +138,13 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, definitions *Definitions,
 				kind: kind,
 				pkg:  rootPkg,
 			}
-			switch arg := expr.Args[0].(type) {
-			case *ast.Ident:
-				definition.name = arg.Name
-			case *ast.SelectorExpr:
-				definition.name = arg.Sel.Name
-				if x, ok := arg.X.(*ast.Ident); ok {
-					definition.pkg = pkgPathForType(x.Name, importSpecs)
-				}
-			case *ast.BasicLit:
-				fmt.Printf("%#v", arg)
-				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
-			case *ast.CallExpr:
-				args:=make([]string,0)
-				for _,arg:=range arg.Args{
-					switch a:=arg.(type) {
-					case *ast.BasicLit:
-						args=append(args,a.Value)
-					case *ast.SelectorExpr:
-						args=append(args,selectorToString(a))
-					default:
-						fmt.Println(reflect.TypeOf(a))
-					}
-				}
-				funcName:=""
-				switch f:=arg.Fun.(type) {
-				case *ast.SelectorExpr:
-					funcName=f.Sel.Name
-					if x, ok := f.X.(*ast.Ident); ok {
-						definition.pkg = pkgPathForType(x.Name, importSpecs)
-					}
-				default:
-					fmt.Println(reflect.TypeOf(f))
-				}
-				definition.name=fmt.Sprintf("%s(%s)",funcName,strings.Join(args,","))
-
-
-			default:
-				fmt.Println(reflect.TypeOf(arg))
-			}
+			takeAdvice(expr.Args[0], definition, importSpecs)
 
 			if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
 				if len(arg.Value) < 2 {
 					return
 				}
+
 				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
 			}
 
