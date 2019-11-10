@@ -2,7 +2,6 @@ package context
 
 import (
 	"github.com/stretchr/testify/assert"
-	"reflect"
 	"testing"
 )
 
@@ -11,9 +10,6 @@ func Test_Arg(t *testing.T) {
 	arg := NewArg("name", "John")
 	assert.EqualValues("name", arg.Name())
 	assert.EqualValues("John", arg.Value())
-	arg.update("Tom")
-	assert.EqualValues("Tom", arg.Value())
-	assert.EqualValues(reflect.TypeOf("Tom"), arg.Kind())
 }
 
 func Test_AsInt(t *testing.T) {

@@ -27,8 +27,6 @@ func ensureImports(currentImports, requiredImports map[string]string, function *
 }
 
 func findImportName(imports map[string]string, name, path string) string {
-	fmt.Printf("Import path: %s\n", path)
-
 	for value, name := range imports {
 		if value == path {
 			return name
