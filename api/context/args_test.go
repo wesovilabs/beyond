@@ -15,7 +15,6 @@ func Test_Args(t *testing.T) {
 	}
 	assert := assert.New(t)
 	assert.Equal(args.Count(), 3)
-	assert.False(args.isEmpty())
 	assert.Equal("name", args.items[0].Name())
 	assert.Equal("John", args.items[0].Value())
 	assert.Equal("age", args.items[1].Name())
@@ -49,20 +48,6 @@ func TestArgsGet(t *testing.T) {
 	}
 	assert.Nil(args.Get("unknown"))
 	assert.Equal(arg2, args.Get("male"))
-}
-
-func TestArgsIsEmpty(t *testing.T) {
-	assert := assert.New(t)
-	arg1 := NewArg("name", "John")
-	arg2 := NewArg("male", true)
-	arg3 := NewArg("age", 20)
-	args := &Args{
-		items: []*Arg{arg1, arg2, arg3},
-	}
-	assert.False(args.isEmpty())
-	args.items = []*Arg{}
-	assert.True(args.isEmpty())
-
 }
 
 func TestArgsLen(t *testing.T) {
