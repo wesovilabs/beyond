@@ -1,8 +1,7 @@
 ---
 layout: post
 title: Advices
-parent: Guides & Tutorials
-nav_order: 1
+nav_order: 2
 has_children: true
 ---
 

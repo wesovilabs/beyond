@@ -1,7 +1,6 @@
 ---
 layout: post
 parent: Advices
-grand_parent: Guides & Tutorials
 title: Returning
 nav_order: 1
 ---
