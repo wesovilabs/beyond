@@ -9,15 +9,6 @@ import (
 	"strings"
 )
 
-func hasAnyBefore(definitions map[string]*aspect.Definition) bool {
-	for _, d := range definitions {
-		if d.HasBefore() {
-			return true
-		}
-	}
-
-	return false
-}
 func hasAnyReturning(definitions map[string]*aspect.Definition) bool {
 	for _, d := range definitions {
 		if d.HasReturning() {
@@ -88,6 +79,7 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 				index := strings.LastIndex(d.Pkg(), "/")
 				importName = d.Pkg()[index+1:]
 			}
+
 			stmts = append(stmts, internal.AssignAspect(name, importName, d.Name()))
 		}
 	}
@@ -95,9 +87,7 @@ func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect
 	params := internal.Params(function.ParamsList())
 	results := internal.Results(function.ResultsList())
 
-	if hasAnyBefore(definitions) {
-		stmts = append(stmts, wrapBeforeStatements(definitions, params)...)
-	}
+	stmts = append(stmts, wrapBeforeStatements(definitions, params)...)
 
 	if recv != nil {
 		// Call function

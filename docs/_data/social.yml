@@ -6,6 +6,7 @@ twitter:
   username: wesovilabs
   url: https://github.com/wesovilabs/goa
   message: Goa is an awesome Golang library that drives us to the AOP paradigm
+  message2: Learning to implement a Before advice with Goa
 linkedin:
   title: Have a look at Goa, an awesome Golang library that drives us to the AOP paradigm.
   url: https://github.com/wesovilabs/goa

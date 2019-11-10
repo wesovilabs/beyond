@@ -8,12 +8,12 @@ type Aspect interface {
 
 // Before definition
 type Before interface {
-	Before(ctx *context.Context)
+	Before(ctx *context.GoaContext)
 }
 
 // Returning definition
 type Returning interface {
-	Returning(ctx *context.Context)
+	Returning(ctx *context.GoaContext)
 }
 
 // Around definition

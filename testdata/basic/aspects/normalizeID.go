@@ -10,9 +10,9 @@ type NormalizeID struct {
 
 }
 
-func (a *NormalizeID) Returning(ctx *context.Context){
-	id:=ctx.Out().Get("result0").(string)
-	ctx.Out().Set("result0",fmt.Sprintf("ID:%s",id))
+func (a *NormalizeID) Returning(ctx *context.GoaContext){
+	id:=ctx.Results().Get("result0").(string)
+	ctx.Results().Set("result0",fmt.Sprintf("ID:%s",id))
 }
 
 func NewNormalizeID() api.Returning{

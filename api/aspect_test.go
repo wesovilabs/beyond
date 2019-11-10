@@ -8,16 +8,16 @@ import (
 
 type b struct{}
 
-func (b *b) Before(ctx *context.Context) {}
+func (b *b) Before(ctx *context.GoaContext) {}
 
 type r struct{}
 
-func (r *r) Returning(ctx *context.Context) {}
+func (r *r) Returning(ctx *context.GoaContext) {}
 
 type a struct{}
 
-func (a *a) Before(ctx *context.Context)    {}
-func (a *a) Returning(ctx *context.Context) {}
+func (a *a) Before(ctx *context.GoaContext)    {}
+func (a *a) Returning(ctx *context.GoaContext) {}
 
 func TestAspect(t *testing.T) {
 	assert := assert.New(t)

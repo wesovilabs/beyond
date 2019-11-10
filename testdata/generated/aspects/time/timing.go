@@ -16,10 +16,10 @@ const (
 
 type TimingAspect struct{ mode TimingMode }
 
-func (t *TimingAspect) Before(ctx *context.Context) {
+func (t *TimingAspect) Before(ctx *context.GoaContext) {
         ctx.Set("start", time.Now())
 }
-func (t *TimingAspect) Returning(ctx *context.Context) {
+func (t *TimingAspect) Returning(ctx *context.GoaContext) {
         start := ctx.Get("start").(time.Time)
         end := time.Now()
         duration := end.Sub(start)

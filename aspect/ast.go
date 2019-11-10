@@ -76,15 +76,6 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, definitions *Definitions,
 				kind: kind,
 				pkg:  rootPkg,
 			}
-
-			if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
-				if len(arg.Value) < 2 {
-					return
-				}
-
-				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
-			}
-
 			switch arg := expr.Args[0].(type) {
 			case *ast.Ident:
 				definition.name = arg.Name
@@ -97,6 +88,15 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, definitions *Definitions,
 				fmt.Printf("%#v", arg)
 				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
 			}
+
+			if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
+				if len(arg.Value) < 2 {
+					return
+				}
+
+				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
+			}
+
 			fmt.Printf("%#v", definition)
 			definitions.Add(definition)
 		}

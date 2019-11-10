@@ -1,6 +1,8 @@
 package context
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // Arg contains attributes to efine an argument
 type Arg struct {
@@ -73,6 +75,18 @@ func (a *Arg) AsIntPtr() *int {
 	}
 
 	return nil
+}
+
+func (a *Arg) Is(t reflect.Type) bool {
+	return a.kind == t
+}
+
+func (a *Arg) IsError() bool {
+	if _, ok := a.value.(error); ok {
+		return true
+	}
+
+	return false
 }
 
 // AsInt16 return argument value as int16

@@ -8,9 +8,9 @@ import (
 
 type TracingAspect struct{ }
 
-func (t *TracingAspect) Before(ctx *context.Context) {
+func (t *TracingAspect) Before(ctx *context.GoaContext) {
 	text := fmt.Sprintf("[%s] => ",  ctx.Function())
-	for _,arg:=range ctx.In().List(){
+	for _,arg:=range ctx.Params().List(){
 		text=fmt.Sprintf("%s | %s:%#v",text, arg.Name(), arg.Value())
 	}
 	fmt.Println(text)

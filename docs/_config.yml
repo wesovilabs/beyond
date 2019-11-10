@@ -1,6 +1,6 @@
 title: Goa
-remote_theme: pmarsceill/just-the-docs
-#theme: "just-the-docs"
+#remote_theme: pmarsceill/just-the-docs
+theme: "just-the-docs"
 search_enabled: true
 search_tokenizer_separator: /[\s/]+/
 aux_links:
@@ -17,14 +17,7 @@ ga_tracking:
 plugins:
   - jekyll-seo-tag
   - jekyll-feed
-
-compress_html:
-  clippings: all
-  comments: all
-  endings: all
-  startings: []
-  blanklines: false
-  profile: false
+  - jekyll-remote-theme
 
 github_username: wesovilabs
 

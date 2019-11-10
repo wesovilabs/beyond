@@ -16,7 +16,7 @@ const (
 )
 
 // Pkg returns the package
-func (c *Context) Pkg() string {
+func (c *GoaContext) Pkg() string {
 	if v := c.ctx.Value(pkg); v != nil {
 		return v.(string)
 	}
@@ -25,7 +25,7 @@ func (c *Context) Pkg() string {
 }
 
 // Function returns the name of the function
-func (c *Context) Function() string {
+func (c *GoaContext) Function() string {
 	if v := c.ctx.Value(name); v != nil {
 		return v.(string)
 	}
@@ -34,7 +34,7 @@ func (c *Context) Function() string {
 }
 
 // Type returns the type
-func (c *Context) Type() interface{} {
+func (c *GoaContext) Type() interface{} {
 	if v := c.ctx.Value(funcType); v != nil {
 		return v
 	}
@@ -42,8 +42,8 @@ func (c *Context) Type() interface{} {
 	return nil
 }
 
-// In returns the input arguments
-func (c *Context) In() *Args {
+// Params returns the input arguments
+func (c *GoaContext) Params() *Args {
 	if v := c.ctx.Value(in); v != nil {
 		return v.(*Args)
 	}
@@ -51,13 +51,22 @@ func (c *Context) In() *Args {
 	return &Args{}
 }
 
-// Context Goa context
-type Context struct {
+// ParamsItems returns the input arguments
+func (c *GoaContext) ParamsItems() []*Arg {
+	if v := c.ctx.Value(in); v != nil {
+		return v.(*Args).items
+	}
+
+	return []*Arg{}
+}
+
+// GoaContext Goa context
+type GoaContext struct {
 	ctx context.Context
 }
 
-// Out returns the output arguments
-func (c *Context) Out() *Args {
+// Results returns the output arguments
+func (c *GoaContext) Results() *Args {
 	if v := c.ctx.Value(out); v != nil {
 		return v.(*Args)
 	}
@@ -66,30 +75,30 @@ func (c *Context) Out() *Args {
 }
 
 // NewContext constructor for goa context
-func NewContext(ctx context.Context) *Context {
-	return &Context{ctx}
+func NewContext(ctx context.Context) *GoaContext {
+	return &GoaContext{ctx}
 }
 
 // WithPkg set the package
-func (c *Context) WithPkg(v string) *Context {
+func (c *GoaContext) WithPkg(v string) *GoaContext {
 	c.ctx = context.WithValue(c.ctx, pkg, v)
 	return c
 }
 
 // WithName set the function name
-func (c *Context) WithName(v string) *Context {
+func (c *GoaContext) WithName(v string) *GoaContext {
 	c.ctx = context.WithValue(c.ctx, name, v)
 	return c
 }
 
 // WithType set the function type
-func (c *Context) WithType(v interface{}) *Context {
+func (c *GoaContext) WithType(v interface{}) *GoaContext {
 	c.ctx = context.WithValue(c.ctx, funcType, v)
 	return c
 }
 
 // WithIn set the input arguments
-func (c *Context) WithIn(args []*Arg) *Context {
+func (c *GoaContext) WithIn(args []*Arg) *GoaContext {
 	c.ctx = context.WithValue(c.ctx, in, &Args{
 		items: args,
 	})
@@ -98,7 +107,7 @@ func (c *Context) WithIn(args []*Arg) *Context {
 }
 
 // WithOut set the output arguments
-func (c *Context) WithOut(args []*Arg) *Context {
+func (c *GoaContext) WithOut(args []*Arg) *GoaContext {
 	c.ctx = context.WithValue(c.ctx, out, &Args{
 		items: args,
 	})
@@ -107,12 +116,12 @@ func (c *Context) WithOut(args []*Arg) *Context {
 }
 
 // Set set context value
-func (c *Context) Set(key string, value interface{}) {
+func (c *GoaContext) Set(key string, value interface{}) {
 	c.ctx = context.WithValue(c.ctx, contextKey(key), value)
 }
 
 // GetString return the argument value
-func (c *Context) GetString(key string) string {
+func (c *GoaContext) GetString(key string) string {
 	if value := c.Get(key); value != nil {
 		return value.(string)
 	}
@@ -121,7 +130,7 @@ func (c *Context) GetString(key string) string {
 }
 
 // GetInt return the argument value
-func (c *Context) GetInt(key string) int {
+func (c *GoaContext) GetInt(key string) int {
 	if value := c.Get(key); value != nil {
 		return value.(int)
 	}
@@ -130,7 +139,7 @@ func (c *Context) GetInt(key string) int {
 }
 
 // GetBool return the argument value
-func (c *Context) GetBool(key string) bool {
+func (c *GoaContext) GetBool(key string) bool {
 	if value := c.Get(key); value != nil {
 		return value.(bool)
 	}
@@ -139,7 +148,7 @@ func (c *Context) GetBool(key string) bool {
 }
 
 // GetTime return the argument value
-func (c *Context) GetTime(key string) time.Time {
+func (c *GoaContext) GetTime(key string) time.Time {
 	if value := c.Get(key); value != nil {
 		return value.(time.Time)
 	}
@@ -148,73 +157,73 @@ func (c *Context) GetTime(key string) time.Time {
 }
 
 // Get return the argument value
-func (c *Context) Get(key string) interface{} {
+func (c *GoaContext) Get(key string) interface{} {
 	return c.ctx.Value(contextKey(key))
 }
 
 // GetIn return the argument with the given name
-func (c *Context) GetIn(name string) *Arg {
-	return c.In().get(name)
+func (c *GoaContext) GetIn(name string) *Arg {
+	return c.Params().get(name)
 }
 
 // GetInValue return the argument with the given name
-func (c *Context) GetInValue(name string) interface{} {
-	return c.In().get(name).value
+func (c *GoaContext) GetInValue(name string) interface{} {
+	return c.Params().get(name).value
 }
 
 // GetInAt return the argument in the given position
-func (c *Context) GetInAt(index int) *Arg {
-	return c.In().at(index)
+func (c *GoaContext) GetInAt(index int) *Arg {
+	return c.Params().at(index)
 }
 
 // GetInValueAt return the argument with the given name
-func (c *Context) GetInValueAt(index int) interface{} {
+func (c *GoaContext) GetInValueAt(index int) interface{} {
 	return c.GetInAt(index).value
 }
 
 // GetOut return the argument with the given name
-func (c *Context) GetOut(name string) *Arg {
-	return c.Out().get(name)
+func (c *GoaContext) GetOut(name string) *Arg {
+	return c.Results().get(name)
 }
 
 // GetOutValue return the value for the argument with the given name
-func (c *Context) GetOutValue(name string) interface{} {
-	return c.Out().get(name).value
+func (c *GoaContext) GetOutValue(name string) interface{} {
+	return c.Results().get(name).value
 }
 
 // GetOutAt return the argument in the given position
-func (c *Context) GetOutAt(index int) *Arg {
-	return c.Out().at(index)
+func (c *GoaContext) GetOutAt(index int) *Arg {
+	return c.Results().at(index)
 }
 
 // ParamsLen return the number of input arguments
-func (c *Context) ParamsLen() int {
-	return c.In().len()
+func (c *GoaContext) ParamsLen() int {
+	return c.Params().len()
 }
 
 // HasParams returns true if there are input arguments
-func (c *Context) HasParams() bool {
-	return !c.In().isEmpty()
+func (c *GoaContext) HasParams() bool {
+	return !c.Params().isEmpty()
 }
 
 // ResultsLen return the number of output arguments
-func (c *Context) ResultsLen() int {
-	return c.Out().len()
+func (c *GoaContext) ResultsLen() int {
+	return c.Results().len()
 }
 
 // HasResults returns true if there are output arguments
-func (c *Context) HasResults() bool {
-	return !c.Out().isEmpty()
+func (c *GoaContext) HasResults() bool {
+	return !c.Results().isEmpty()
 }
 
 // GetOutValueAt return the argument with the given name
-func (c *Context) GetOutValueAt(index int) interface{} {
+func (c *GoaContext) GetOutValueAt(index int) interface{} {
 	return c.GetOutAt(index).value
 }
 
 // SetOut set the value for the given argument
-func (c *Context) SetOut(name string, value interface{}) {
-	args := c.Out().items
+func (c *GoaContext) SetOut(name string, value interface{}) {
+	args := c.Results().items
 	for _, arg := range args {
 		if arg.name == name {
 			arg.update(value)
@@ -229,8 +238,8 @@ func (c *Context) SetOut(name string, value interface{}) {
 }
 
 // SetIn set the value for the given argument
-func (c *Context) SetIn(name string, value interface{}) {
-	args := c.In().items
+func (c *GoaContext) SetIn(name string, value interface{}) {
+	args := c.Params().items
 	for _, arg := range args {
 		if arg.name == name {
 			arg.update(value)
@@ -245,8 +254,8 @@ func (c *Context) SetIn(name string, value interface{}) {
 }
 
 // SetInAt set the value for the argument in the given position
-func (c *Context) SetInAt(index int, value interface{}) {
-	args := c.In().items
+func (c *GoaContext) SetInAt(index int, value interface{}) {
+	args := c.Params().items
 	if len(args) > index && index >= 0 {
 		args[index].update(value)
 	}
@@ -254,9 +263,9 @@ func (c *Context) SetInAt(index int, value interface{}) {
 	c.WithIn(args)
 }
 
-// SetOutAt set the value for the argument in the given position
-func (c *Context) SetOutAt(index int, value interface{}) {
-	args := c.Out().items
+// UpdateResultAt set the value for the argument in the given position
+func (c *GoaContext) UpdateResultAt(index int, value interface{}) {
+	args := c.Results().items
 	if len(args) > index && index >= 0 {
 		args[index].update(value)
 	}

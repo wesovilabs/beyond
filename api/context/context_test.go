@@ -23,9 +23,9 @@ func Test_Context(t *testing.T) {
 	assert := assert.New(t)
 	assert.Equal("parent/child", goaCtx.Pkg())
 	assert.Equal("function", goaCtx.Function())
-	assert.Equal("John", goaCtx.In().get("firstname").value)
-	assert.Equal(1200.23, goaCtx.Out().get("salary").value)
-	assert.Equal(false, goaCtx.Out().get("retired").value)
+	assert.Equal("John", goaCtx.Params().get("firstname").value)
+	assert.Equal(1200.23, goaCtx.Results().get("salary").value)
+	assert.Equal(false, goaCtx.Results().get("retired").value)
 	now := time.Now()
 	goaCtx.Set("start.time", now)
 	assert.Equal(now, goaCtx.Get("start.time"))
@@ -49,8 +49,8 @@ func Test_Context(t *testing.T) {
 	goaCtx = NewContext(context.Background())
 	assert.Empty(goaCtx.Function())
 	assert.Empty(goaCtx.Pkg())
-	assert.Empty(goaCtx.In().items)
-	assert.Empty(goaCtx.Out().items)
+	assert.Empty(goaCtx.Params().items)
+	assert.Empty(goaCtx.Results().items)
 }
 
 func TestContext_GetIn(t *testing.T) {
@@ -89,7 +89,7 @@ func TestContext_GetIn(t *testing.T) {
 	assert.Equal("tom", goaCtx.GetIn("firstname").value)
 	goaCtx.SetInAt(20, "Tim")
 
-	goaCtx.SetOutAt(0, "tom")
+	goaCtx.UpdateResultAt(0, "tom")
 	assert.Equal("tom", goaCtx.GetOut("salary").value)
 	assert.Equal(reflect.TypeOf("tom"), goaCtx.GetOut("salary").kind)
 

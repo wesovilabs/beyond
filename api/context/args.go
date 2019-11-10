@@ -33,3 +33,26 @@ func (args *Args) at(index int) *Arg {
 
 	return nil
 }
+
+// ForEach executes the given function for each arg
+func (args *Args) ForEach(fn func(int, *Arg)) {
+	for index, arg := range args.items {
+		fn(index, arg)
+	}
+}
+
+// Find executes find the first argument that matche with the given expression
+func (args *Args) Find(fn func(int, *Arg) bool) (int, *Arg) {
+	for index, arg := range args.items {
+		if fn(index, arg) {
+			return index, arg
+		}
+	}
+
+	return -1, nil
+}
+
+// Count returns the number of elements in the list
+func (args *Args) Count() int {
+	return len(args.items)
+}

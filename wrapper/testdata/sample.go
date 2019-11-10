@@ -21,11 +21,11 @@ type SampleAspect struct {
 
 }
 
-func (a *SampleAspect) Before(ctx *context.Context){
+func (a *SampleAspect) Before(ctx *context.GoaContext){
 
 }
 
-func (a *SampleAspect) Returning(ctx *context.Context){
+func (a *SampleAspect) Returning(ctx *context.GoaContext){
 
 }
 
@@ -39,7 +39,7 @@ type SampleBefore struct {
 
 }
 
-func (a *SampleBefore) Before(ctx *context.Context){
+func (a *SampleBefore) Before(ctx *context.GoaContext){
 
 }
 
@@ -53,7 +53,7 @@ type SampleReturning struct {
 
 }
 
-func (a *SampleReturning) Returning(ctx *context.Context){
+func (a *SampleReturning) Returning(ctx *context.GoaContext){
 
 }
 

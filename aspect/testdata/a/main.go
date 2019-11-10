@@ -13,11 +13,11 @@ type Tracing struct {
 	value2 int
 }
 
-func (t *Tracing) Before(ctx *context.Context) {
+func (t *Tracing) Before(ctx *context.GoaContext) {
 
 }
 
-func (t *Tracing) Returning(ctx *context.Context) {
+func (t *Tracing) Returning(ctx *context.GoaContext) {
 
 }
 

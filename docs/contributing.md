@@ -148,3 +148,6 @@ windows at time by running.
 make build-all
 ``` 
 
+---
+
+> Don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` if you have any doubt!
