@@ -2,7 +2,7 @@
 layout: post
 parent: Advices
 grand_parent: Guides & Tutorials
-title: Before advices
+title: Before
 nav_order: 1
 ---
 
@@ -21,7 +21,7 @@ Along this guide we will learn how to code an advice that traces all the functio
 
 - Install goa tool 
 ```bash
->> go get gihub.com/wesovilabs/goa
+>> go get github.com/wesovilabs/goa
 ```
 
 {: .text-blue-200}

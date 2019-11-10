@@ -23,28 +23,20 @@ func Test_Context(t *testing.T) {
 	assert := assert.New(t)
 	assert.Equal("parent/child", goaCtx.Pkg())
 	assert.Equal("function", goaCtx.Function())
-	assert.Equal("John", goaCtx.Params().get("firstname").value)
-	assert.Equal(1200.23, goaCtx.Results().get("salary").value)
-	assert.Equal(false, goaCtx.Results().get("retired").value)
+	assert.Equal("John", goaCtx.Params().Get("firstname").value)
+	assert.Equal(1200.23, goaCtx.Results().Get("salary").value)
+	assert.Equal(false, goaCtx.Results().Get("retired").value)
 	now := time.Now()
 	goaCtx.Set("start.time", now)
 	assert.Equal(now, goaCtx.Get("start.time"))
-	assert.Equal(now, goaCtx.GetTime("start.time"))
 	goaCtx.Set("married", true)
 	assert.Equal(true, goaCtx.Get("married"))
-	assert.Equal(true, goaCtx.GetBool("married"))
 
 	goaCtx.Set("age", 34)
 	assert.Equal(34, goaCtx.Get("age"))
-	assert.Equal(34, goaCtx.GetInt("age"))
 
 	goaCtx.Set("firstname", "Wenceslao")
 	assert.Equal("Wenceslao", goaCtx.Get("firstname"))
-	assert.Equal("Wenceslao", goaCtx.GetString("firstname"))
-	assert.Equal("", goaCtx.GetString("unknown"))
-	assert.Equal(0, goaCtx.GetInt("unknown"))
-	assert.Equal(false, goaCtx.GetBool("unknown"))
-	assert.Equal(time.Time{}, goaCtx.GetTime("unknown"))
 
 	goaCtx = NewContext(context.Background())
 	assert.Empty(goaCtx.Function())
@@ -53,7 +45,7 @@ func Test_Context(t *testing.T) {
 	assert.Empty(goaCtx.Results().items)
 }
 
-func TestContext_GetIn(t *testing.T) {
+func TestContext_ParamsGet(t *testing.T) {
 	ctx := context.Background()
 	goaCtx := NewContext(ctx)
 	goaCtx.WithPkg("parent/child").
@@ -66,31 +58,31 @@ func TestContext_GetIn(t *testing.T) {
 			NewArg("retired", false),
 		})
 	assert := assert.New(t)
-	assert.Equal("John", goaCtx.GetIn("firstname").value)
-	assert.Nil(nil, goaCtx.GetIn("unknown"))
+	assert.Equal("John", goaCtx.Params().Get("firstname").value)
+	assert.Nil(nil, goaCtx.Params().Get("unknown"))
 
-	assert.Equal("John", goaCtx.GetInAt(0).value)
-	assert.Nil(nil, goaCtx.GetInAt(20))
+	assert.Equal("John", goaCtx.Params().At(0).value)
+	assert.Nil(nil, goaCtx.Params().At(20))
 
-	assert.Equal(1200.23, goaCtx.GetOutAt(0).value)
-	assert.Nil(nil, goaCtx.GetOutAt(10))
+	assert.Equal(1200.23, goaCtx.Results().At(0).value)
+	assert.Nil(nil, goaCtx.Results().At(10))
 
-	goaCtx.SetIn("name", "tom")
-	assert.Equal("tom", goaCtx.GetIn("name").value)
-	goaCtx.SetIn("name", "Tim")
-	assert.Equal("Tim", goaCtx.GetIn("name").value)
+	goaCtx.Params().Set("name", "tom")
+	assert.Equal("tom", goaCtx.Params().Get("name").value)
+	goaCtx.Params().Set("name", "Tim")
+	assert.Equal("Tim", goaCtx.Params().Get("name").value)
 
-	goaCtx.SetOut("name", "tom")
-	assert.Equal("tom", goaCtx.GetOut("name").value)
-	goaCtx.SetOut("name", "Tim")
-	assert.Equal("Tim", goaCtx.GetOut("name").value)
+	goaCtx.Results().Set("name", "tom")
+	assert.Equal("tom", goaCtx.Results().Get("name").value)
+	goaCtx.Results().Set("name", "Tim")
+	assert.Equal("Tim", goaCtx.Results().Get("name").value)
 
-	goaCtx.SetInAt(0, "tom")
-	assert.Equal("tom", goaCtx.GetIn("firstname").value)
-	goaCtx.SetInAt(20, "Tim")
+	goaCtx.Params().SetAt(0, "tom")
+	assert.Equal("tom", goaCtx.Params().Get("firstname").value)
+	goaCtx.Params().SetAt(20, "Tim")
 
-	goaCtx.UpdateResultAt(0, "tom")
-	assert.Equal("tom", goaCtx.GetOut("salary").value)
-	assert.Equal(reflect.TypeOf("tom"), goaCtx.GetOut("salary").kind)
+	goaCtx.Results().SetAt(0, "tom")
+	assert.Equal("tom", goaCtx.Results().Get("salary").value)
+	assert.Equal(reflect.TypeOf("tom"), goaCtx.Results().Get("salary").kind)
 
 }

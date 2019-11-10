@@ -2,7 +2,7 @@
 layout: post
 parent: Advices
 grand_parent: Guides & Tutorials
-title: Around advices
+title: Around
 nav_order: 3
 ---
 
@@ -21,7 +21,7 @@ Along this guide we will learn how to code an advice that shows the spent time i
 
 - Install goa tool 
 ```bash
->> go get gihub.com/wesovilabs/goa
+>> go get github.com/wesovilabs/goa
 ```
 
 {: .text-blue-200}

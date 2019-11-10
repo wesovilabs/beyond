@@ -2,7 +2,6 @@ package context
 
 import (
 	"context"
-	"time"
 )
 
 type contextKey string
@@ -14,6 +13,11 @@ const (
 	in       contextKey = "_goaIn"
 	out      contextKey = "_goaOut"
 )
+
+// GoaContext Goa context
+type GoaContext struct {
+	ctx context.Context
+}
 
 // Pkg returns the package
 func (c *GoaContext) Pkg() string {
@@ -49,20 +53,6 @@ func (c *GoaContext) Params() *Args {
 	}
 
 	return &Args{}
-}
-
-// ParamsItems returns the input arguments
-func (c *GoaContext) ParamsItems() []*Arg {
-	if v := c.ctx.Value(in); v != nil {
-		return v.(*Args).items
-	}
-
-	return []*Arg{}
-}
-
-// GoaContext Goa context
-type GoaContext struct {
-	ctx context.Context
 }
 
 // Results returns the output arguments
@@ -120,6 +110,12 @@ func (c *GoaContext) Set(key string, value interface{}) {
 	c.ctx = context.WithValue(c.ctx, contextKey(key), value)
 }
 
+// Get return the argument value
+func (c *GoaContext) Get(key string) interface{} {
+	return c.ctx.Value(contextKey(key))
+}
+
+/**
 // GetString return the argument value
 func (c *GoaContext) GetString(key string) string {
 	if value := c.Get(key); value != nil {
@@ -156,10 +152,7 @@ func (c *GoaContext) GetTime(key string) time.Time {
 	return time.Time{}
 }
 
-// Get return the argument value
-func (c *GoaContext) Get(key string) interface{} {
-	return c.ctx.Value(contextKey(key))
-}
+
 
 // GetIn return the argument with the given name
 func (c *GoaContext) GetIn(name string) *Arg {
@@ -272,3 +265,4 @@ func (c *GoaContext) UpdateResultAt(index int, value interface{}) {
 
 	c.WithOut(args)
 }
+**/

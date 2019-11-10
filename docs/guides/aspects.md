@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Advices out of the box
+title: Aspects
 parent: Guides & Tutorials
-nav_order: 4
+nav_order: 2
 ---
