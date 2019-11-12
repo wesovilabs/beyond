@@ -86,7 +86,7 @@ func Test_NormalizeExpression(t *testing.T) {
 		},
 		{
 			text:    "a.b(*)",
-			pattern: `^a\.b\([a-zA-Z0-9_*.\[\]{}]+\)$`,
+			pattern: `^a\.b\([a-zA-Z0-9_*.\[\]{}/]+\)$`,
 		},
 		{
 			text:    "a.b(...)",
@@ -107,7 +107,7 @@ func Test_NormalizeExpression(t *testing.T) {
 		},
 		{
 			text:    "a.b()*",
-			pattern: `^a\.b\(\)[a-zA-Z0-9_*.\[\]{}]+$`,
+			pattern: `^a\.b\(\)[a-zA-Z0-9_*.\[\]{}/]+$`,
 		},
 		{
 			text:    "a.b()*string",

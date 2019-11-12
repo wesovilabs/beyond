@@ -62,7 +62,9 @@ func NormalizeExpression(text string) *regexp.Regexp {
 		logger.Errorf("error processing `%s: %s", text, err.Error())
 		return nil
 	}
+
 	logger.Infof("[ aspect ] %s => %s", text, regExpStr)
+
 	return rg
 }
 
