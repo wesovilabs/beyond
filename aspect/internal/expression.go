@@ -15,7 +15,7 @@ const exprArgs = `[a-zA-Z0-9_*,.{}()[\]]+`
 const pkgValidChars = `[a-zA-Z0-9_\/]+`
 const objValidChars = `[a-zA-Z0-9_*]+`
 const funcValidChars = `[a-zA-Z0-9_]+`
-const argValidChars = `[a-zA-Z0-9_*.\[\]{}/]+`
+const argValidChars = `[a-zA-Z0-9_*.\[\]{}\/]+`
 
 var regExp = func() *regexp.Regexp {
 	expr := `^`
