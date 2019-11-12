@@ -50,7 +50,7 @@ func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) 
 	}
 
 	for _, a := range goa.definitions.List() {
-		logger.Infof(`[ aspect ] %s.%s`, a.Pkg(), a.Name())
+		logger.Infof(`[ advice ] %s.%s`, a.Pkg(), a.Name())
 	}
 
 	matches := matcher.FindMatches(goa.functions, goa.definitions)

@@ -15,7 +15,7 @@ const exprArgs = `[a-zA-Z0-9_*,.{}()[\]]+`
 const pkgValidChars = `[a-zA-Z0-9_\/]+`
 const objValidChars = `[a-zA-Z0-9_*]+`
 const funcValidChars = `[a-zA-Z0-9_]+`
-const argValidChars = `[a-zA-Z0-9_*.\[\]{}]+`
+const argValidChars = `[a-zA-Z0-9_*.\[\]{}/]+`
 
 var regExp = func() *regexp.Regexp {
 	expr := `^`
@@ -62,7 +62,7 @@ func NormalizeExpression(text string) *regexp.Regexp {
 		logger.Errorf("error processing `%s: %s", text, err.Error())
 		return nil
 	}
-	logger.Infof("%s => %s", text, rg.String())
+	logger.Infof("[ aspect ] %s => %s", text, regExpStr)
 	return rg
 }
 
