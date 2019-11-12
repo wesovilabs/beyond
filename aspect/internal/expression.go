@@ -62,7 +62,7 @@ func NormalizeExpression(text string) *regexp.Regexp {
 		logger.Errorf("error processing `%s: %s", text, err.Error())
 		return nil
 	}
-
+	logger.Infof("%s => %s", text, rg.String())
 	return rg
 }
 

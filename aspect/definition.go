@@ -29,7 +29,6 @@ func (d *Definition) Match(text string) bool {
 	if d.regExp == nil {
 		return false
 	}
-
 	return d.regExp.MatchString(text)
 }
 
