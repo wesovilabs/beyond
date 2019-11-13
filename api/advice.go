@@ -2,8 +2,8 @@ package api
 
 import "github.com/wesovilabs/goa/api/context"
 
-// Aspect definition
-type Aspect interface {
+// Advice definition
+type Advice interface {
 }
 
 // Before definition
