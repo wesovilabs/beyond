@@ -22,7 +22,7 @@ deps: ; @ ## Download dependencies
 	${GO} mod vendor
 	${GO} mod download
 
-test: ; @ ## Run tests
+tests: ; @ ## Run tests
 	${GO} test  -v ./...
 
 test-coverage: ; @ ## Run tests with coverage

@@ -6,6 +6,7 @@ import (
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/parser"
 	"go/ast"
+	"go/token"
 	"reflect"
 	"strings"
 )
@@ -80,16 +81,44 @@ func selectorToString(sel *ast.SelectorExpr) string {
 		return fmt.Sprintf("%s.%s", "?", sel.Sel.Name)
 	}
 }
+func compositeToString(c *ast.CompositeLit) string {
+	switch x := c.Type.(type) {
+	case *ast.SelectorExpr:
+		return fmt.Sprintf("%s{}", selectorToString(x))
+	default:
+		logger.Error("unsupported type")
+		return ""
+	}
+}
+
+func unaryToString(c *ast.UnaryExpr) string {
+	prefix := ""
+	if c.Op == token.AND {
+		prefix = "&"
+	}
+
+	switch x := c.X.(type) {
+	case *ast.CompositeLit:
+		return fmt.Sprintf("%s%s", prefix, compositeToString(x))
+	default:
+		logger.Error("unsupported type")
+		return ""
+	}
+}
 
 func addAdviceCallExpr(arg *ast.CallExpr, definition *Advice, importSpecs []*ast.ImportSpec) {
 	args := make([]string, 0)
 
-	for _, arg := range arg.Args {
-		switch a := arg.(type) {
+	for _, ar := range arg.Args {
+		switch a := ar.(type) {
 		case *ast.BasicLit:
 			args = append(args, a.Value)
 		case *ast.SelectorExpr:
 			args = append(args, selectorToString(a))
+		case *ast.CompositeLit:
+			args = append(args, compositeToString(a))
+		case *ast.UnaryExpr:
+			args = append(args, unaryToString(a))
 		default:
 			fmt.Println(reflect.TypeOf(a))
 		}
@@ -121,7 +150,6 @@ func takeAdvice(expr ast.Expr, definition *Advice, importSpecs []*ast.ImportSpec
 			definition.pkg = pkgPathForType(x.Name, importSpecs)
 		}
 	case *ast.BasicLit:
-		fmt.Printf("%#v", arg)
 		definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
 	case *ast.CallExpr:
 		addAdviceCallExpr(arg, definition, importSpecs)

@@ -4,6 +4,9 @@ package main
 import (
 	"fmt"
 	"github.com/wesovilabs/goa/api"
+	"github.com/wesovilabs/goa/api/advice"
+	"github.com/wesovilabs/goa/api/context"
+	testAdvice "github.com/wesovilabs/goa/examples/advice"
 	"github.com/wesovilabs/goa/examples/model"
 	"github.com/wesovilabs/goa/examples/storage"
 )
@@ -42,5 +45,22 @@ func main() {
 
 func Goa() *api.Goa {
 	return api.New().
-		WithBefore(api.NewTracingAdvice, `*.*Person(...)...`)
+		WithBefore(testAdvice.NewComplexBefore(&testAdvice.Attribute{}), `*.*Person(...)...`).
+		WithBefore(advice.NewTracingAdvice, `*.*Person(...)...`).
+		WithAround(testAdvice.NewEmptyAround, `*.*(...)...`).
+		WithReturning(newEmptyReturning,`*.*(...)...`).
+		WithReturning(newEmptyReturning,`*.*(...)...`).
+		WithAround(testAdvice.NewComplexAround("test",testAdvice.Attribute{}),`*.*(...)...`)
+}
+
+type EmptyReturning struct{
+
+}
+
+func (r *EmptyReturning) Returning(ctx *context.GoaContext){
+
+}
+
+func newEmptyReturning() api.Returning{
+	return &EmptyReturning{}
 }
