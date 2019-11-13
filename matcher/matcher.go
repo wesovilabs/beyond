@@ -2,7 +2,7 @@ package matcher
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/aspect"
+	"github.com/wesovilabs/goa/advice"
 	"github.com/wesovilabs/goa/function"
 )
 
@@ -11,16 +11,16 @@ type Matches []*Match
 
 // Match struct
 type Match struct {
-	Function    *function.Function
-	Definitions map[string]*aspect.Definition
+	Function *function.Function
+	Advices  map[string]*advice.Advice
 }
 
 // FindMatches return the list of existing matches
-func FindMatches(functions *function.Functions, definitions *aspect.Definitions) Matches {
+func FindMatches(functions *function.Functions, definitions *advice.Advices) Matches {
 	matches := Matches{}
 
 	for _, f := range functions.List() {
-		aspects := make(map[string]*aspect.Definition)
+		aspects := make(map[string]*advice.Advice)
 
 		for index, d := range definitions.List() {
 			if d.Match(f.Path()) {
@@ -30,8 +30,8 @@ func FindMatches(functions *function.Functions, definitions *aspect.Definitions)
 
 		if len(aspects) > 0 {
 			matches = append(matches, &Match{
-				Function:    f,
-				Definitions: aspects,
+				Function: f,
+				Advices:  aspects,
 			})
 		}
 	}

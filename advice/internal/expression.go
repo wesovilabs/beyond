@@ -10,12 +10,7 @@ import (
 const exprPkg = `[a-zA-Z0-9_*\/]+\.`
 const exprObj = `[a-zA-Z0-9_*]+\.`
 const exprFunc = "[a-zA-Z0-9_*]+"
-const exprArgs = `[a-zA-Z0-9_*,.{}()[\]]+`
-
-const pkgValidChars = `[a-zA-Z0-9_\/]+`
-const objValidChars = `[a-zA-Z0-9_*]+`
-const funcValidChars = `[a-zA-Z0-9_]+`
-const argValidChars = `[a-zA-Z0-9_*.\[\]{}\/]+`
+const exprArgs = `[a-zA-Z0-9_*,.{}()[\]/]+`
 
 var regExp = func() *regexp.Regexp {
 	expr := `^`
@@ -70,7 +65,7 @@ func NormalizeExpression(text string) *regexp.Regexp {
 
 func processPkg(text string) string {
 	out := text[:len(text)-1]
-	out = strings.ReplaceAll(out, `*`, pkgValidChars)
+	out = strings.ReplaceAll(out, `*`, `[a-zA-Z0-9_/]*`)
 	out = strings.ReplaceAll(out, `/`, `\/`)
 
 	return out
@@ -78,13 +73,13 @@ func processPkg(text string) string {
 
 func processObj(text string) string {
 	out := text[:len(text)-1]
-	out = strings.ReplaceAll(out, `*`, objValidChars)
+	out = strings.ReplaceAll(out, `*`, `[a-zA-Z0-9_*]*`)
 
 	return out
 }
 
 func processFunc(text string) string {
-	out := strings.ReplaceAll(text, `*`, funcValidChars)
+	out := strings.ReplaceAll(text, `*`, `[a-zA-Z0-9_]*`)
 
 	return out
 }
@@ -171,7 +166,7 @@ func replaceSpecialExprInArg(text string) (bool, string) {
 	}
 
 	if text == `*` {
-		return true, argValidChars
+		return true, `([a-zA-Z0-9_*.\[\]{}()\/]+|func\(.*\)\(.*\)|func\(.*\))`
 	}
 
 	if len(text) > 1 && text[0] == '*' {

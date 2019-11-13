@@ -16,16 +16,16 @@ package rules
 
 import "github.com/securego/gosec"
 
-// RuleDefinition contains the description of a rule and a mechanism to
+// RuleAdvice contains the description of a rule and a mechanism to
 // create it.
-type RuleDefinition struct {
+type RuleAdvice struct {
 	ID          string
 	Description string
 	Create      gosec.RuleBuilder
 }
 
 // RuleList is a mapping of rule ID's to rule definitions
-type RuleList map[string]RuleDefinition
+type RuleList map[string]RuleAdvice
 
 // Builders returns all the create methods for a given rule list
 func (rl RuleList) Builders() map[string]gosec.RuleBuilder {
@@ -57,7 +57,7 @@ func NewRuleFilter(action bool, ruleIDs ...string) RuleFilter {
 
 // Generate the list of rules to use
 func Generate(filters ...RuleFilter) RuleList {
-	rules := []RuleDefinition{
+	rules := []RuleAdvice{
 		// misc
 		{"G101", "Look for hardcoded credentials", NewHardcodedCredentials},
 		{"G102", "Bind to all interfaces", NewBindsToAllNetworkInterfaces},
@@ -94,7 +94,7 @@ func Generate(filters ...RuleFilter) RuleList {
 		{"G505", "Import blacklist: crypto/sha1", NewBlacklistedImportSHA1},
 	}
 
-	ruleMap := make(map[string]RuleDefinition)
+	ruleMap := make(map[string]RuleAdvice)
 
 RULES:
 	for _, rule := range rules {

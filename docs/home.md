@@ -62,7 +62,7 @@ package main
 
 import (
    "github.com/wesovilabs/goa/api"
-   "github.com/wesovilabs/goa/aspects"
+   "github.com/wesovilabs/goa/advices"
 )
 
 func Goa()*api.Goa{

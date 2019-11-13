@@ -6,9 +6,9 @@ import (
 	"github.com/wesovilabs/goa/parser/testdata/b"
 )
 
-func main(){
-	person:=&a.Person{}
-	address:=&b.Address{}
+func main() {
+	person := &a.Person{}
+	address := &b.Address{}
 	fmt.Println(address)
 	fmt.Println(person)
 }

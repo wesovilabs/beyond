@@ -2,7 +2,6 @@ package code
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/testdata/generated"
 )
 
 func SayHello(firstName string, bornYear int) string {
@@ -13,14 +12,14 @@ func SayHello(firstName string, bornYear int) string {
 }
 
 func MainFunction() {
-	firstName:="John"
-	output:=SayHello(firstName, 1999)
+	firstName := "John"
+	output := SayHello(firstName, 1999)
 	fmt.Println(output)
 
 }
 
 func MainFunctionModified() {
-	firstName:="John"
-	output:=generated.ABCD123456(firstName, 1999)
+	firstName := "John"
+	output := generated.ABCD123456(firstName, 1999)
 	fmt.Println(output)
 }

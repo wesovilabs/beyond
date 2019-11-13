@@ -18,54 +18,51 @@ func CreatePerson(firstName string, age int) (error, *Person) {
 }
 
 type SampleAspect struct {
+}
+
+func (a *SampleAspect) Before(ctx *context.GoaContext) {
 
 }
 
-func (a *SampleAspect) Before(ctx *context.GoaContext){
+func (a *SampleAspect) Returning(ctx *context.GoaContext) {
 
 }
 
-func (a *SampleAspect) Returning(ctx *context.GoaContext){
-
-}
-
-func NewSampleAspect() api.Around{
+func NewSampleAspect() api.Around {
 	return &SampleAspect{
 
 	}
 }
 
 type SampleBefore struct {
+}
+
+func (a *SampleBefore) Before(ctx *context.GoaContext) {
 
 }
 
-func (a *SampleBefore) Before(ctx *context.GoaContext){
-
-}
-
-func NewSampleBefore() api.Before{
+func NewSampleBefore() api.Before {
 	return &SampleBefore{
 
 	}
 }
 
 type SampleReturning struct {
+}
+
+func (a *SampleReturning) Returning(ctx *context.GoaContext) {
 
 }
 
-func (a *SampleReturning) Returning(ctx *context.GoaContext){
-
-}
-
-func NewSampleReturning() api.Returning{
+func NewSampleReturning() api.Returning {
 	return &SampleReturning{
 
 	}
 }
 
-func Goa()*api.Goa {
+func Goa() *api.Goa {
 	return api.New().
-		WithAround("*.*(...)(error,...)",NewSampleAspect).
-		WithBefore("*.*(...)...",NewSampleBefore).
-		WithReturning("*.*(...)...",NewSampleReturning)
+		WithAround("*.*(...)(error,...)", NewSampleAspect).
+		WithBefore("*.*(...)...", NewSampleBefore).
+		WithReturning("*.*(...)...", NewSampleReturning)
 }

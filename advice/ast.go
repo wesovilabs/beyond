@@ -1,8 +1,8 @@
-package aspect
+package advice
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/aspect/internal"
+	"github.com/wesovilabs/goa/advice/internal"
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/parser"
 	"go/ast"
@@ -11,34 +11,34 @@ import (
 )
 
 const (
-	around definitionKind = iota
+	around adviceType = iota
 	before
 	returning
 	pkgSeparator = "/"
 	apiPath      = "github.com/wesovilabs/goa/api"
 )
 
-// GetDefinitions return the list of definitions (aspects)
-func GetDefinitions(rootPkg string, packages map[string]*parser.Package) *Definitions {
-	defs := &Definitions{
-		items: make([]*Definition, 0),
+// GetAdvices return the list of definitions (aspects)
+func GetAdvices(rootPkg string, packages map[string]*parser.Package) *Advices {
+	defs := &Advices{
+		items: make([]*Advice, 0),
 	}
 
 	for _, pkg := range packages {
 		for _, file := range pkg.Node().Files {
-			searchDefinitions(rootPkg, file, defs)
+			searchAdvices(rootPkg, file, defs)
 		}
 	}
 
 	return defs
 }
 
-func searchDefinitions(rootPkg string, node *ast.File, definitions *Definitions) {
-	if funcDecl := containsDefinitions(node); funcDecl != nil {
+func searchAdvices(rootPkg string, node *ast.File, definitions *Advices) {
+	if funcDecl := containsAdvices(node); funcDecl != nil {
 		for _, stmt := range funcDecl.Body.List {
 			if expr, ok := stmt.(*ast.ReturnStmt); ok {
 				if callExpr, ok := expr.Results[0].(*ast.CallExpr); ok {
-					addDefinition(rootPkg, callExpr, definitions, node.Imports)
+					addAdvice(rootPkg, callExpr, definitions, node.Imports)
 				}
 
 				return
@@ -47,7 +47,7 @@ func searchDefinitions(rootPkg string, node *ast.File, definitions *Definitions)
 	}
 }
 
-func containsDefinitions(file *ast.File) *ast.FuncDecl {
+func containsAdvices(file *ast.File) *ast.FuncDecl {
 	for _, importSpec := range file.Imports {
 		value := importSpec.Path.Value[1 : len(importSpec.Path.Value)-1]
 		if apiPath == value {
@@ -64,7 +64,7 @@ func containsDefinitions(file *ast.File) *ast.FuncDecl {
 	return nil
 }
 
-var aspectTypes = map[string]definitionKind{
+var aspectTypes = map[string]adviceType{
 	"WithBefore":    before,
 	"WithReturning": returning,
 	"WithAround":    around,
@@ -81,7 +81,7 @@ func selectorToString(sel *ast.SelectorExpr) string {
 	}
 }
 
-func addDefinitionCallExpr(arg *ast.CallExpr, definition *Definition, importSpecs []*ast.ImportSpec) {
+func addAdviceCallExpr(arg *ast.CallExpr, definition *Advice, importSpecs []*ast.ImportSpec) {
 	args := make([]string, 0)
 
 	for _, arg := range arg.Args {
@@ -111,7 +111,7 @@ func addDefinitionCallExpr(arg *ast.CallExpr, definition *Definition, importSpec
 	definition.name = fmt.Sprintf("%s(%s)", funcName, strings.Join(args, ","))
 }
 
-func takeAdvice(expr ast.Expr, definition *Definition, importSpecs []*ast.ImportSpec) {
+func takeAdvice(expr ast.Expr, definition *Advice, importSpecs []*ast.ImportSpec) {
 	switch arg := expr.(type) {
 	case *ast.Ident:
 		definition.name = arg.Name
@@ -124,17 +124,17 @@ func takeAdvice(expr ast.Expr, definition *Definition, importSpecs []*ast.Import
 		fmt.Printf("%#v", arg)
 		definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
 	case *ast.CallExpr:
-		addDefinitionCallExpr(arg, definition, importSpecs)
+		addAdviceCallExpr(arg, definition, importSpecs)
 	default:
 		fmt.Println(reflect.TypeOf(arg))
 	}
 }
 
-func addDefinition(rootPkg string, expr *ast.CallExpr, definitions *Definitions,
+func addAdvice(rootPkg string, expr *ast.CallExpr, definitions *Advices,
 	importSpecs []*ast.ImportSpec) {
 	if selExpr, ok := expr.Fun.(*ast.SelectorExpr); ok {
 		if kind, ok := aspectTypes[selExpr.Sel.Name]; ok {
-			definition := &Definition{
+			definition := &Advice{
 				kind: kind,
 				pkg:  rootPkg,
 			}
@@ -153,7 +153,7 @@ func addDefinition(rootPkg string, expr *ast.CallExpr, definitions *Definitions,
 		}
 
 		if callExpr, ok := selExpr.X.(*ast.CallExpr); ok {
-			addDefinition(rootPkg, callExpr, definitions, importSpecs)
+			addAdvice(rootPkg, callExpr, definitions, importSpecs)
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/wesovilabs/goa/aspect"
+	"github.com/wesovilabs/goa/advice"
 	"github.com/wesovilabs/goa/function"
 	"github.com/wesovilabs/goa/internal/writer"
 	"github.com/wesovilabs/goa/logger"
@@ -14,7 +14,7 @@ import (
 
 type goa struct {
 	functions   *function.Functions
-	definitions *aspect.Definitions
+	definitions *advice.Advices
 }
 
 func (g *goa) cleanInvalidFunctions() {
@@ -41,7 +41,7 @@ func (g *goa) cleanInvalidFunctions() {
 // Run main function in charge of orchestrating code generation
 func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) {
 	goa := &goa{}
-	goa.definitions = aspect.GetDefinitions(rootPkg, packages)
+	goa.definitions = advice.GetAdvices(rootPkg, packages)
 	goa.functions = function.GetFunctions(packages)
 	goa.cleanInvalidFunctions()
 
@@ -58,11 +58,11 @@ func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) 
 	for _, match := range matches {
 		logger.Infof("[ match  ] %s", match.Function.Name())
 
-		for _, d := range match.Definitions {
+		for _, d := range match.Advices {
 			logger.Infof("   - %s", d.Name())
 		}
 
-		wrapper.Wrap(match.Function, match.Definitions)
+		wrapper.Wrap(match.Function, match.Advices)
 	}
 
 	goa.save(packages, outputDir)

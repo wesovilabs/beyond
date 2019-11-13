@@ -498,7 +498,7 @@ func (f *Function) lookup(obj types.Object, escaping bool) Value {
 		return v // function-local var (address)
 	}
 
-	// Definition must be in an enclosing function;
+	// Advice must be in an enclosing function;
 	// plumb it through intervening closures.
 	if f.parent == nil {
 		panic("no ssa.Value for " + obj.String())

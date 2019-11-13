@@ -1,57 +1,57 @@
-package aspect
+package advice
 
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/aspect/internal"
+	"github.com/wesovilabs/goa/advice/internal"
 	goaParser "github.com/wesovilabs/goa/parser"
 	"testing"
 )
 
 const testdataPath = "testdata"
-const rootPkg = "github.com/wesovilabs/goa/aspect/testdata/a"
+const rootPkg = "github.com/wesovilabs/goa/advice/testdata/a"
 
-func TestGetDefinitions(t *testing.T) {
+func TestGetAdvices(t *testing.T) {
 	cases := []struct {
 		directory   string
-		definitions *Definitions
+		definitions *Advices
 	}{
 		{
 			directory: "a",
-			definitions: &Definitions{
-				items: []*Definition{
+			definitions: &Advices{
+				items: []*Advice{
 					{
-						pkg:    "github.com/wesovilabs/goa/aspect/testdata/a/a2",
+						pkg:    "github.com/wesovilabs/goa/advice/testdata/a/a2",
 						name:   "AroundA2",
 						kind:   around,
 						regExp: internal.NormalizeExpression("*.*(*)..."),
 					},
 
 					{
-						pkg:    "github.com/wesovilabs/goa/aspect/testdata/a/a1/a11",
+						pkg:    "github.com/wesovilabs/goa/advice/testdata/a/a1/a11",
 						name:   "AroundA11",
 						kind:   around,
 						regExp: internal.NormalizeExpression("*.*(*)..."),
 					},
 					{
-						pkg:    "github.com/wesovilabs/goa/aspect/testdata/a",
+						pkg:    "github.com/wesovilabs/goa/advice/testdata/a",
 						name:   "NewTracingReturning",
 						kind:   returning,
 						regExp: internal.NormalizeExpression("*.*(*)..."),
 					},
 					{
-						pkg:    "github.com/wesovilabs/goa/aspect/testdata/a",
+						pkg:    "github.com/wesovilabs/goa/advice/testdata/a",
 						name:   "NewTracingBefore",
 						kind:   before,
 						regExp: internal.NormalizeExpression("*.*(*)..."),
 					},
 					{
-						pkg:    "github.com/wesovilabs/goa/aspect/testdata/a",
+						pkg:    "github.com/wesovilabs/goa/advice/testdata/a",
 						name:   "Around",
 						kind:   around,
 						regExp: internal.NormalizeExpression("*.*(*)..."),
 					}, {
-						pkg:    "github.com/wesovilabs/goa/aspect/testdata/a/a1",
+						pkg:    "github.com/wesovilabs/goa/advice/testdata/a/a1",
 						name:   "AroundA1",
 						kind:   around,
 						regExp: internal.NormalizeExpression("*.*(*)..."),
@@ -63,10 +63,10 @@ func TestGetDefinitions(t *testing.T) {
 	assert := assert.New(t)
 	for _, c := range cases {
 		packages := goaParser.
-			New(fmt.Sprintf("%s/%s", testdataPath, c.directory), fmt.Sprintf("github.com/wesovilabs/goa/aspect/testdata/%s", c.directory)).
+			New(fmt.Sprintf("%s/%s", testdataPath, c.directory), fmt.Sprintf("github.com/wesovilabs/goa/advice/testdata/%s", c.directory)).
 			Parse("")
 		assert.NotNil(packages)
-		defs := GetDefinitions(rootPkg, packages)
+		defs := GetAdvices(rootPkg, packages)
 		assert.Len(c.definitions.items, len(defs.items))
 		for index, definition := range c.definitions.List() {
 			assert.Equal(definition.pkg, defs.items[index].Pkg())

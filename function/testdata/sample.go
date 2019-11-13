@@ -27,4 +27,4 @@ func singleParamFuncEmpty(func())                                          {}
 func singleParamFuncArg(func(*_package.Person))                            {}
 func singleParamFuncArgStringPersonPointer(func(string, *_package.Person)) {}
 func singleParamFuncArgStringInt(func(string, int))                        {}
-func singleReturnFuncReturnStringInt()func(string, int)                    {}
+func singleReturnFuncReturnStringInt() func(string, int)                   {}

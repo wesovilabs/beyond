@@ -3,9 +3,9 @@ package a
 import (
 	"github.com/wesovilabs/goa/api"
 	"github.com/wesovilabs/goa/api/context"
-	"github.com/wesovilabs/goa/aspect/testdata/a/a1"
-	"github.com/wesovilabs/goa/aspect/testdata/a/a1/a11"
-	b2 "github.com/wesovilabs/goa/aspect/testdata/a/a2"
+	"github.com/wesovilabs/goa/advice/testdata/a/a1"
+	"github.com/wesovilabs/goa/advice/testdata/a/a1/a11"
+	b2 "github.com/wesovilabs/goa/advice/testdata/a/a2"
 )
 
 type Tracing struct {

@@ -2,14 +2,14 @@ package wrapper
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/aspect"
+	"github.com/wesovilabs/goa/advice"
 	"github.com/wesovilabs/goa/function"
 	"github.com/wesovilabs/goa/wrapper/internal"
 	"go/ast"
 	"strings"
 )
 
-func hasAnyReturning(definitions map[string]*aspect.Definition) bool {
+func hasAnyReturning(definitions map[string]*advice.Advice) bool {
 	for _, d := range definitions {
 		if d.HasReturning() {
 			return true
@@ -19,7 +19,7 @@ func hasAnyReturning(definitions map[string]*aspect.Definition) bool {
 	return false
 }
 
-func wrapBeforeStatements(definitions map[string]*aspect.Definition, params []*internal.FieldDef) []ast.Stmt {
+func wrapBeforeStatements(definitions map[string]*advice.Advice, params []*internal.FieldDef) []ast.Stmt {
 	argsVariable := "functionParams"
 	stmts := make([]ast.Stmt, 0)
 	// set values to context
@@ -37,7 +37,7 @@ func wrapBeforeStatements(definitions map[string]*aspect.Definition, params []*i
 
 	return stmts
 }
-func wrapReturningStatements(definitions map[string]*aspect.Definition, results []*internal.FieldDef) []ast.Stmt {
+func wrapReturningStatements(definitions map[string]*advice.Advice, results []*internal.FieldDef) []ast.Stmt {
 	argsVariable := "functionResults"
 	stmts := make([]ast.Stmt, 0)
 
@@ -60,7 +60,7 @@ func wrapReturningStatements(definitions map[string]*aspect.Definition, results 
 	return stmts
 }
 
-func wrapperFuncDecl(function *function.Function, definitions map[string]*aspect.Definition) *ast.FuncDecl {
+func wrapperFuncDecl(function *function.Function, definitions map[string]*advice.Advice) *ast.FuncDecl {
 	imports := internal.GetImports(function.Parent())
 	ensureImports(imports, requiredImports, function)
 	recv := function.GetRecv()
