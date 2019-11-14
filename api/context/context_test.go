@@ -45,14 +45,13 @@ func Test_Context(t *testing.T) {
 	assert.Empty(goaCtx.Results().items)
 }
 
-type Data struct{
-
+type Data struct {
 }
 
 func TestContext_ParamsGet(t *testing.T) {
 	ctx := context.Background()
 	goaCtx := NewContext(ctx)
-	d:=Data{}
+	d := Data{}
 	goaCtx.WithPkg("parent/child").
 		WithName("function").
 		WithType(d).
@@ -73,7 +72,7 @@ func TestContext_ParamsGet(t *testing.T) {
 	assert.Equal(1200.23, goaCtx.Results().At(0).value)
 	assert.Nil(nil, goaCtx.Results().At(10))
 
-	assert.Equal(d,goaCtx.Type())
+	assert.Equal(d, goaCtx.Type())
 
 	goaCtx.Params().Set("name", "tom")
 	assert.Equal("tom", goaCtx.Params().Get("name").value)

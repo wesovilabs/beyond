@@ -2,8 +2,8 @@ package internal
 
 import (
 	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/internal/writer"
+	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/matcher"
 	"github.com/wesovilabs/goa/parser"

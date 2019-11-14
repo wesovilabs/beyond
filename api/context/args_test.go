@@ -63,7 +63,7 @@ func TestArgsLen(t *testing.T) {
 	assert.Equal(0, args.Count())
 }
 
-func TestFind(t *testing.T){
+func TestFind(t *testing.T) {
 	assert := assert.New(t)
 	arg1 := NewArg("name", "John")
 	arg2 := NewArg("male", true)
@@ -71,26 +71,26 @@ func TestFind(t *testing.T){
 	args := &Args{
 		items: []*Arg{arg1, arg2, arg3},
 	}
-	index,arg:=args.Find(func(index int,arg *Arg)bool{
-		if arg.Name()=="male"{
+	index, arg := args.Find(func(index int, arg *Arg) bool {
+		if arg.Name() == "male" {
 			return true
 		}
 		return false
 	})
-	assert.Equal(1,index)
+	assert.Equal(1, index)
 	assert.NotNil(arg)
-	index,arg=args.Find(func(index int,arg *Arg)bool{
-		if arg.Name()=="unknown"{
+	index, arg = args.Find(func(index int, arg *Arg) bool {
+		if arg.Name() == "unknown" {
 			return true
 		}
 		return false
 	})
-	assert.Equal(-1,index)
+	assert.Equal(-1, index)
 	assert.Nil(arg)
 
 }
 
-func TestForEach(t *testing.T){
+func TestForEach(t *testing.T) {
 	assert := assert.New(t)
 	arg1 := NewArg("name", "John")
 	arg2 := NewArg("male", true)
@@ -98,9 +98,9 @@ func TestForEach(t *testing.T){
 	args := &Args{
 		items: []*Arg{arg1, arg2, arg3},
 	}
-	counter:=0
-	args.ForEach(func(index int,arg *Arg){
+	counter := 0
+	args.ForEach(func(index int, arg *Arg) {
 		counter++
 	})
-	assert.Equal(3,counter)
+	assert.Equal(3, counter)
 }
