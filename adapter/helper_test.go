@@ -1,4 +1,4 @@
-package wrapper
+package adapter
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-const project = "github.com/wesovilabs/goa/wrapper/testdata"
+const project = "github.com/wesovilabs/goa/adapter/testdata"
 
 func Test_ensureImports(t *testing.T) {
 	assert := assert.New(t)
