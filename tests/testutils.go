@@ -1,4 +1,4 @@
-package test
+package tests
 
 import "github.com/wesovilabs/goa/parser"
 

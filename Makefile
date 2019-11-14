@@ -22,11 +22,11 @@ deps: ; @ ## Download dependencies
 	${GO} mod vendor
 	${GO} mod download
 
-tests: ; @ ## Run tests
+test: ; @ ## Run tests
 	${GO} test  -v ./...
 
 test-coverage: ; @ ## Run tests with coverage
-	${GO} test -race -coverprofile=coverage.txt -covermode=atomic ./...
+	${GO} test -json -covermode=atomic -coverpkg=./... -coverprofile=coverage.txt ./...
 
 fmt: ; @ ## Format code
 	${GO} fmt ./...

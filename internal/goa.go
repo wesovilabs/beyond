@@ -2,28 +2,28 @@ package internal
 
 import (
 	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/internal/writer"
 	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/matcher"
 	"github.com/wesovilabs/goa/parser"
 	"github.com/wesovilabs/goa/wrapper"
+	"github.com/wesovilabs/goa/writer"
 	"os"
 	"path/filepath"
 )
 
 type goa struct {
-	functions   *joinpoint.JoinPoints
-	definitions *advice.Advices
+	joinPoints *joinpoint.JoinPoints
+	advices    *advice.Advices
 }
 
-func (g *goa) cleanInvalidFunctions() {
+func (g *goa) removeNonInterceptedJoinPoints() {
 	output := &joinpoint.JoinPoints{}
 
-	for _, f := range g.functions.List() {
+	for _, f := range g.joinPoints.List() {
 		valid := true
 
-		for _, d := range g.definitions.List() {
+		for _, d := range g.advices.List() {
 			if (d.Name() == f.Name() && d.Pkg() == f.Pkg()) || f.Name() == "main" || f.Name() == "Goa" {
 				valid = false
 				continue
@@ -35,25 +35,25 @@ func (g *goa) cleanInvalidFunctions() {
 		}
 	}
 
-	g.functions = output
+	g.joinPoints = output
 }
 
 // Run main function in charge of orchestrating code generation
 func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) {
 	goa := &goa{}
-	goa.definitions = advice.GetAdvices(rootPkg, packages)
-	goa.functions = joinpoint.GetJoinPoints(rootPkg, packages)
-	goa.cleanInvalidFunctions()
+	goa.advices = advice.GetAdvices(rootPkg, packages)
+	goa.joinPoints = joinpoint.GetJoinPoints(rootPkg, packages)
+	goa.removeNonInterceptedJoinPoints()
 
-	for _, f := range goa.functions.List() {
+	for _, f := range goa.joinPoints.List() {
 		logger.Infof(`[function] %s.%s => %s`, f.Pkg(), f.Name(), f.Path())
 	}
 
-	for _, a := range goa.definitions.List() {
+	for _, a := range goa.advices.List() {
 		logger.Infof(`[ advice ] %s.%s`, a.Pkg(), a.Name())
 	}
 
-	matches := matcher.FindMatches(goa.functions, goa.definitions)
+	matches := matcher.FindMatches(goa.joinPoints, goa.advices)
 
 	for _, match := range matches {
 		logger.Infof("[ match  ] %s", match.Function.Name())
