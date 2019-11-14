@@ -1,4 +1,4 @@
-package matcher
+package match
 
 import (
 	"fmt"
@@ -16,13 +16,13 @@ type Match struct {
 }
 
 // FindMatches return the list of existing matches
-func FindMatches(functions *joinpoint.JoinPoints, definitions *advice.Advices) Matches {
+func FindMatches(joinPoints *joinpoint.JoinPoints, advices *advice.Advices) Matches {
 	matches := Matches{}
 
-	for _, f := range functions.List() {
+	for _, f := range joinPoints.List() {
 		aspects := make(map[string]*advice.Advice)
 
-		for index, d := range definitions.List() {
+		for index, d := range advices.List() {
 			if d.Match(f.Path()) {
 				aspects[fmt.Sprintf("aspect%v", index)] = d
 			}

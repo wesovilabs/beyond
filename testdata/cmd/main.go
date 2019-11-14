@@ -1,4 +1,4 @@
-//go:generate go run github.com/wesovilabs/goa --goPath ../ --project github.com/wesovilabs/goa/examples --verbose
+//go:generate go run github.com/wesovilabs/goa --goPath ../ --project github.com/wesovilabs/goa/testdata --verbose
 package main
 
 import (
@@ -6,9 +6,9 @@ import (
 	"github.com/wesovilabs/goa/api"
 	"github.com/wesovilabs/goa/api/advice"
 	"github.com/wesovilabs/goa/api/context"
-	testAdvice "github.com/wesovilabs/goa/examples/advice"
-	"github.com/wesovilabs/goa/examples/model"
-	"github.com/wesovilabs/goa/examples/storage"
+	testAdvice "github.com/wesovilabs/goa/testdata/advice"
+	"github.com/wesovilabs/goa/testdata/model"
+	"github.com/wesovilabs/goa/testdata/storage"
 )
 
 func main() {

@@ -23,8 +23,8 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				path:     "storage.SetUpDatabase()",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/examples/model":          "",
-					"github.com/wesovilabs/goa/examples/storage/helper": "",
+					"github.com/wesovilabs/goa/testdata/model":          "",
+					"github.com/wesovilabs/goa/testdata/storage/helper": "",
 				},
 				paramsLen:  0,
 				resultsLen: 0,
@@ -32,41 +32,41 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 
 			"InsertPerson": {
 				fileName: "storage",
-				path:     "storage.InsertPerson(*github.com/wesovilabs/goa/examples/model.Person,*github.com/wesovilabs/goa/examples/storage/helper.Test)error",
+				path:     "storage.InsertPerson(*github.com/wesovilabs/goa/testdata/model.Person,*github.com/wesovilabs/goa/testdata/storage/helper.Test)error",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/examples/model":          "",
-					"github.com/wesovilabs/goa/examples/storage/helper": "",
+					"github.com/wesovilabs/goa/testdata/model":          "",
+					"github.com/wesovilabs/goa/testdata/storage/helper": "",
 				},
 				paramsLen:  2,
 				resultsLen: 1,
 			},
 			"FindPerson": {
-				path: "storage.FindPerson(string)(*github.com/wesovilabs/goa/examples/model.Person,error)",
+				path: "storage.FindPerson(string)(*github.com/wesovilabs/goa/testdata/model.Person,error)",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/examples/model":          "",
-					"github.com/wesovilabs/goa/examples/storage/helper": "",
+					"github.com/wesovilabs/goa/testdata/model":          "",
+					"github.com/wesovilabs/goa/testdata/storage/helper": "",
 				},
 				paramsLen:  1,
 				resultsLen: 2,
 			},
 			"DeletePerson": {
-				path: "storage.DeletePerson(string)([]*github.com/wesovilabs/goa/examples/model.Person,error)",
+				path: "storage.DeletePerson(string)([]*github.com/wesovilabs/goa/testdata/model.Person,error)",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/examples/model":          "",
-					"github.com/wesovilabs/goa/examples/storage/helper": "",
+					"github.com/wesovilabs/goa/testdata/model":          "",
+					"github.com/wesovilabs/goa/testdata/storage/helper": "",
 				},
 				paramsLen:  1,
 				resultsLen: 2,
 			},
 			"ListPeople": {
-				path: "storage.ListPeople()([]*github.com/wesovilabs/goa/examples/model.Person,error)",
+				path: "storage.ListPeople()([]*github.com/wesovilabs/goa/testdata/model.Person,error)",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/examples/model":          "",
-					"github.com/wesovilabs/goa/examples/storage/helper": "",
+					"github.com/wesovilabs/goa/testdata/model":          "",
+					"github.com/wesovilabs/goa/testdata/storage/helper": "",
 				},
 				paramsLen:  0,
 				resultsLen: 2,
@@ -109,9 +109,9 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 					"github.com/wesovilabs/goa/api":              "",
 					"github.com/wesovilabs/goa/api/advice":       "",
 					"github.com/wesovilabs/goa/api/context":      "",
-					"github.com/wesovilabs/goa/examples/advice":  "testAdvice",
-					"github.com/wesovilabs/goa/examples/model":   "",
-					"github.com/wesovilabs/goa/examples/storage": "",
+					"github.com/wesovilabs/goa/testdata/advice":  "testAdvice",
+					"github.com/wesovilabs/goa/testdata/model":   "",
+					"github.com/wesovilabs/goa/testdata/storage": "",
 				},
 				paramsLen:  0,
 				resultsLen: 0,
@@ -123,9 +123,9 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 					"github.com/wesovilabs/goa/api":              "",
 					"github.com/wesovilabs/goa/api/advice":       "",
 					"github.com/wesovilabs/goa/api/context":      "",
-					"github.com/wesovilabs/goa/examples/advice":  "testAdvice",
-					"github.com/wesovilabs/goa/examples/model":   "",
-					"github.com/wesovilabs/goa/examples/storage": "",
+					"github.com/wesovilabs/goa/testdata/advice":  "testAdvice",
+					"github.com/wesovilabs/goa/testdata/model":   "",
+					"github.com/wesovilabs/goa/testdata/storage": "",
 				},
 				paramsLen:  0,
 				resultsLen: 1,
@@ -135,7 +135,7 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 	"advice": {
 		"": {
 			"NewComplexAround": {
-				path: "advice.NewComplexAround(string,github.com/wesovilabs/goa/examples/advice.Attribute,interface{})func()github.com/wesovilabs/goa/api.Around",
+				path: "advice.NewComplexAround(string,github.com/wesovilabs/goa/testdata/advice.Attribute,interface{})func()github.com/wesovilabs/goa/api.Around",
 				imports: map[string]string{
 					"github.com/wesovilabs/goa/api":         "",
 					"github.com/wesovilabs/goa/api/context": "",
@@ -144,7 +144,7 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				resultsLen: 1,
 			},
 			"NewComplexBefore": {
-				path: "advice.NewComplexBefore(*github.com/wesovilabs/goa/examples/advice.Attribute)func()github.com/wesovilabs/goa/api.Before",
+				path: "advice.NewComplexBefore(*github.com/wesovilabs/goa/testdata/advice.Attribute)func()github.com/wesovilabs/goa/api.Before",
 				imports: map[string]string{
 					"github.com/wesovilabs/goa/api":         "",
 					"github.com/wesovilabs/goa/api/context": "",
@@ -160,16 +160,16 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				path: "model.*Person.FullName()string",
 				imports: map[string]string{
 					"fmt": "",
-					"github.com/wesovilabs/goa/examples/advice": "",
+					"github.com/wesovilabs/goa/testdata/advice": "",
 				},
 				paramsLen:  0,
 				resultsLen: 1,
 			},
 			"Apply": {
-				path: "model.*Person.Apply([]github.com/wesovilabs/goa/examples/advice.Attribute)func(string,int)",
+				path: "model.*Person.Apply([]github.com/wesovilabs/goa/testdata/advice.Attribute)func(string,int)",
 				imports: map[string]string{
 					"fmt": "",
-					"github.com/wesovilabs/goa/examples/advice": "",
+					"github.com/wesovilabs/goa/testdata/advice": "",
 				},
 				paramsLen:  1,
 				resultsLen: 1,

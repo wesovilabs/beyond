@@ -4,7 +4,7 @@ import (
 	"github.com/wesovilabs/goa/advice"
 	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/logger"
-	"github.com/wesovilabs/goa/matcher"
+	"github.com/wesovilabs/goa/match"
 	"github.com/wesovilabs/goa/parser"
 	"github.com/wesovilabs/goa/wrapper"
 	"github.com/wesovilabs/goa/writer"
@@ -53,7 +53,7 @@ func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) 
 		logger.Infof(`[ advice ] %s.%s`, a.Pkg(), a.Name())
 	}
 
-	matches := matcher.FindMatches(goa.joinPoints, goa.advices)
+	matches := match.FindMatches(goa.joinPoints, goa.advices)
 
 	for _, match := range matches {
 		logger.Infof("[ match  ] %s", match.Function.Name())

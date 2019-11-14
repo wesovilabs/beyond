@@ -9,38 +9,38 @@ import (
 
 var expectedImports = map[string]map[string]map[string]string{
 	"cmd": {
-		"../examples/cmd/main.go": {
+		"../testdata/cmd/main.go": {
 			"github.com/wesovilabs/goa/api/context":      "context",
-			"github.com/wesovilabs/goa/examples/advice":  "testAdvice",
-			"github.com/wesovilabs/goa/examples/model":   "model",
-			"github.com/wesovilabs/goa/examples/storage": "storage",
+			"github.com/wesovilabs/goa/testdata/advice":  "testAdvice",
+			"github.com/wesovilabs/goa/testdata/model":   "model",
+			"github.com/wesovilabs/goa/testdata/storage": "storage",
 			"fmt":                                  "fmt",
 			"github.com/wesovilabs/goa/api":        "api",
 			"github.com/wesovilabs/goa/api/advice": "advice",
 		},
 	},
 	"advice": {
-		"../examples/advice/custom.go": {
+		"../testdata/advice/custom.go": {
 			"github.com/wesovilabs/goa/api":         "api",
 			"github.com/wesovilabs/goa/api/context": "context",
 		},
 	},
 	"model": {
-		"../examples/model/person.go": {
+		"../testdata/model/person.go": {
 			"fmt": "fmt",
-			"github.com/wesovilabs/goa/examples/advice": "advice",
+			"github.com/wesovilabs/goa/testdata/advice": "advice",
 		},
 	},
 	"storage": {
-		"../examples/storage/db.go": {
+		"../testdata/storage/db.go": {
 			"fmt": "fmt",
-			"github.com/wesovilabs/goa/examples/storage/helper": "helper",
+			"github.com/wesovilabs/goa/testdata/storage/helper": "helper",
 			"errors": "errors",
-			"github.com/wesovilabs/goa/examples/model": "model",
+			"github.com/wesovilabs/goa/testdata/model": "model",
 		},
 	},
 	"storage/helper": {
-		"../examples/storage/helper/uid.go": {
+		"../testdata/storage/helper/uid.go": {
 			"math/rand": "rand",
 			"time":      "time",
 		},
