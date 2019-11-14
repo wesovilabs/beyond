@@ -63,11 +63,13 @@ func exprPathStarExpr(rootPkg string, pkg string, val *ast.StarExpr, imports map
 	default:
 		logger.Infof("*%s", reflect.TypeOf(t2))
 	}
+
 	return ""
 }
 
 // nolint: gocyclo
-func pathForSingleFieldList(rootPkg string, pkg string, field *ast.Field, imports map[string]string, forceParen bool) string {
+func pathForSingleFieldList(rootPkg string, pkg string, field *ast.Field, imports map[string]string,
+	forceParen bool) string {
 	switch fieldType := field.Type.(type) {
 	case *ast.Ident:
 		isObj := fieldType.Obj != nil
@@ -78,7 +80,6 @@ func pathForSingleFieldList(rootPkg string, pkg string, field *ast.Field, import
 		}
 
 		return fmt.Sprintf("%s/%s.%s", rootPkg, pkg, v)
-
 	case *ast.StarExpr:
 		return fmt.Sprintf("*%s", exprPath(rootPkg, pkg, fieldType.X, imports))
 	case *ast.SelectorExpr:
@@ -90,7 +91,8 @@ func pathForSingleFieldList(rootPkg string, pkg string, field *ast.Field, import
 	case *ast.ArrayType:
 		return fmt.Sprintf("[]%s", exprPath(rootPkg, pkg, fieldType.Elt, imports))
 	case *ast.MapType:
-		return fmt.Sprintf("map[%s]%s", exprPath(rootPkg, pkg, fieldType.Key, imports), exprPath(rootPkg, pkg, fieldType.Value, imports))
+		return fmt.Sprintf("map[%s]%s", exprPath(rootPkg, pkg, fieldType.Key, imports), exprPath(rootPkg,
+			pkg, fieldType.Value, imports))
 	case *ast.FuncType:
 		params := pathForFieldList(rootPkg, pkg, fieldType.Params, imports, true)
 		result := pathForFieldList(rootPkg, pkg, fieldType.Results, imports, forceParen)
@@ -125,7 +127,8 @@ func lenFields(fields []*ast.Field) int {
 	return totalLen
 }
 
-func pathForSomeFieldsList(rootPkg string, pkg string, fields []*ast.Field, imports map[string]string, forceParen bool) string {
+func pathForSomeFieldsList(rootPkg string, pkg string, fields []*ast.Field, imports map[string]string,
+	forceParen bool) string {
 	values := make([]string, lenFields(fields))
 	index := 0
 
@@ -144,7 +147,8 @@ func pathForSomeFieldsList(rootPkg string, pkg string, fields []*ast.Field, impo
 	return strings.Join(values, ",")
 }
 
-func pathForFieldList(rootPkg string, pkg string, fieldList *ast.FieldList, imports map[string]string, forceParen bool) string {
+func pathForFieldList(rootPkg string, pkg string, fieldList *ast.FieldList,
+	imports map[string]string, forceParen bool) string {
 	var value string
 
 	switch {
