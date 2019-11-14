@@ -2,7 +2,7 @@ package internal
 
 import (
 	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/function"
+	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/internal/writer"
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/matcher"
@@ -13,12 +13,12 @@ import (
 )
 
 type goa struct {
-	functions   *function.Functions
+	functions   *joinpoint.JoinPoints
 	definitions *advice.Advices
 }
 
 func (g *goa) cleanInvalidFunctions() {
-	output := &function.Functions{}
+	output := &joinpoint.JoinPoints{}
 
 	for _, f := range g.functions.List() {
 		valid := true
@@ -31,7 +31,7 @@ func (g *goa) cleanInvalidFunctions() {
 		}
 
 		if valid {
-			output.AddFunction(f)
+			output.AddJoinPoint(f)
 		}
 	}
 
@@ -42,7 +42,7 @@ func (g *goa) cleanInvalidFunctions() {
 func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) {
 	goa := &goa{}
 	goa.definitions = advice.GetAdvices(rootPkg, packages)
-	goa.functions = function.GetFunctions(packages)
+	goa.functions = joinpoint.GetFunctions(packages)
 	goa.cleanInvalidFunctions()
 
 	for _, f := range goa.functions.List() {

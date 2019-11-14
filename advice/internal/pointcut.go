@@ -22,8 +22,8 @@ var regExp = func() *regexp.Regexp {
 	return regexp.MustCompile(expr)
 }()
 
-// NormalizeExpression normalizes the provided expressions
-func NormalizeExpression(text string) *regexp.Regexp {
+// NormalizePointcut normalizes the provided expressions
+func NormalizePointcut(text string) *regexp.Regexp {
 	items := regExp.FindStringSubmatch(text)
 	if len(items) != 5 {
 		return nil

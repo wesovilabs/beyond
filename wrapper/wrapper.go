@@ -3,7 +3,7 @@ package wrapper
 import (
 	"fmt"
 	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/function"
+	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/wrapper/internal"
 	"go/ast"
 	"strings"
@@ -60,7 +60,7 @@ func wrapReturningStatements(definitions map[string]*advice.Advice, results []*i
 	return stmts
 }
 
-func wrapperFuncDecl(function *function.Function, definitions map[string]*advice.Advice) *ast.FuncDecl {
+func wrapperFuncDecl(function *joinpoint.JoinPoint, definitions map[string]*advice.Advice) *ast.FuncDecl {
 	imports := internal.GetImports(function.Parent())
 	ensureImports(imports, requiredImports, function)
 	recv := function.GetRecv()

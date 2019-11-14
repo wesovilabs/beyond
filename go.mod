@@ -8,6 +8,7 @@ require (
 	github.com/google/logger v1.0.1
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/olekukonko/tablewriter v0.0.1 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.4.0
 	github.com/tebeka/go2xunit v1.4.10
 )

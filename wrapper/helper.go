@@ -2,13 +2,13 @@ package wrapper
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/function"
+	"github.com/wesovilabs/goa/joinpoint"
 	"go/ast"
 	"go/token"
 	"strings"
 )
 
-func ensureImports(currentImports, requiredImports map[string]string, function *function.Function) {
+func ensureImports(currentImports, requiredImports map[string]string, function *joinpoint.JoinPoint) {
 	specs := make([]ast.Spec, 0)
 
 	for path, name := range requiredImports {
@@ -40,7 +40,7 @@ func findImportName(imports map[string]string, name, path string) string {
 	return findAvailableImportName(imports, name)
 }
 
-func addImportSpec(function *function.Function, name, path string) *ast.ImportSpec {
+func addImportSpec(function *joinpoint.JoinPoint, name, path string) *ast.ImportSpec {
 	spec := &ast.ImportSpec{
 		Name: ast.NewIdent(name),
 		Path: &ast.BasicLit{
@@ -63,14 +63,14 @@ func findAvailableImportName(imports map[string]string, name string) string {
 	return name
 }
 
-func updateImportSpec(function *function.Function, specs []ast.Spec) {
+func updateImportSpec(function *joinpoint.JoinPoint, specs []ast.Spec) {
 	specs = cleanUpImportSpec(function, specs)
 	if len(specs) > 0 {
 		function.AddImportSpecs(specs)
 	}
 }
 
-func cleanUpImportSpec(function *function.Function, specs []ast.Spec) []ast.Spec {
+func cleanUpImportSpec(function *joinpoint.JoinPoint, specs []ast.Spec) []ast.Spec {
 	importSpecs := make([]ast.Spec, 0)
 
 	for _, spec := range specs {

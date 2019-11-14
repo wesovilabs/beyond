@@ -16,7 +16,7 @@ func TestMatch(t *testing.T) {
 		noMatches []string
 	}{
 		{
-			regExp: internal.NormalizeExpression("*.set*(*)..."),
+			regExp: internal.NormalizePointcut("*.set*(*)..."),
 			matches: []string{
 				"a.setPerson(string)int",
 				"a.setElement(int)",
@@ -29,7 +29,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("*.*(*)..."),
+			regExp: internal.NormalizePointcut("*.*(*)..."),
 			matches: []string{
 				"a.b(string)int",
 				"a.b(string)(int,*string)",
@@ -42,7 +42,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model/*.*(*)..."),
+			regExp: internal.NormalizePointcut("model/*.*(*)..."),
 			matches: []string{
 				"model/a.b(string)int",
 				"model/a/b.b(string)(int,*string)",
@@ -52,7 +52,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model*.*(*)..."),
+			regExp: internal.NormalizePointcut("model*.*(*)..."),
 			matches: []string{
 				"model/a.b(string)int",
 				"model/a/b.b(string)(int,*string)",
@@ -63,7 +63,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model*.set*(*)..."),
+			regExp: internal.NormalizePointcut("model*.set*(*)..."),
 			matches: []string{
 				"model/a.setB(string)int",
 				"model/a/b.setElement(string)(int,*string)",
@@ -75,7 +75,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model*.*set*(*)..."),
+			regExp: internal.NormalizePointcut("model*.*set*(*)..."),
 			matches: []string{
 				"model/a.setB(string)int",
 				"model/a/b.setElement(string)(int,*string)",
@@ -88,7 +88,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.set(*)"),
+			regExp: internal.NormalizePointcut("model.set(*)"),
 			matches: []string{
 				"model.set(string)",
 				"model.set(int)",
@@ -102,7 +102,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.set(*)"),
+			regExp: internal.NormalizePointcut("model.set(*)"),
 			matches: []string{
 				"model.set(string)",
 				"model.set(int)",
@@ -116,7 +116,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set(*)"),
+			regExp: internal.NormalizePointcut("model.obj.set(*)"),
 			matches: []string{
 				"model.obj.set(string)",
 			},
@@ -127,7 +127,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.*obj*.set(*)"),
+			regExp: internal.NormalizePointcut("model.*obj*.set(*)"),
 			matches: []string{
 				"model.obj.set(string)",
 				"model.object.set(string)",
@@ -140,7 +140,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj*.set(*)"),
+			regExp: internal.NormalizePointcut("model.obj*.set(*)"),
 			matches: []string{
 				"model.obj.set(string)",
 				"model.object.set(string)",
@@ -151,7 +151,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("*.*(...)..."),
+			regExp: internal.NormalizePointcut("*.*(...)..."),
 			matches: []string{
 				"a.b(string)int",
 				"a.b(string)(int,*string)",
@@ -165,7 +165,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set(*)"),
+			regExp: internal.NormalizePointcut("model.obj.set(*)"),
 			matches: []string{
 				"model.obj.set(string)",
 				"model.obj.set(*int32)",
@@ -180,7 +180,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set(...)"),
+			regExp: internal.NormalizePointcut("model.obj.set(...)"),
 			matches: []string{
 				"model.obj.set()",
 				"model.obj.set(string)",
@@ -195,7 +195,7 @@ func TestMatch(t *testing.T) {
 			noMatches: []string{},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set(string,...)"),
+			regExp: internal.NormalizePointcut("model.obj.set(string,...)"),
 			matches: []string{
 				"model.obj.set(string,*int32)",
 				"model.obj.set(string,func(string,int))",
@@ -211,7 +211,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set(...,github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set(...,github.com/wesovilabs/goa.model.Person)"),
 			matches: []string{
 				"model.obj.set(string,*int32,github.com/wesovilabs/goa.model.Person)",
 				"model.obj.set(string,func(string,int),github.com/wesovilabs/goa.model.Person)",
@@ -226,7 +226,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set(int,...,*github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set(int,...,*github.com/wesovilabs/goa.model.Person)"),
 			matches: []string{
 				"model.obj.set(int,string,*int32,*github.com/wesovilabs/goa.model.Person)",
 				"model.obj.set(int,string,func(string,int),*github.com/wesovilabs/goa.model.Person)",
@@ -242,7 +242,7 @@ func TestMatch(t *testing.T) {
 		},
 
 		{
-			regExp: internal.NormalizeExpression("model.obj.set()..."),
+			regExp: internal.NormalizePointcut("model.obj.set()..."),
 			matches: []string{
 				"model.obj.set()",
 				"model.obj.set()string",
@@ -254,7 +254,7 @@ func TestMatch(t *testing.T) {
 			noMatches: []string{},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set()(string,...)"),
+			regExp: internal.NormalizePointcut("model.obj.set()(string,...)"),
 			matches: []string{
 				"model.obj.set()(string,*int32)",
 				"model.obj.set()(string,func(string,int))",
@@ -270,7 +270,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set()(...,github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set()(...,github.com/wesovilabs/goa.model.Person)"),
 			matches: []string{
 				"model.obj.set()(string,*int32,github.com/wesovilabs/goa.model.Person)",
 				"model.obj.set()(string,func(string,int),github.com/wesovilabs/goa.model.Person)",
@@ -285,7 +285,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set()(int,...,*github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set()(int,...,*github.com/wesovilabs/goa.model.Person)"),
 			matches: []string{
 				"model.obj.set()(int,string,*int32,*github.com/wesovilabs/goa.model.Person)",
 				"model.obj.set()(int,string,func(string,int),*github.com/wesovilabs/goa.model.Person)",
@@ -300,7 +300,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizeExpression("model.obj.set(func()string)(int,...,*github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set(func()string)(int,...,*github.com/wesovilabs/goa.model.Person)"),
 			matches: []string{
 				"model.obj.set(func()string)(int,string,*int32,*github.com/wesovilabs/goa.model.Person)",
 				"model.obj.set(func()string)(int,string,func(string,int),*github.com/wesovilabs/goa.model.Person)",

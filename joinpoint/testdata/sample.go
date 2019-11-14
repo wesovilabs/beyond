@@ -1,6 +1,6 @@
 package testdata
 
-import _package "github.com/wesovilabs/goa/function/testdata/package"
+import _package "github.com/wesovilabs/goa/joinpoint/testdata/package"
 
 type person struct {
 }

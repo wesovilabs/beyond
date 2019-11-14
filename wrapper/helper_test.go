@@ -2,7 +2,7 @@ package wrapper
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/function"
+	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/parser"
 	"go/ast"
 	"testing"
@@ -15,7 +15,7 @@ func Test_ensureImports(t *testing.T) {
 	packages := parser.
 		New("testdata", project).
 		Parse("")
-	functions := function.GetFunctions(packages)
+	functions := joinpoint.GetFunctions(packages)
 	function := functions.List()[0]
 	imports := function.ImportSpecs()
 	ensureImports(map[string]string{}, map[string]string{}, function)
@@ -59,7 +59,7 @@ func Test_updateImportSpect(t *testing.T) {
 	packages := parser.
 		New("testdata", project).
 		Parse("")
-	functions := function.GetFunctions(packages)
+	functions := joinpoint.GetFunctions(packages)
 	function := functions.List()[0]
 	currentImporSpecs := len(function.ImportSpecs())
 	updateImportSpec(function, []ast.Spec{

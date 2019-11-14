@@ -1,6 +1,6 @@
 package _package
 
-import "github.com/wesovilabs/goa/function/testdata/other"
+import "github.com/wesovilabs/goa/joinpoint/testdata/other"
 
 func sample(_ Person) string {
 	return "hey there!"

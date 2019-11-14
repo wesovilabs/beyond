@@ -3,7 +3,7 @@ package matcher
 import (
 	"fmt"
 	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/function"
+	"github.com/wesovilabs/goa/joinpoint"
 )
 
 // Matches struct
@@ -11,12 +11,12 @@ type Matches []*Match
 
 // Match struct
 type Match struct {
-	Function *function.Function
+	Function *joinpoint.JoinPoint
 	Advices  map[string]*advice.Advice
 }
 
 // FindMatches return the list of existing matches
-func FindMatches(functions *function.Functions, definitions *advice.Advices) Matches {
+func FindMatches(functions *joinpoint.JoinPoints, definitions *advice.Advices) Matches {
 	matches := Matches{}
 
 	for _, f := range functions.List() {

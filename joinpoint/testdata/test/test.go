@@ -1,6 +1,6 @@
 package test
 
-import "github.com/wesovilabs/goa/function/testdata/test/model"
+import "github.com/wesovilabs/goa/joinpoint/testdata/test/model"
 
 func a(name, firstName string) {
 

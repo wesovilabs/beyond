@@ -1,4 +1,4 @@
-package function
+package joinpoint
 
 import (
 	"fmt"
@@ -64,8 +64,8 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamExternalPerson",
-			expected:      "github.com/wesovilabs/goa/function/testdata/package.Person",
-			expectedForce: "(github.com/wesovilabs/goa/function/testdata/package.Person)",
+			expected:      "github.com/wesovilabs/goa/joinpoint/testdata/package.Person",
+			expectedForce: "(github.com/wesovilabs/goa/joinpoint/testdata/package.Person)",
 		},
 		{
 			name:          "singleParamPersonPointer",
@@ -74,8 +74,8 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamExternalPersonPointer",
-			expected:      "*github.com/wesovilabs/goa/function/testdata/package.Person",
-			expectedForce: "(*github.com/wesovilabs/goa/function/testdata/package.Person)",
+			expected:      "*github.com/wesovilabs/goa/joinpoint/testdata/package.Person",
+			expectedForce: "(*github.com/wesovilabs/goa/joinpoint/testdata/package.Person)",
 		},
 		{
 			name:          "singleParamInterface",
@@ -114,14 +114,14 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamMapStringPerson",
-			expected:      "map[string]github.com/wesovilabs/goa/function/testdata/package.Person",
-			expectedForce: "(map[string]github.com/wesovilabs/goa/function/testdata/package.Person)",
+			expected:      "map[string]github.com/wesovilabs/goa/joinpoint/testdata/package.Person",
+			expectedForce: "(map[string]github.com/wesovilabs/goa/joinpoint/testdata/package.Person)",
 		},
 
 		{
 			name:          "singleParamMapStringPersonPointer",
-			expected:      "map[string]*github.com/wesovilabs/goa/function/testdata/package.Person",
-			expectedForce: "(map[string]*github.com/wesovilabs/goa/function/testdata/package.Person)",
+			expected:      "map[string]*github.com/wesovilabs/goa/joinpoint/testdata/package.Person",
+			expectedForce: "(map[string]*github.com/wesovilabs/goa/joinpoint/testdata/package.Person)",
 		},
 		{
 			name:          "singleParamFuncEmpty",
@@ -130,8 +130,8 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamFuncArg",
-			expected:      "func(*github.com/wesovilabs/goa/function/testdata/package.Person)",
-			expectedForce: "(func(*github.com/wesovilabs/goa/function/testdata/package.Person)())",
+			expected:      "func(*github.com/wesovilabs/goa/joinpoint/testdata/package.Person)",
+			expectedForce: "(func(*github.com/wesovilabs/goa/joinpoint/testdata/package.Person)())",
 		},
 		{
 			name:          "singleParamFuncArgStringInt",
@@ -140,8 +140,8 @@ func Test_pathForFieldList(t *testing.T) {
 		},
 		{
 			name:          "singleParamFuncArgStringPersonPointer",
-			expected:      "func(string,*github.com/wesovilabs/goa/function/testdata/package.Person)",
-			expectedForce: "(func(string,*github.com/wesovilabs/goa/function/testdata/package.Person)())",
+			expected:      "func(string,*github.com/wesovilabs/goa/joinpoint/testdata/package.Person)",
+			expectedForce: "(func(string,*github.com/wesovilabs/goa/joinpoint/testdata/package.Person)())",
 		},
 	}
 	for _, c := range cases {

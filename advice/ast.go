@@ -150,7 +150,7 @@ func takeAdvice(expr ast.Expr, definition *Advice, importSpecs []*ast.ImportSpec
 			definition.pkg = pkgPathForType(x.Name, importSpecs)
 		}
 	case *ast.BasicLit:
-		definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
+		definition.regExp = internal.NormalizePointcut(arg.Value[1 : len(arg.Value)-1])
 	case *ast.CallExpr:
 		addAdviceCallExpr(arg, definition, importSpecs)
 	default:
@@ -173,7 +173,7 @@ func addAdvice(rootPkg string, expr *ast.CallExpr, definitions *Advices,
 					return
 				}
 
-				definition.regExp = internal.NormalizeExpression(arg.Value[1 : len(arg.Value)-1])
+				definition.regExp = internal.NormalizePointcut(arg.Value[1 : len(arg.Value)-1])
 			}
 
 			fmt.Printf("%#v", definition)

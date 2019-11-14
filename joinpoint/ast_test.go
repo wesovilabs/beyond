@@ -1,4 +1,4 @@
-package function
+package joinpoint
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestGetFunctions(t *testing.T) {
-	project := "github.com/wesovilabs/goa/function/testdata"
+	project := "github.com/wesovilabs/goa/joinpoint/testdata"
 	assert := assert.New(t)
 	packages := parser.
 		New("testdata", project).
@@ -19,7 +19,7 @@ func TestGetFunctions(t *testing.T) {
 }
 
 func TestGetFunctionsComplex(t *testing.T) {
-	project := "github.com/wesovilabs/goa/function/testdata"
+	project := "github.com/wesovilabs/goa/joinpoint/testdata"
 	assert := assert.New(t)
 	packages := parser.
 		New("testdata", project).
@@ -72,7 +72,7 @@ func TestGetFunctionsComplex(t *testing.T) {
 			resultsLen: 0,
 		},
 		"i": {
-			path:       "test.i([]*github.com/wesovilabs/goa/function/testdata/test/model.TestArgument)",
+			path:       "test.i([]*github.com/wesovilabs/goa/joinpoint/testdata/test/model.TestArgument)",
 			paramsLen:  1,
 			resultsLen: 0,
 		},

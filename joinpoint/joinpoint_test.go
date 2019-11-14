@@ -1,4 +1,4 @@
-package function
+package joinpoint
 
 import (
 	"fmt"
@@ -10,14 +10,14 @@ import (
 	"testing"
 )
 
-const project = "github.com/wesovilabs/goa/function/testdata"
+const project = "github.com/wesovilabs/goa/joinpoint/testdata"
 
 func TestFunction(t *testing.T) {
 	assert := assert.New(t)
 	file, err := parser.ParseFile(&token.FileSet{}, "testdata/package/sample.go", nil, parser.ParseComments)
 	assert.Nil(err)
 	assert.NotNil(file)
-	functions := &Functions{}
+	functions := &JoinPoints{}
 	searchFunctions("testdata/package", file, functions)
 	assert.Equal(2, len(functions.List()))
 	function := functions.List()[0]
@@ -27,9 +27,9 @@ func TestFunction(t *testing.T) {
 	function = functions.List()[1]
 	assert.Equal("testdata/package", function.Pkg())
 	assert.Equal("sample2", function.Name())
-	assert.Equal("testdata/package.sample2(*github.com/wesovilabs/goa/function/testdata/other.Other)func(map[string]interface{})", function.Path())
+	assert.Equal("testdata/package.sample2(*github.com/wesovilabs/goa/joinpoint/testdata/other.Other)func(map[string]interface{})", function.Path())
 	assert.Equal(1, len(function.ImportSpecs()))
-	assert.Equal("\"github.com/wesovilabs/goa/function/testdata/other\"", function.ImportSpecs()[0].Path.Value)
+	assert.Equal("\"github.com/wesovilabs/goa/joinpoint/testdata/other\"", function.ImportSpecs()[0].Path.Value)
 	stmt := &ast.EmptyStmt{}
 	function.AddStatementsAtBegin([]ast.Stmt{stmt})
 	assert.Equal(1, len(function.ParamsList()))

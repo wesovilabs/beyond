@@ -1,14 +1,12 @@
 package test
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/wesovilabs/goa/advice"
 	"testing"
 )
 
 func Test_Advice(t *testing.T) {
-	fmt.Printf("[TEST] %s\n", t.Name())
 	assert := assert.New(t)
 	packages := testPackages()
 	assert.NotNil(packages)

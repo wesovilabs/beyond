@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/function"
+	"github.com/wesovilabs/goa/joinpoint"
 	"go/ast"
 	"go/token"
 )
@@ -126,7 +126,7 @@ func CallMethod(objName string, currentPkg, pkg, name string, fields []*FieldDef
 }
 
 // SetUpGoaContext return the list of required statements
-func SetUpGoaContext(f *function.Function) []ast.Stmt {
+func SetUpGoaContext(f *joinpoint.JoinPoint) []ast.Stmt {
 	stmts := make([]ast.Stmt, 2)
 	stmts[0] = &ast.ExprStmt{
 		X: CallFunction("", varGoaContext, "WithPkg", []*FieldDef{

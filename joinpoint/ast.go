@@ -1,4 +1,4 @@
-package function
+package joinpoint
 
 import (
 	"fmt"
@@ -8,8 +8,8 @@ import (
 )
 
 // GetFunctions return the functions
-func GetFunctions(packages map[string]*parser.Package) *Functions {
-	functions := &Functions{}
+func GetFunctions(packages map[string]*parser.Package) *JoinPoints {
+	functions := &JoinPoints{}
 
 	for _, pkg := range packages {
 		for _, file := range pkg.Node().Files {
@@ -58,7 +58,7 @@ func isAspectFunction(decl *ast.FuncDecl) bool {
 	return false
 }
 
-func searchFunctions(pkg string, file *ast.File, functions *Functions) {
+func searchFunctions(pkg string, file *ast.File, functions *JoinPoints) {
 	imports := calculateImports(file.Imports)
 
 	for _, obj := range file.Decls {
@@ -82,7 +82,7 @@ func searchFunctions(pkg string, file *ast.File, functions *Functions) {
 
 			path := buildPath(pkg, objType, decl, imports)
 
-			functions.AddFunction(&Function{
+			functions.AddJoinPoint(&JoinPoint{
 				parent: file,
 				decl:   decl,
 				path:   path,

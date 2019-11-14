@@ -3,7 +3,7 @@ package matcher
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/function"
+	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/parser"
 	"testing"
 )
@@ -16,7 +16,7 @@ func TestFindMatches(t *testing.T) {
 		New("testdata", project).
 		Parse("")
 	definitions := advice.GetAdvices("testdata", packages)
-	functions := function.GetFunctions(packages)
+	functions := joinpoint.GetFunctions(packages)
 	matches := FindMatches(functions, definitions)
 	assert.Len(matches, 2)
 	assert.Len(matches[0].Advices, 2)
