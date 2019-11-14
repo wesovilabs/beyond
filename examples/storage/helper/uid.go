@@ -17,3 +17,11 @@ func RandomUID(length int) string {
 	}
 	return string(b)
 }
+
+type Test struct {
+
+}
+
+func (t *Test) test(map[string]interface{}){
+
+}

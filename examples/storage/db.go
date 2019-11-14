@@ -12,7 +12,7 @@ func SetUpDatabase() {
 	database = make(map[string]*model.Person)
 }
 
-func InsertPerson(person *model.Person) error {
+func InsertPerson(person *model.Person, _ *helper.Test) error {
 	uid := helper.RandomUID(8)
 	person.ID = uid
 	if person.FirstName == "" {

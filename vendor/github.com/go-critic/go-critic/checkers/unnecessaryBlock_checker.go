@@ -40,13 +40,13 @@ func (c *unnecessaryBlockChecker) VisitStmtList(statements []ast.Stmt) {
 
 	for _, stmt := range statements {
 		stmt, ok := stmt.(*ast.BlockStmt)
-		if ok && !c.hasAdvices(stmt) {
+		if ok && !c.hasDefinitions(stmt) {
 			c.warn(stmt)
 		}
 	}
 }
 
-func (c *unnecessaryBlockChecker) hasAdvices(stmt *ast.BlockStmt) bool {
+func (c *unnecessaryBlockChecker) hasDefinitions(stmt *ast.BlockStmt) bool {
 	for _, bs := range stmt.List {
 		switch stmt := bs.(type) {
 		case *ast.AssignStmt:

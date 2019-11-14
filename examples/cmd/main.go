@@ -18,7 +18,7 @@ func main() {
 		FirstName: "John",
 		LastName:  "Doe",
 	}
-	if err := storage.InsertPerson(johnDoe); err != nil {
+	if err := storage.InsertPerson(johnDoe,nil); err != nil {
 		fmt.Println(err.Error())
 	}
 	fmt.Printf("John Doe with uid %s is created\n", johnDoe.ID)
@@ -27,7 +27,7 @@ func main() {
 		FirstName: "Jane",
 		LastName:  "Doe",
 	}
-	if err := storage.InsertPerson(janeDoe); err != nil {
+	if err := storage.InsertPerson(janeDoe,nil); err != nil {
 		fmt.Println(err.Error())
 	}
 	fmt.Printf("Jane Doe with uid %s is created\n", janeDoe.ID)
@@ -50,7 +50,7 @@ func Goa() *api.Goa {
 		WithAround(testAdvice.NewEmptyAround, `*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*(...)...`).
-		WithAround(testAdvice.NewComplexAround("test",testAdvice.Attribute{}),`*.*(...)...`)
+		WithAround(testAdvice.NewComplexAround("test",testAdvice.Attribute{},nil),`*.*(...)...`)
 }
 
 type EmptyReturning struct{

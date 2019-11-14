@@ -16,7 +16,7 @@ func TestFindMatches(t *testing.T) {
 		New("testdata", project).
 		Parse("")
 	definitions := advice.GetAdvices("testdata", packages)
-	functions := joinpoint.GetFunctions(packages)
+	functions := joinpoint.GetJoinPoints(project, packages)
 	matches := FindMatches(functions, definitions)
 	assert.Len(matches, 2)
 	assert.Len(matches[0].Advices, 2)

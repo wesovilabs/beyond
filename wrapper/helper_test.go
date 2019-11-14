@@ -15,7 +15,7 @@ func Test_ensureImports(t *testing.T) {
 	packages := parser.
 		New("testdata", project).
 		Parse("")
-	functions := joinpoint.GetFunctions(packages)
+	functions := joinpoint.GetJoinPoints("", packages)
 	function := functions.List()[0]
 	imports := function.ImportSpecs()
 	ensureImports(map[string]string{}, map[string]string{}, function)
@@ -59,7 +59,7 @@ func Test_updateImportSpect(t *testing.T) {
 	packages := parser.
 		New("testdata", project).
 		Parse("")
-	functions := joinpoint.GetFunctions(packages)
+	functions := joinpoint.GetJoinPoints("", packages)
 	function := functions.List()[0]
 	currentImporSpecs := len(function.ImportSpecs())
 	updateImportSpec(function, []ast.Spec{

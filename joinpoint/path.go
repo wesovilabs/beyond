@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-func buildPath(pkg, objType string, funcDecl *ast.FuncDecl, imports map[string]string) string {
-	in := pathForFieldList(funcDecl.Type.Params, imports, true)
-	out := pathForFieldList(funcDecl.Type.Results, imports, false)
+func buildPath(rootPkg string, pkg, objType string, funcDecl *ast.FuncDecl, imports map[string]string) string {
+	in := pathForFieldList(rootPkg, pkg, funcDecl.Type.Params, imports, true)
+	out := pathForFieldList(rootPkg, pkg, funcDecl.Type.Results, imports, false)
 	result := fmt.Sprintf("%s%s%s", funcDecl.Name.String(), in, out)
 
 	if objType != "" {
@@ -24,29 +24,28 @@ func buildPath(pkg, objType string, funcDecl *ast.FuncDecl, imports map[string]s
 	return result
 }
 
-func exprPath(expr ast.Expr, imports map[string]string) string {
+func exprPath(rootPkg string, pkg string, expr ast.Expr, imports map[string]string) string {
 	switch val := expr.(type) {
 	case *ast.SelectorExpr:
-		return fmt.Sprintf("%s.%s", exprPath(val.X, imports), exprPath(val.Sel, imports))
+		return fmt.Sprintf("%s.%s", exprPath(rootPkg, pkg, val.X, imports), exprPath(rootPkg, pkg, val.Sel, imports))
 	case *ast.Ident:
-		return getValue(val.Name, imports)
+		isObj := val.Obj != nil
+		v := getValue(val.Name, imports)
+
+		if !isObj {
+			return v
+		}
+
+		return fmt.Sprintf("%s/%s.%s", rootPkg, pkg, v)
 	case *ast.InterfaceType:
 		return "interface{}"
 	case *ast.StructType:
 		return "struct{}"
 	case *ast.StarExpr:
-		switch t2 := val.X.(type) {
-		case *ast.Ident:
-			v := getValue(t2.Name, imports)
-			return fmt.Sprintf("*%s", v)
-		case *ast.SelectorExpr:
-			return fmt.Sprintf("*%s.%s", exprPath(t2.X, imports), t2.Sel.Name)
-		default:
-			logger.Infof("*%s", reflect.TypeOf(t2))
-		}
+		return exprPathStarExpr(rootPkg, pkg, val, imports)
 	case *ast.FuncType:
-		params := pathForFieldList(val.Params, imports, true)
-		result := pathForFieldList(val.Results, imports, false)
+		params := pathForFieldList(rootPkg, pkg, val.Params, imports, true)
+		result := pathForFieldList(rootPkg, pkg, val.Results, imports, false)
 
 		return fmt.Sprintf("func%s%s", params, result)
 	}
@@ -54,30 +53,51 @@ func exprPath(expr ast.Expr, imports map[string]string) string {
 	return ""
 }
 
+func exprPathStarExpr(rootPkg string, pkg string, val *ast.StarExpr, imports map[string]string) string {
+	switch t2 := val.X.(type) {
+	case *ast.Ident:
+		v := getValue(t2.Name, imports)
+		return fmt.Sprintf("*%s", v)
+	case *ast.SelectorExpr:
+		return fmt.Sprintf("*%s.%s", exprPath(rootPkg, pkg, t2.X, imports), t2.Sel.Name)
+	default:
+		logger.Infof("*%s", reflect.TypeOf(t2))
+	}
+	return ""
+}
+
 // nolint: gocyclo
-func pathForSingleFieldList(field *ast.Field, imports map[string]string, forceParen bool) string {
+func pathForSingleFieldList(rootPkg string, pkg string, field *ast.Field, imports map[string]string, forceParen bool) string {
 	switch fieldType := field.Type.(type) {
 	case *ast.Ident:
-		return fieldType.Name
+		isObj := fieldType.Obj != nil
+		v := getValue(fieldType.Name, imports)
+
+		if !isObj {
+			return v
+		}
+
+		return fmt.Sprintf("%s/%s.%s", rootPkg, pkg, v)
+
 	case *ast.StarExpr:
-		return fmt.Sprintf("*%s", exprPath(fieldType.X, imports))
+		return fmt.Sprintf("*%s", exprPath(rootPkg, pkg, fieldType.X, imports))
 	case *ast.SelectorExpr:
-		return fmt.Sprintf("%s.%s", exprPath(fieldType.X, imports), fieldType.Sel.Name)
+		return fmt.Sprintf("%s.%s", exprPath(rootPkg, pkg, fieldType.X, imports), fieldType.Sel.Name)
 	case *ast.InterfaceType:
 		return "interface{}"
 	case *ast.StructType:
 		return "struct{}"
 	case *ast.ArrayType:
-		return fmt.Sprintf("[]%s", exprPath(fieldType.Elt, imports))
+		return fmt.Sprintf("[]%s", exprPath(rootPkg, pkg, fieldType.Elt, imports))
 	case *ast.MapType:
-		return fmt.Sprintf("map[%s]%s", exprPath(fieldType.Key, imports), exprPath(fieldType.Value, imports))
+		return fmt.Sprintf("map[%s]%s", exprPath(rootPkg, pkg, fieldType.Key, imports), exprPath(rootPkg, pkg, fieldType.Value, imports))
 	case *ast.FuncType:
-		params := pathForFieldList(fieldType.Params, imports, true)
-		result := pathForFieldList(fieldType.Results, imports, forceParen)
+		params := pathForFieldList(rootPkg, pkg, fieldType.Params, imports, true)
+		result := pathForFieldList(rootPkg, pkg, fieldType.Results, imports, forceParen)
 
 		return fmt.Sprintf("func%s%s", params, result)
 	case *ast.Ellipsis:
-		return fmt.Sprintf("[]%s", exprPath(fieldType.Elt, imports))
+		return fmt.Sprintf("[]%s", exprPath(rootPkg, pkg, fieldType.Elt, imports))
 	default:
 		return ""
 	}
@@ -105,18 +125,18 @@ func lenFields(fields []*ast.Field) int {
 	return totalLen
 }
 
-func pathForSomeFieldsList(fields []*ast.Field, imports map[string]string, forceParen bool) string {
+func pathForSomeFieldsList(rootPkg string, pkg string, fields []*ast.Field, imports map[string]string, forceParen bool) string {
 	values := make([]string, lenFields(fields))
 	index := 0
 
 	for _, field := range fields {
 		if len(field.Names) > 0 {
 			for range field.Names {
-				values[index] = pathForSingleFieldList(field, imports, forceParen)
+				values[index] = pathForSingleFieldList(rootPkg, pkg, field, imports, forceParen)
 				index++
 			}
 		} else {
-			values[index] = pathForSingleFieldList(field, imports, forceParen)
+			values[index] = pathForSingleFieldList(rootPkg, pkg, field, imports, forceParen)
 			index++
 		}
 	}
@@ -124,16 +144,16 @@ func pathForSomeFieldsList(fields []*ast.Field, imports map[string]string, force
 	return strings.Join(values, ",")
 }
 
-func pathForFieldList(fieldList *ast.FieldList, imports map[string]string, forceParen bool) string {
+func pathForFieldList(rootPkg string, pkg string, fieldList *ast.FieldList, imports map[string]string, forceParen bool) string {
 	var value string
 
 	switch {
 	case fieldList == nil || lenFields(fieldList.List) == 0:
 		value = ""
 	case lenFields(fieldList.List) == 1:
-		value = pathForSingleFieldList(fieldList.List[0], imports, forceParen)
+		value = pathForSingleFieldList(rootPkg, pkg, fieldList.List[0], imports, forceParen)
 	default:
-		value = pathForSomeFieldsList(fieldList.List, imports, forceParen)
+		value = pathForSomeFieldsList(rootPkg, pkg, fieldList.List, imports, forceParen)
 	}
 
 	if forceParen || (fieldList != nil && lenFields(fieldList.List) > 1) {

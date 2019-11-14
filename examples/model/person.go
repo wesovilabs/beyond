@@ -1,6 +1,9 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/wesovilabs/goa/examples/advice"
+)
 
 type Person struct {
 	ID        string
@@ -10,4 +13,8 @@ type Person struct {
 
 func (p *Person) FullName() string {
 	return fmt.Sprintf("%s %s", p.FirstName, p.LastName)
+}
+
+func (p *Person) Apply([]advice.Attribute)func(string,int){
+	return nil
 }

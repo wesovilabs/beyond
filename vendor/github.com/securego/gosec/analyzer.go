@@ -114,8 +114,8 @@ func (gosec *Analyzer) Config() Config {
 
 // LoadRules instantiates all the rules to be used when analyzing source
 // packages
-func (gosec *Analyzer) LoadRules(ruleAdvices map[string]RuleBuilder) {
-	for id, def := range ruleAdvices {
+func (gosec *Analyzer) LoadRules(ruleDefinitions map[string]RuleBuilder) {
+	for id, def := range ruleDefinitions {
 		r, nodes := def(id, gosec.config)
 		gosec.ruleset.Register(r, nodes...)
 	}

@@ -7,13 +7,14 @@ import (
 	"strings"
 )
 
-// GetFunctions return the functions
-func GetFunctions(packages map[string]*parser.Package) *JoinPoints {
+// GetJoinPoints return the functions
+func GetJoinPoints(rootPkg string, packages map[string]*parser.Package) *JoinPoints {
 	functions := &JoinPoints{}
 
-	for _, pkg := range packages {
+	for pkgPath, pkg := range packages {
 		for _, file := range pkg.Node().Files {
-			searchFunctions(pkg.Path(), file, functions)
+			fmt.Println("---- " + pkgPath + "  " + pkg.Path())
+			searchFunctions(rootPkg, pkg.Path(), pkg.Node().Name, file, functions)
 		}
 	}
 
@@ -58,7 +59,7 @@ func isAspectFunction(decl *ast.FuncDecl) bool {
 	return false
 }
 
-func searchFunctions(pkg string, file *ast.File, functions *JoinPoints) {
+func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, functions *JoinPoints) {
 	imports := calculateImports(file.Imports)
 
 	for _, obj := range file.Decls {
@@ -80,7 +81,12 @@ func searchFunctions(pkg string, file *ast.File, functions *JoinPoints) {
 				}
 			}
 
-			path := buildPath(pkg, objType, decl, imports)
+			path := buildPath(rootPkg, parentPath, objType, decl, imports)
+
+			if pkg == "main" {
+				index := strings.Index(path, ".")
+				path = fmt.Sprintf("%s.%s", "main", path[index+1:])
+			}
 
 			functions.AddJoinPoint(&JoinPoint{
 				parent: file,

@@ -594,7 +594,7 @@ type yaml_parser_t struct {
 	document *yaml_document_t // The currently parsed document.
 }
 
-// Emitter Advices
+// Emitter Definitions
 
 // The prototype of a write handler.
 //

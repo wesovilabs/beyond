@@ -42,7 +42,7 @@ func (g *goa) cleanInvalidFunctions() {
 func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) {
 	goa := &goa{}
 	goa.definitions = advice.GetAdvices(rootPkg, packages)
-	goa.functions = joinpoint.GetFunctions(packages)
+	goa.functions = joinpoint.GetJoinPoints(rootPkg, packages)
 	goa.cleanInvalidFunctions()
 
 	for _, f := range goa.functions.List() {
