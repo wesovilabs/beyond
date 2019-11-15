@@ -8,21 +8,20 @@ import (
 	"testing"
 )
 
-func Test_Writer(t *testing.T){
+func Test_Writer(t *testing.T) {
 	assert := assert.New(t)
 	packages := testPackages()
 	assert.NotNil(packages)
 
-
-	for _,parent:=range packages{
-		for _,file:=range parent.Node().Files{
+	for _, parent := range packages {
+		for _, file := range parent.Node().Files {
 
 			path, err := ioutil.TempFile(".", "prefix")
 			if err != nil {
 				t.Fatal(err)
 			}
 			defer os.RemoveAll(path.Name())
-			assert.Nil(writer.Save(file,path.Name()))
+			assert.Nil(writer.Save(file, path.Name()))
 		}
 
 	}
