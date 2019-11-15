@@ -1,4 +1,4 @@
-module github.com/wesovilabs/goa/examples
+module github.com/wesovilabs/goa/testdata
 
 require github.com/wesovilabs/goa v0.0.0
 

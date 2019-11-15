@@ -8,8 +8,8 @@ import (
 	"os"
 )
 
-// SaveNode persists a node into a file in the provided path
-func SaveNode(node ast.Node, path string) error {
+// Save persists a node into a file in the provided path
+func Save(node *ast.File, path string) error {
 	f, err := os.Create(path)
 	if err != nil {
 		logger.Errorf("Errorf while creating file: '%v'", err)

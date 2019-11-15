@@ -54,19 +54,12 @@ func goaInterceptor(name string, operation string) *ast.CallExpr {
 }
 
 // CallCreateAspect return the call expression
-func CallCreateAspect(pkg, name string) *ast.CallExpr {
+func CallCreateAspect(pkg, name string) ast.Expr {
 	if pkg != "" {
-		return &ast.CallExpr{
-			Fun: &ast.SelectorExpr{
-				X:   NewIdent(pkg),
-				Sel: NewIdent(name),
-			},
-		}
+		return NewIdent(fmt.Sprintf("%s.%s", pkg, name))
 	}
 
-	return &ast.CallExpr{
-		Fun: NewIdent(name),
-	}
+	return NewIdent(name)
 }
 
 // SetArgValue set value to context

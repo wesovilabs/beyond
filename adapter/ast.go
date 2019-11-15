@@ -10,11 +10,11 @@ var requiredImports = map[string]string{
 	"github.com/wesovilabs/goa/api/context": "goaContext",
 }
 
-// Wrap function that create the ast for the intercepted function
-func Wrap(function *joinpoint.JoinPoint, definitions map[string]*advice.Advice) {
-	file := function.Parent()
-	funcDecl := adapterFuncDecl(function, definitions)
+// Adapter function that create the ast for the intercepted function
+func Adapter(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.Advice) {
+	file := joinPoint.Parent()
+	funcDecl := adapterFuncDecl(joinPoint, advices)
 	file.Decls = append(file.Decls, funcDecl)
 
-	function.RenameToInternal()
+	joinPoint.RenameToInternal()
 }

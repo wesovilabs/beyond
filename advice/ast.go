@@ -9,6 +9,7 @@ import (
 	"go/token"
 	"reflect"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -19,7 +20,7 @@ const (
 	apiPath      = "github.com/wesovilabs/goa/api"
 )
 
-// GetAdvices return the list of definitions (aspects)
+// GetAdvices return the list of advices (aspects)
 func GetAdvices(rootPkg string, packages map[string]*parser.Package) *Advices {
 	defs := &Advices{
 		items: make([]*Advice, 0),
@@ -27,19 +28,19 @@ func GetAdvices(rootPkg string, packages map[string]*parser.Package) *Advices {
 
 	for _, pkg := range packages {
 		for _, file := range pkg.Node().Files {
-			searchAdvices(rootPkg, file, defs)
+			searchAdvices(file, defs)
 		}
 	}
 
 	return defs
 }
 
-func searchAdvices(rootPkg string, node *ast.File, definitions *Advices) {
+func searchAdvices(node *ast.File, advices *Advices) {
 	if funcDecl := containsAdvices(node); funcDecl != nil {
 		for _, stmt := range funcDecl.Body.List {
 			if expr, ok := stmt.(*ast.ReturnStmt); ok {
 				if callExpr, ok := expr.Results[0].(*ast.CallExpr); ok {
-					addAdvice(rootPkg, callExpr, definitions, node.Imports)
+					addAdvice(callExpr, advices, node.Imports)
 				}
 
 				return
@@ -105,83 +106,116 @@ func unaryToString(c *ast.UnaryExpr) string {
 		return ""
 	}
 }
+func adviceCallText(ar ast.Expr) string {
+	var argText string
+	switch a := ar.(type) {
+	case *ast.BasicLit:
+		argText = a.Value
+	case *ast.SelectorExpr:
+		argText = selectorToString(a)
+	case *ast.CompositeLit:
+		argText = compositeToString(a)
+	case *ast.UnaryExpr:
+		argText = unaryToString(a)
+	case *ast.Ident:
+		argText = a.Name
+	default:
+		argText = "unknown"
+	}
 
-func addAdviceCallExpr(arg *ast.CallExpr, definition *Advice, importSpecs []*ast.ImportSpec) {
-	args := make([]string, 0)
+	return argText
+}
+
+func addAdviceCallExpr(arg *ast.CallExpr, importSpecs []*ast.ImportSpec, invocation *adviceInvocation) {
+	invocationArgs := make([]*adviceInvocationArg, 0)
 
 	for _, ar := range arg.Args {
-		switch a := ar.(type) {
-		case *ast.BasicLit:
-			args = append(args, a.Value)
-		case *ast.SelectorExpr:
-			args = append(args, selectorToString(a))
-		case *ast.CompositeLit:
-			args = append(args, compositeToString(a))
-		case *ast.UnaryExpr:
-			args = append(args, unaryToString(a))
-		default:
-			fmt.Println(reflect.TypeOf(a))
+		argText := adviceCallText(ar)
+
+		items := strings.Split(argText, ".")
+		if len(items) == 2 {
+			isPointer := false
+
+			if items[0][0] == '&' {
+				items[0] = items[0][1:]
+				isPointer = true
+			}
+
+			pkgPath := pkgPathForType(items[0], importSpecs)
+			invocation.addImport(pkgPath)
+
+			invocationArgs = append(invocationArgs, &adviceInvocationArg{
+				pkg:     pkgPath,
+				val:     items[1],
+				pointer: isPointer,
+			})
+		} else {
+			invocationArgs = append(invocationArgs, &adviceInvocationArg{
+				val: argText,
+			})
 		}
 	}
 
-	funcName := ""
-
 	switch f := arg.Fun.(type) {
 	case *ast.SelectorExpr:
-		funcName = f.Sel.Name
-
+		invocation.function = f.Sel.Name
 		if x, ok := f.X.(*ast.Ident); ok {
-			definition.pkg = pkgPathForType(x.Name, importSpecs)
+			invocation.pkg = pkgPathForType(x.Name, importSpecs)
 		}
 	default:
 		fmt.Println(reflect.TypeOf(f))
 	}
 
-	definition.name = fmt.Sprintf("%s(%s)", funcName, strings.Join(args, ","))
+	invocation.args = invocationArgs
 }
 
-func takeAdvice(expr ast.Expr, definition *Advice, importSpecs []*ast.ImportSpec) {
+func takeAdvice(expr ast.Expr, advice *Advice, importSpecs []*ast.ImportSpec) {
+	invocation := &adviceInvocation{}
 	switch arg := expr.(type) {
 	case *ast.Ident:
-		definition.name = arg.Name
+		invocation.function = arg.Name
 	case *ast.SelectorExpr:
-		definition.name = arg.Sel.Name
+		invocation.function = arg.Sel.Name
+
 		if x, ok := arg.X.(*ast.Ident); ok {
-			definition.pkg = pkgPathForType(x.Name, importSpecs)
+			pkgPath := pkgPathForType(x.Name, importSpecs)
+			invocation.addImport(pkgPath)
+			invocation.pkg = pkgPath
 		}
-	case *ast.BasicLit:
-		definition.regExp = internal.NormalizePointcut(arg.Value[1 : len(arg.Value)-1])
 	case *ast.CallExpr:
-		addAdviceCallExpr(arg, definition, importSpecs)
+		addAdviceCallExpr(arg, importSpecs, invocation)
+		invocation.isCall = true
 	default:
 		fmt.Println(reflect.TypeOf(arg))
 	}
+
+	advice.call = invocation
 }
 
-func addAdvice(rootPkg string, expr *ast.CallExpr, definitions *Advices,
+func addAdvice(expr *ast.CallExpr, advices *Advices,
 	importSpecs []*ast.ImportSpec) {
 	if selExpr, ok := expr.Fun.(*ast.SelectorExpr); ok {
 		if kind, ok := aspectTypes[selExpr.Sel.Name]; ok {
-			definition := &Advice{
+			advice := &Advice{
 				kind: kind,
-				pkg:  rootPkg,
 			}
-			takeAdvice(expr.Args[0], definition, importSpecs)
+			takeAdvice(expr.Args[0], advice, importSpecs)
 
-			if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
-				if len(arg.Value) < 2 {
-					return
+			if unicode.IsUpper(rune(advice.call.function[0])) {
+				if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
+					if len(arg.Value) < 2 {
+						return
+					}
+
+					advice.regExp = internal.NormalizePointcut(arg.Value[1 : len(arg.Value)-1])
 				}
 
-				definition.regExp = internal.NormalizePointcut(arg.Value[1 : len(arg.Value)-1])
+				advices.Add(advice)
 			}
-
-			fmt.Printf("%#v", definition)
-			definitions.Add(definition)
 		}
 
 		if callExpr, ok := selExpr.X.(*ast.CallExpr); ok {
-			addAdvice(rootPkg, callExpr, definitions, importSpecs)
+			addAdvice(callExpr, advices, importSpecs)
 		}
 	}
 }
@@ -221,13 +255,24 @@ func findGoaFunction(file *ast.File, instanceName string) *ast.FuncDecl {
 	return nil
 }
 
+func getName(spec *ast.ImportSpec) string {
+	if spec.Name != nil && spec.Name.Name != "" {
+		return spec.Name.Name
+	}
+
+	path := spec.Path.Value[1 : len(spec.Path.Value)-1]
+	lastIndex := strings.LastIndex(path, "/")
+
+	return path[lastIndex+1:]
+}
 func pkgPathForType(name string, importSpecs []*ast.ImportSpec) string {
 	value := ""
 
 	for _, importSpec := range importSpecs {
 		path := importSpec.Path.Value[1 : len(importSpec.Path.Value)-1]
+		importSpecName := getName(importSpec)
 
-		if importSpec.Name != nil && importSpec.Name.Name == name {
+		if importSpecName == name {
 			return path
 		}
 

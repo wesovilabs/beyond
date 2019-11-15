@@ -24,8 +24,13 @@ func (g *goa) removeNonInterceptedJoinPoints() {
 	for _, f := range g.joinPoints.List() {
 		valid := true
 
-		for _, d := range g.advices.List() {
-			if (d.Name() == f.Name() && d.Pkg() == f.Pkg()) || f.Name() == "main" || f.Name() == "Goa" {
+		if f.Name() == "main" || f.Name() == "Goa" {
+			continue
+		}
+
+		for index := range g.advices.List() {
+			d := g.advices.List()[index]
+			if d.Name() == f.Name() && d.Pkg() == f.PkgPath() {
 				valid = false
 				continue
 			}
@@ -54,16 +59,16 @@ func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) 
 		logger.Infof(`[ advice ] %s.%s`, a.Pkg(), a.Name())
 	}
 
-	matches := match.FindMatches(goa.joinPoints, goa.advices)
+	matches := match.GetMatches(goa.joinPoints, goa.advices)
 
 	for _, match := range matches {
-		logger.Infof("[ match  ] %s", match.Function.Name())
+		logger.Infof("[ match  ] %s", match.JoinPoint.Name())
 
 		for _, d := range match.Advices {
 			logger.Infof("   - %s", d.Name())
 		}
 
-		adapter.Wrap(match.Function, match.Advices)
+		adapter.Adapter(match.JoinPoint, match.Advices)
 	}
 
 	goa.save(packages, outputDir)
@@ -79,7 +84,7 @@ func (g *goa) save(packages map[string]*parser.Package, outputDir string) {
 				logger.Errorf("error creating output directory %s", err.Error())
 			}
 
-			if err := writer.SaveNode(file, filepath.Join(outputPath, fileName)); err != nil {
+			if err := writer.Save(file, filepath.Join(outputPath, fileName)); err != nil {
 				logger.Error(err.Error())
 			}
 		}
