@@ -14,7 +14,7 @@ func Test_Matcher(t *testing.T) {
 	assert.NotNil(packages)
 	advices := advice.GetAdvices(pkg, packages)
 	joinPoints := joinpoint.GetJoinPoints(pkg, packages)
-	matches := match.FindMatches(joinPoints, advices)
+	matches := match.GetMatches(joinPoints, advices)
 	assert.NotNil(matches)
 	assert.Equal(10, len(matches))
 

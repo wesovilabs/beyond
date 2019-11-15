@@ -11,12 +11,12 @@ type Matches []*Match
 
 // Match struct
 type Match struct {
-	Function *joinpoint.JoinPoint
-	Advices  map[string]*advice.Advice
+	JoinPoint *joinpoint.JoinPoint
+	Advices   map[string]*advice.Advice
 }
 
-// FindMatches return the list of existing matches
-func FindMatches(joinPoints *joinpoint.JoinPoints, advices *advice.Advices) Matches {
+// GetMatches return the list of existing matches
+func GetMatches(joinPoints *joinpoint.JoinPoints, advices *advice.Advices) Matches {
 	matches := Matches{}
 
 	for _, f := range joinPoints.List() {
@@ -30,8 +30,8 @@ func FindMatches(joinPoints *joinpoint.JoinPoints, advices *advice.Advices) Matc
 
 		if len(aspects) > 0 {
 			matches = append(matches, &Match{
-				Function: f,
-				Advices:  aspects,
+				JoinPoint: f,
+				Advices:   aspects,
 			})
 		}
 	}

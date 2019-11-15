@@ -20,7 +20,7 @@ func hasAnyReturning(definitions map[string]*advice.Advice) bool {
 }
 
 func wrapBeforeStatements(definitions map[string]*advice.Advice, params []*internal.FieldDef) []ast.Stmt {
-	argsVariable := "functionParams"
+	argsVariable := "joinPointParams"
 	stmts := make([]ast.Stmt, 0)
 	// set values to context
 	stmts = append(stmts, setArgsValues(argsVariable, "Params", params)...)
@@ -38,7 +38,7 @@ func wrapBeforeStatements(definitions map[string]*advice.Advice, params []*inter
 	return stmts
 }
 func wrapReturningStatements(definitions map[string]*advice.Advice, results []*internal.FieldDef) []ast.Stmt {
-	argsVariable := "functionResults"
+	argsVariable := "joinPointResults"
 	stmts := make([]ast.Stmt, 0)
 
 	if len(results) > 0 {
@@ -60,20 +60,20 @@ func wrapReturningStatements(definitions map[string]*advice.Advice, results []*i
 	return stmts
 }
 
-func adapterFuncDecl(function *joinpoint.JoinPoint, definitions map[string]*advice.Advice) *ast.FuncDecl {
-	imports := internal.GetImports(function.Parent())
-	ensureImports(imports, requiredImports, function)
-	recv := function.GetRecv()
-	imports[function.Pkg()] = ""
+func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.Advice) *ast.FuncDecl {
+	imports := internal.GetImports(joinPoint.Parent())
+	ensureImports(imports, requiredImports, joinPoint)
+	recv := joinPoint.GetRecv()
+	imports[joinPoint.Pkg()] = ""
 	stmts := make([]ast.Stmt, 0)
 	stmts = append(stmts, internal.AssignGoaContext(imports))
-	stmts = append(stmts, internal.SetUpGoaContext(function)...)
+	stmts = append(stmts, internal.SetUpGoaContext(joinPoint)...)
 
-	for name, d := range definitions {
+	for name, d := range advices {
 		if importName, found := imports[d.Pkg()]; !found {
 			index := strings.LastIndex(d.Pkg(), "/")
 			pkgName := findImportName(imports, d.Pkg()[index+1:], d.Pkg())
-			addImportSpec(function, importName, d.Pkg())
+			addImportSpec(joinPoint, importName, d.Pkg())
 
 			imports[d.Pkg()] = pkgName
 			stmts = append(stmts, internal.AssignAspect(name, pkgName, d.Name()))
@@ -87,28 +87,28 @@ func adapterFuncDecl(function *joinpoint.JoinPoint, definitions map[string]*advi
 		}
 	}
 
-	params := internal.Params(function.ParamsList())
-	results := internal.Results(function.ResultsList())
+	params := internal.Params(joinPoint.ParamsList())
+	results := internal.Results(joinPoint.ResultsList())
 
-	stmts = append(stmts, wrapBeforeStatements(definitions, params)...)
+	stmts = append(stmts, wrapBeforeStatements(advices, params)...)
 
 	if recv != nil {
-		// Call function
-		stmts = append(stmts, internal.CallMethodAndAssign(recv, function.Parent().Name.String(), "",
-			fmt.Sprintf("%sInternal", function.Name()), params, results))
+		// Call joinPoint
+		stmts = append(stmts, internal.CallMethodAndAssign(recv, joinPoint.Parent().Name.String(), "",
+			fmt.Sprintf("%sInternal", joinPoint.Name()), params, results))
 	} else {
-		// Call function
-		stmts = append(stmts, internal.CallFunctionAndAssign(function.Parent().Name.String(), "",
-			fmt.Sprintf("%sInternal", function.Name()), params, results))
+		// Call joinPoint
+		stmts = append(stmts, internal.CallFunctionAndAssign(joinPoint.Parent().Name.String(), "",
+			fmt.Sprintf("%sInternal", joinPoint.Name()), params, results))
 	}
 
-	if hasAnyReturning(definitions) {
-		stmts = append(stmts, wrapReturningStatements(definitions, results)...)
+	if hasAnyReturning(advices) {
+		stmts = append(stmts, wrapReturningStatements(advices, results)...)
 	}
 
 	stmts = append(stmts, internal.ReturnValuesStmt(results))
-	funcDecl := internal.FuncDecl(function.Name(), function.ParamsList(),
-		function.ResultsList(), stmts)
+	funcDecl := internal.FuncDecl(joinPoint.Name(), joinPoint.ParamsList(),
+		joinPoint.ResultsList(), stmts)
 	funcDecl.Recv = recv
 
 	return funcDecl
