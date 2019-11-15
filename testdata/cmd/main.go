@@ -48,6 +48,7 @@ func Goa() *api.Goa {
 		WithBefore(testAdvice.NewComplexBefore(&testAdvice.Attribute{}), `*.*Person(...)...`).
 		WithBefore(advice.NewTracingAdvice, `*.*Person(...)...`).
 		WithAround(testAdvice.NewEmptyAround, `*.*(...)...`).
+		// since it's a non public function, they won't be used
 		WithReturning(newEmptyReturning,`*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*(...)...`).
 		WithAround(testAdvice.NewComplexAround("test",testAdvice.Attribute{},nil),`*.*(...)...`)

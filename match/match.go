@@ -24,7 +24,7 @@ func GetMatches(joinPoints *joinpoint.JoinPoints, advices *advice.Advices) Match
 
 		for index, d := range advices.List() {
 			if d.Match(f.Path()) {
-				aspects[fmt.Sprintf("aspect%v", index)] = d
+				aspects[fmt.Sprintf("advice%v", index)] = d
 			}
 		}
 
