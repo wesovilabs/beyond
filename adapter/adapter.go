@@ -62,6 +62,16 @@ func wrapReturningStatements(definitions map[string]*advice.Advice, results []*i
 
 func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.Advice) *ast.FuncDecl {
 	imports := internal.GetImports(joinPoint.Parent())
+
+	for _, advice := range advices {
+		for _, importPath := range advice.Imports() {
+			if imports[importPath] == "" {
+				lastIndex := strings.LastIndex(importPath, "/")
+				requiredImports[importPath] = findImportName(requiredImports, importPath[lastIndex+1:], importPath)
+			}
+		}
+	}
+
 	ensureImports(imports, requiredImports, joinPoint)
 	recv := joinPoint.GetRecv()
 	imports[joinPoint.Pkg()] = ""
@@ -70,21 +80,7 @@ func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.
 	stmts = append(stmts, internal.SetUpGoaContext(joinPoint)...)
 
 	for name, d := range advices {
-		if importName, found := imports[d.Pkg()]; !found {
-			index := strings.LastIndex(d.Pkg(), "/")
-			pkgName := findImportName(imports, d.Pkg()[index+1:], d.Pkg())
-			addImportSpec(joinPoint, importName, d.Pkg())
-
-			imports[d.Pkg()] = pkgName
-			stmts = append(stmts, internal.AssignAspect(name, pkgName, d.Name()))
-		} else {
-			if importName == "" {
-				index := strings.LastIndex(d.Pkg(), "/")
-				importName = d.Pkg()[index+1:]
-			}
-
-			stmts = append(stmts, internal.AssignAspect(name, importName, d.Name()))
-		}
+		stmts = append(stmts, applyAdvices(name, d, imports, joinPoint)...)
 	}
 
 	params := internal.Params(joinPoint.ParamsList())
@@ -112,6 +108,28 @@ func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.
 	funcDecl.Recv = recv
 
 	return funcDecl
+}
+
+func applyAdvices(name string, d *advice.Advice, imports map[string]string, joinPoint *joinpoint.JoinPoint) []ast.Stmt {
+	stmts := make([]ast.Stmt, 0)
+
+	if importName, found := imports[d.Pkg()]; !found {
+		index := strings.LastIndex(d.Pkg(), "/")
+		pkgName := findImportName(imports, d.Pkg()[index+1:], d.Pkg())
+		addImportSpec(joinPoint, importName, d.Pkg())
+
+		imports[d.Pkg()] = pkgName
+		stmts = append(stmts, internal.AssignAspect(name, pkgName, d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+	} else {
+		if importName == "" {
+			index := strings.LastIndex(d.Pkg(), "/")
+			importName = d.Pkg()[index+1:]
+		}
+
+		stmts = append(stmts, internal.AssignAspect(name, importName, d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+	}
+
+	return stmts
 }
 
 func setArgsValues(name string, argsType string, params []*internal.FieldDef) []ast.Stmt {

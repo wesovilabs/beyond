@@ -24,8 +24,13 @@ func (g *goa) removeNonInterceptedJoinPoints() {
 	for _, f := range g.joinPoints.List() {
 		valid := true
 
-		for _, d := range g.advices.List() {
-			if (d.Name() == f.Name() && d.Pkg() == f.Pkg()) || f.Name() == "main" || f.Name() == "Goa" {
+		if f.Name() == "main" || f.Name() == "Goa" {
+			continue
+		}
+
+		for index := range g.advices.List() {
+			d := g.advices.List()[index]
+			if d.Name() == f.Name() && d.Pkg() == f.PkgPath() {
 				valid = false
 				continue
 			}

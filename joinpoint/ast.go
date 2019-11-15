@@ -21,7 +21,7 @@ func GetJoinPoints(rootPkg string, packages map[string]*parser.Package) *JoinPoi
 	return functions
 }
 
-func calculateImports(imports []*ast.ImportSpec) map[string]string {
+func calculateImports(currentPkg string, imports []*ast.ImportSpec) map[string]string {
 	paths := map[string]string{}
 
 	for _, imp := range imports {
@@ -35,7 +35,11 @@ func calculateImports(imports []*ast.ImportSpec) map[string]string {
 		}
 
 		name := path[strings.LastIndex(path, "/")+1 : len(path)-1]
-		paths[name] = path[1 : len(path)-1]
+		if name == currentPkg {
+			paths["_"+name] = path[1 : len(path)-1]
+		} else {
+			paths[name] = path[1 : len(path)-1]
+		}
 	}
 
 	return paths
@@ -60,7 +64,7 @@ func isAspectFunction(decl *ast.FuncDecl) bool {
 }
 
 func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, functions *JoinPoints) {
-	imports := calculateImports(file.Imports)
+	imports := calculateImports(pkg, file.Imports)
 
 	for _, obj := range file.Decls {
 		if decl, ok := obj.(*ast.FuncDecl); ok {
@@ -89,10 +93,11 @@ func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, fun
 			}
 
 			functions.AddJoinPoint(&JoinPoint{
-				parent: file,
-				decl:   decl,
-				path:   path,
-				pkg:    pkg,
+				parent:  file,
+				decl:    decl,
+				path:    path,
+				pkg:     pkg,
+				pkgPath: fmt.Sprintf("%s/%s", rootPkg, parentPath),
 			})
 		}
 	}

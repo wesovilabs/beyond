@@ -14,11 +14,18 @@ type FieldDef struct {
 // Params return the params
 func Params(fields []*ast.Field) []*FieldDef {
 	params := make([]*FieldDef, 0)
+	annonymousCounter := 0
 
 	for _, arg := range fields {
 		for _, argName := range arg.Names {
+			paramName := argName.String()
+			if argName.String() == "_" {
+				paramName = fmt.Sprintf("annonymous%v", annonymousCounter)
+				annonymousCounter++
+			}
+
 			params = append(params, &FieldDef{
-				name: argName.String(),
+				name: paramName,
 				kind: arg.Type,
 			})
 		}

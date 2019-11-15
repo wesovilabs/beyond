@@ -23,10 +23,11 @@ func (f *JoinPoints) AddJoinPoint(joinPoint *JoinPoint) {
 
 // JoinPoint struct with required info to efine a joinPoint
 type JoinPoint struct {
-	path   string
-	decl   *ast.FuncDecl
-	parent *ast.File
-	pkg    string
+	path    string
+	decl    *ast.FuncDecl
+	parent  *ast.File
+	pkg     string
+	pkgPath string
 }
 
 func (f *JoinPoint) GetRecv() *ast.FieldList {
@@ -51,6 +52,10 @@ func (f *JoinPoint) Pkg() string {
 // Path return the expression path
 func (f *JoinPoint) Path() string {
 	return f.path
+}
+
+func (f *JoinPoint) PkgPath() string {
+	return f.pkgPath
 }
 
 // Parent return the parent node
