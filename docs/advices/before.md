@@ -5,159 +5,178 @@ title: Before
 nav_order: 1
 ---
 
-{: .text-blue-300}
-# Before advices
+{: .text-green-300}
+# Before Advice
+{: .fs-9 }
 
-Along this guide we will learn how to code an advice that traces all the functions invocations.
+{: .text-green-200}
+Born to be the bouncer of your functions
+{: .fs-6 .fw-300 }
 
-{: .text-blue-200}
-## Pre-requisites
+---
 
-- Clone the [goa-examples repository](https://github.com/wesovilabs/goa-examples.git)
-```bash
->> git clone https://github.com/wesovilabs/goa-examples.git
-```
+{: .text-green-200}
+## About
 
+We will go though an advice that traces functions invocations. 
+
+
+{: .text-yellow-300}
+### Prerequisites
+
+Let's check that our environment is ready to follow the tutorial!
+ 
 - Install goa tool 
 ```bash
 >> go get github.com/wesovilabs/goa
 ```
 
-{: .text-blue-200}
-## Go through the code
+- Clone the [goa-examples repository](https://github.com/wesovilabs/goa-examples.git)
+```bash
+>> git clone https://github.com/wesovilabs/goa-examples.git
+>> cd goa-examples
+>> git checkout feature/advice-before
+```
 
-{: .text-blue-300}
-### 1. Write a type that implements interface Before
+{: .text-green-200}
+## Let's do it!
 
-This is the `Before` interface definition 
+{: .text-yellow-300}
+### > Define the advice
+
+Before advices must implement the interface Before (`github.com/wesovilabs/goa/api.Before`). 
 ```go
-// Before definition
 type Before interface {
-    Before(ctx *context.GoaContext)
+  Before(ctx *context.GoaContext)
 }
 ```
 
-Thus,  to implement a Before advice we just need to create a new type that implements the method `Before(ctx *context.GoaContext)`
-It can be found in file `advice/tracing`.
+Let's a have a look at type `TracingAdvice` that is declared in file `advice/tracing.go`.
 
 ```go
-package advice
+type TracingAdvice struct {
+  prefix string
+}
 
-import (
-    "fmt"
-    "github.com/wesovilabs/goa/api"
-    "github.com/wesovilabs/goa/api/context"
-)
-type TracingAdvice struct{}
-func (c *TracingAdvice) Before(ctx *context.GoaContext) {
-    params := make([]string, ctx.ParamsLen())
-    ctx.Params().ForEach(func(index int, arg *context.Arg) {
+func (a *TracingAdvice) Before(ctx *context.GoaContext) {
+  params := make([]string, ctx.Params().Count())
+  ctx.Params().ForEach(func(index int, arg *context.Arg) {
     params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())
-    })
-    fmt.Printf("[advice.tracing] %s.%s(%s)\n", ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
+  })
+  if a.prefix == "" {
+    fmt.Printf("%s.%s(%s)\n", ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
+    return
+  }
+  fmt.Printf("[%s] %s.%s(%s)\n", a.prefix, ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
 }
 ```
 
-As you can appreciate in the code, we use `ctx.Params().ForEachParam` to iterate over the list of params for the intercepted functions.
+**Type TracingAdvice** 
 
-You can find the full list of  provided GoaContext methods in section [GoaContext]()
+This is our advice. We can build more reusable and customizable advices by making use of attributes (`TracingAdvice` has a `prefix` attribute)
 
+**Method Before**: 
 
-{: .text-blue-300}
-### 2. Write a function that returns the advice
-
-This function will be used to register the advice
-
+1. Define a list to put the params info (`name:value`)
+```go 
+params := make([]string, ctx.Params().Count())
+```
+2. Iterate over the params and put them into the list
 ```go
-package advice
+ctx.Params().ForEach(func(index int, arg *context.Arg) {
+  params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())
+})
+```
+3. Print the traces
+```go
+if a.prefix == "" {
+  fmt.Printf("%s.%s(%s)\n", ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
+}
+fmt.Printf("[%s] %s.%s(%s)\n", a.prefix, ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
+```
 
+**GoaContext** is the guy that provides us with the **joinpoint details**.
+You can find the full list of provided methods by GoaContext in section [The GoaContext API](/goacontext)
+
+{: .text-yellow-300}
+### > Write a function (or many) that returns the advice
+To register a Before advice,  we need to provide functions that matches with the below signature
+```go
+func() Before
+```
+
+In file `advice/tracing.go` we can find a couple of functions that we will use to register the advice.
+```go
 func NewTracingAdvice() api.Before {
-    return &TracingAdvice{}
+  return &TracingAdvice{}
 }
-``` 
 
-{: .text-blue-300}
-### 3. Register the advice
+func NewTracingAdviceWithPrefix(prefix string) func() api.Before {
+  return func() api.Before {
+    return &TracingAdvice{ prefix: prefix }
+  }
+}
+```
 
-Let's open the file `before/main.go` and have a look at function `func Goa() *api.Goa`.  We register advice Tracing for any function that matches with expression `*.*(...)...`.  It actually means
-that any function invocation will be intercepted by our advice. We'll learn more about the advice expressions in section [Expressions]()
+These functions must be `public`. If not, they will be ignored when registering the advice.
+
+{: .text-yellow-300}
+### > Register the advice
+
+Function `Goa() * api.Goa` in file`main.go` is used to register the advices.
 
 ```go
-package main
-import (
-    "github.com/wesovilabs/goa/api"
-    "github.com/wesovilabs/goa/examples/advice"
-)
 func Goa() *api.Goa {
-    return api.New().WithBefore(advice.NewTracingAdvice, "*.*(...)...")
+  return api.New().
+    WithBefore(advice.NewTracingAdvice, "greeting.Hello(...)").
+    WithBefore(advice.NewTracingAdviceWithPrefix("goa"), "greeting.Bye(...)")
 }
 ```
 
+Function `Bye` invocations will be traced with `[goa]` prefix and the function `Hello` won't.
 
-The full code of this example can be found on [Goa repository]()
+We will dive into registering advices in [JoinPoint Expressions](/joinpoints)
 
-{: .text-blue-300}
-### 4. Code generation
+{: .text-yellow-300}
+### > Execution
 
-From the root of the goa-examples project, just run the below command
-
-```bash
->> go generate before/main.go
-```
-
-The code is generated in directory `.goa` (by default). 
-
-{: .text-blue-300}
-### 5. Running the code
-
-If we run the main function in directory `before` 
+This would be the normal behavior
 
 ```bash
->> go run before/main
-Hey John Doe
-Hey Jane Doe
+>> go run main.go
+Hey John
 Bye John
-Bye Jane
 ```
 
-On the other hand,  if we run the generated code the output will look different
+but if you make use of Goa ...
 
 ```bash
->> go run .goa/before/main
-[advice.tracing] before.sayHello(firstName:John,lastName:Doe)
-Hey John Doe
-[advice.tracing] before.sayHello(firstName:Jane,lastName:Doe)
-Hey Jane Doe
-[advice.tracing] before.sayBye(firstName:John)
+>> goa run main.go
+greeting.Hello(firstName:John)
+Hey John
+[my-preffix] greeting.Bye(firstName:John)
 Bye John
-[advice.tracing] before.sayBye(firstName:Jane)
-Bye Jane
 ```
 
-{: .text-blue-300}
+{: .text-green-300}
 ## Challenge
 
 I purpose you to implement a new advice to put in practice what we learnt in this article.
  
-1. Create a new advice that transform the string params to uppercase. 
-2. The new advice must intercept all the functions invocations.
-3. Generate the code and then execute it.
+1. Create a new advice that transforms the string params to uppercase or lowercase. 
+2. This new advice will be applied to both `greeting.Hello` and `greeting.Bye`  functions. For the Hello function
+the advice will transform the retrieved param to uppercase and for the function `Bye ` the param will be transformed
+to lowercase.
 
-The output after generating the code should be 
+The output must be 
 
 ```bash
->> go run .goa/before/main
-[advice.tracing] before.sayHello(firstName:John,lastName:Doe)
-Hey JOHN DOE
-[advice.tracing] before.sayHello(firstName:Jane,lastName:Doe)
-Hey JANE DOE
-[advice.tracing] before.sayBye(firstName:John)
-Bye JOHN
-[advice.tracing] before.sayBye(firstName:Jane)
-Bye JANE
+>> goa run main.go
+Hey JOHN
+Bye john
 ```
 
-If you find any problem to resolve this challenge, just drop me an email at `ivan.corrales.solera@gmail.com` and I will
+If you found any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
 be happy to give you some help.
 
 
@@ -167,7 +186,7 @@ If you enjoyed this article, I would really appreciate if you shared it with you
 <div class="socialme">
     <ul>
         <li class="twitter">
-            <a href="https://twitter.com/intent/tweet?via={{site.data.social.twitter.username}}&url={{ site.data.social.twitter.url | uri_escape}}&text={{ site.data.social.twitter.message2 | uri_escape}}" target="_blank">
+            <a href="https://twitter.com/intent/tweet?via={{site.data.social.twitter.username}}&url={{ site.data.social.twitter.url | uri_escape}}&text={{ site.data.social.twitter.message | uri_escape}}" target="_blank">
                 {% include social/twitter.svg %}
             </a>
         </li>

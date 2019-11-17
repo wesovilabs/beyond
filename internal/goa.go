@@ -49,6 +49,7 @@ func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) 
 	goa := &goa{}
 	goa.advices = advice.GetAdvices(rootPkg, packages)
 	goa.joinPoints = joinpoint.GetJoinPoints(rootPkg, packages)
+
 	goa.removeNonInterceptedJoinPoints()
 
 	for _, f := range goa.joinPoints.List() {

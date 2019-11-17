@@ -1,6 +1,5 @@
 ---
 layout: post
-parent: Advices
 title: GoaContext
 nav_order: 4
 ---
@@ -13,7 +12,7 @@ GoaContext is the cornerstone that will help you to build handy and useful advic
 {: .fs-6 .fw-300 }
 
 
-{: .text-blue-200}
+{: .text-green-300}
 ## API
 
 GoaContext provides us with methods to obtain all the information from the intercepted functions.

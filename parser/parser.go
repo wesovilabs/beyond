@@ -42,8 +42,8 @@ func (p *Package) Path() string {
 }
 
 // Parse parse the input
-func (pp *GoaParser) Parse(rootPath string) map[string]*Package {
-	pendingPaths := []string{rootPath}
+func (pp *GoaParser) Parse(path string) map[string]*Package {
+	pendingPaths := []string{path}
 	excludePaths := map[string]string{}
 	packages := make(map[string]*Package)
 

@@ -3,13 +3,24 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/wesovilabs/goa/helper"
 	"github.com/wesovilabs/goa/internal"
 	"github.com/wesovilabs/goa/logger"
 	goaParser "github.com/wesovilabs/goa/parser"
+	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
+
+const defaultTargetDir = ".goa"
+
+var excludeDirs = map[string]string{
+	defaultTargetDir: defaultTargetDir,
+	".git":           ".git",
+	".gitignore":     ".gitignore",
+}
 
 type settings struct {
 	goPath     string
@@ -20,7 +31,7 @@ type settings struct {
 	verbose    bool
 }
 
-func parseInput() *settings {
+func loadSettings() *settings {
 	var outputDir, goPath, project, path string
 
 	var showBanner, verbose bool
@@ -34,9 +45,9 @@ func parseInput() *settings {
 	flag.StringVar(&project, "project", "", "project name")
 	flag.StringVar(&path, "path", pwd, "path")
 	flag.StringVar(&goPath, "goPath", "", "go path")
-	flag.StringVar(&outputDir, "output", filepath.Join(goPath, ".goa"), "output directory")
+	flag.StringVar(&outputDir, "output", filepath.Join(goPath, defaultTargetDir), "output directory")
 	flag.BoolVar(&showBanner, "banner", false, "display goa banner")
-	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
+	flag.BoolVar(&verbose, "goaVerbose", false, "print info level logs to stdout")
 	flag.Parse()
 
 	goPath = filepath.Join(pwd, goPath)
@@ -53,35 +64,52 @@ func parseInput() *settings {
 	}
 }
 
-func main() {
-	settings := parseInput()
-	fmt.Printf("%#v", settings)
-
-	if settings.showBanner {
-		showBanner()
+func setpUpRootDir(sourceDir, rootDir string) {
+	logger.Infof("copying resources to directory %s", rootDir)
+	if err := helper.CopyDirectory(sourceDir, rootDir, excludeDirs); err != nil {
+		panic(err.Error())
 	}
+	logger.Infof("directory %s contains a copy of your path", rootDir)
+}
 
-	if settings.verbose {
+func run(rootDir string, arguments []string) {
+	cmd := exec.Command("go", arguments...)
+	cmd.Env = os.Environ()
+	cmd.Dir = rootDir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+}
+
+func main() {
+	settings, err := internal.GoaSettingFromCommandLine()
+	if err != nil {
+		panic(err)
+	}
+	if settings.Verbose {
 		logger.Enable()
 		defer logger.Close()
+		showBanner()
 	}
+	setpUpRootDir(settings.Path, settings.OutputDir)
 
-	if err := os.MkdirAll(settings.outputDir, os.ModePerm); err != nil {
-		panic("error while creating output directory")
-	}
+	defer func() {
+		logger.Infof("wipe out directory %s", settings.OutputDir)
+		if err := os.RemoveAll(settings.OutputDir); err != nil {
+			logger.Error(err.Error())
+		}
 
-	// // This values must be taken from go.mod in `path`
-	packages := findPackages(settings)
-	internal.Run(settings.project, packages, settings.outputDir)
-	logger.Info("code was generated successfully!")
+	}()
+	packages := goaParser.
+		New(settings.Path, settings.Project).
+		Parse("")
+	internal.Run(settings.Project, packages, settings.OutputDir)
+	goArgs := internal.RemoveGoaArguments(os.Args[1:])
+	run(settings.OutputDir, goArgs)
 }
 
 func showBanner() {
 	fmt.Println(internal.Banner)
-}
-
-func findPackages(settings *settings) map[string]*goaParser.Package {
-	return goaParser.
-		New(settings.goPath, settings.project).
-		Parse(settings.path)
 }

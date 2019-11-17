@@ -66,8 +66,7 @@ this site.
 {: .text-yellow-300}
 ### Star Goa on Github
 
-It's awesome to find out that people recognize your work. If you
-really like this project I will invite you to star it.
+It's awesome to find out that people recognize your work. If you like this project I ask you to star it.
 
 
 <!-- Place this tag where you want the button to render. -->

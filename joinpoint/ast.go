@@ -11,9 +11,8 @@ import (
 func GetJoinPoints(rootPkg string, packages map[string]*parser.Package) *JoinPoints {
 	functions := &JoinPoints{}
 
-	for pkgPath, pkg := range packages {
+	for _, pkg := range packages {
 		for _, file := range pkg.Node().Files {
-			fmt.Println("---- " + pkgPath + "  " + pkg.Path())
 			searchFunctions(rootPkg, pkg.Path(), pkg.Node().Name, file, functions)
 		}
 	}

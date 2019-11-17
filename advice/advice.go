@@ -82,10 +82,6 @@ func (a *Advice) Name() string {
 
 // GetAdviceCall returns the advice call
 func (a *Advice) GetAdviceCall(currentPkg string, imports map[string]string) string {
-	if a.call.function == "NewTracingAdvice" {
-		fmt.Println("stop")
-	}
-
 	args := make([]string, len(a.call.args))
 
 	for index := range a.call.args {

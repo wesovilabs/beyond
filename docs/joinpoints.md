@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Expressions
+title: Join Points
 nav_order: 3
 ---
 

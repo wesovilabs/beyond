@@ -3,62 +3,75 @@ layout: post
 title: Advices
 nav_order: 2
 has_children: true
+has_toc: false
 ---
 
-{: .text-blue-300}
-# Understanding the advices
+{: .text-green-300}
+# Advice
+{: .fs-9 }
+
+{: .text-green-200}
+The piece that you were missing...
+{: .fs-6 .fw-300 }
+
+---
  
-{: .text-blue-200}
+{: .text-green-300}
 ## Types of advices
 
 First of all, we'll go through the supported types of advices by Goa. 
 
-{: .text-blue-100}
+{: .text-yellow-300}
 ### Before 
 
-{: .text-blue-000}
+{: .text-green-200}
 #### Description
 
-Advice that executes before a function/method invocation.
+Advice that must be executed before a function/method invocation.
 
-{: .text-blue-000}
+{: .text-green-200}
 #### Use cases
 
 - Trace functions and methods calls.
-- Populate a field in an object depending on other values. 
+- Populate arguments with external data before being processed. 
 - Normalize arguments before being passed to functions and methods. 
 - Arguments validation.
 - Security checks.
 - ...
 
-[Go to section "Before advices"](/guides/advices/before/){: .text-blue-300 }
+[Go to section "Before advices"](/advices/before/)
+{: .fs-4 }
 
-{: .text-blue-100}
+---
+
+{: .text-yellow-300}
 ### Returning
 
-{: .text-blue-000}
+{: .text-green-200}
 #### Description
-Advice that executes after a function/method invocation.
+Advice that must be executed after a function/method invocation.
 
-{: .text-blue-000}
+{: .text-green-200}
 #### Use cases
 
-- Update field depending on output response.
+- Update fields depending on output response.
 - Normalize results. 
 - Check errors and manipulate them.
-- Throw business errors depending on the result.
+- Throw business errors depending on the results.
 - ...
 
-[Go to section "Returning advices"](/guides/advices/returning/){: .text-blue-300 }
+[Go to section "Returning advices"](/advices/returning/)
+{: .fs-4 }
+---
 
-{: .text-blue-100}
+{: .text-yellow-300}
 ### Around
 
-{: .text-blue-000}
+{: .text-green-200}
 #### Description
 Advice that surrounds a function/method invocation.
 
-{: .text-blue-000}
+{: .text-green-200}
 #### Use cases
 
 - Implement custom and smart memorize advices.
@@ -66,19 +79,8 @@ Advice that surrounds a function/method invocation.
 - Metric your function and methods.
 - ...
 
-[Go to section "Around advices"](/guides/advices/around/){: .text-blue-300 }
+[Go to section "Around advices"](/advices/around)
+{: .fs-4 }
 
 ---
 
-{: .text-blue-200}
-## Goa context
-
-When working with advices is necessary to know the details from the 
-functions or methods which are being intercepted. 
-
-That's,  why Goa provides us with **GoaContext**. The GoaContext will be accessible from the different implemented functions
-by our advices. It not only provides us with several methods to obtain information from the intercepted functions 
-but also with manipulate params and results.
-
-
-[Go to section "Goa Context"](/guides/advices/context/){: .text-blue-300 }
