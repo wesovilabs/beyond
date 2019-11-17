@@ -37,7 +37,7 @@ func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 			return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", sourcePath)
 		}
 
-		if err:=copy(fileInfo, sourcePath, destPath, excludes);err!=nil{
+		if err := copy(fileInfo, sourcePath, destPath, excludes); err != nil {
 			return err
 		}
 
@@ -81,9 +81,10 @@ func copy(fileInfo os.FileInfo, sourcePath, destPath string, excludes map[string
 
 func Copy(srcFile, dstFile string) error {
 	out, err := os.Create(dstFile)
-	defer func(){
-		if err:=out.Close();err!=nil{
-			logger.Error(err.Error())
+
+	defer func() {
+		if closeErr := out.Close(); closeErr != nil {
+			logger.Error(closeErr.Error())
 		}
 	}()
 
