@@ -3,6 +3,7 @@ package internal
 import (
 	"flag"
 	"github.com/wesovilabs/goa/helper"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -27,7 +28,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 
 	flag.StringVar(&project, "project", "", "project name")
 	flag.StringVar(&path, "path", pwd, "path")
-	flag.StringVar(&outputDir, "output", filepath.Join(path, defaultTargetDir), "output directory")
+	flag.StringVar(&outputDir, "output", "", "output directory")
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
 	flag.Parse()
 
@@ -38,6 +39,14 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 		}
 
 		project = module
+	}
+
+	if outputDir == "" {
+		if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
+			outputDir = targetDir
+		} else {
+			outputDir = filepath.Join(path, defaultTargetDir)
+		}
 	}
 
 	return &Settings{

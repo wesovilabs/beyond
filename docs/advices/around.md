@@ -10,7 +10,7 @@ nav_order: 3
 {: .fs-9 }
  
 {: .text-green-200}
-The one that takes the full control of your functions invocations.
+The one that takes the full control of your functions.
 {: .fs-6 .fw-300 }
 
 ---

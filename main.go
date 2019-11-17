@@ -19,7 +19,7 @@ var excludeDirs = map[string]string{
 	".gitignore":     ".gitignore",
 }
 
-func setpUpRootDir(sourceDir, rootDir string) {
+func setUp(sourceDir, rootDir string) {
 	logger.Infof("copying resources to directory %s", rootDir)
 
 	if err := helper.CopyDirectory(sourceDir, rootDir, excludeDirs); err != nil {
@@ -53,7 +53,7 @@ func main() {
 		showBanner()
 	}
 
-	setpUpRootDir(settings.Path, settings.OutputDir)
+	setUp(settings.Path, settings.OutputDir)
 
 	defer func() {
 		logger.Infof("wipe out directory %s", settings.OutputDir)

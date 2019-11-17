@@ -1,25 +1,29 @@
 ---
 layout: default
-title: Join Points
+title: Joinpoint
 nav_order: 3
 ---
 
 
-{: .text-blue-300}
-# Expressions
+{: .text-green-300}
+# Joinpoint
+{: .fs-9 }
 
 {: .text-green-200}
-Goa provides us a powerful syntax to define which functions will be intercepted by the advices. 
+Where the magic happens...  Keep open your eyes!
 {: .fs-6 .fw-300 }
 
-{: .text-blue-200}
+---
+
+
+{: .text-green-300}
 ## Introduction
 
 It's important to keep in mind that Goa provides a mechanism to intercept both functions and methods invocations.
 
+---
 
-
-{: .text-blue-200}
+{: .text-green-300}
 ## Syntax
 
 Goa interprets  the provided expressions in order to decide which functions must be intercepted by the advices.
@@ -27,6 +31,9 @@ Goa interprets  the provided expressions in order to decide which functions must
 `<package>.<type>?.<function>(<params)<results>`
 
 * `<type>.` is only required when the advice needs to intercept a method instead of a function. 
+
+{: .text-yellow-300}
+### A brief cheat sheet 
 
 We will go through some examples to understand how the aspects expressions work.
 
@@ -43,5 +50,26 @@ We will go through some examples to understand how the aspects expressions work.
 | `database.*(string,*)...`                | Any function in package `database`, with 2 params of types string and the second param of any type, and 0 or N results |
 | `database.*(string,...)...`              | Any function in package `database`, with 2 params of types string and the second param of any type, and 0 or N results |
 | `database.*(string,...)func()string`     | Any function in package `database`, with 2 params of types string and the second param of any type, and 1 result whose type is `func()string`|
-| `database.set*(*model.Person)...`        | Any function whose name `starts with set` in package `database`, with 1 params of type `*model.Person`, and 1 result whose type is `func()string`|
+| `database.set*(*model.Person)...`        | Any function whose name `starts with set` in package `database`, with 1 params of type `*model.Person`, and 0 or N results |
 
+---
+
+{: .text-green-300}
+## Let’s practice!
+
+{: .text-yellow-300}
+### Prerequisites
+ 
+Let's check that our environment is ready to follow the tutorial!
+  
+- Install goa tool 
+```bash
+>> go get github.com/wesovilabs/goa
+```
+
+- Clone the [goa-examples repository](https://github.com/wesovilabs/goa-examples.git)
+```bash
+>> git clone https://github.com/wesovilabs/goa-examples.git
+>> cd goa-examples
+>> git checkout feature/joinpoints
+ ```
