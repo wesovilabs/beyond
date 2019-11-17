@@ -43,6 +43,7 @@ type Advice struct {
 	regExp *regexp.Regexp
 }
 
+// Imports returns the list of imports
 func (a *Advice) Imports() []string {
 	if a.call.imports == nil {
 		return []string{a.call.pkg}

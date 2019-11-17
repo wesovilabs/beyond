@@ -70,7 +70,7 @@ func (args *Args) Set(name string, value interface{}) {
 	})
 }
 
-// Set set a value for the given argument
+// SetAt set a value in the given position
 func (args *Args) SetAt(index int, value interface{}) {
 	if args.Count() > 0 && index >= 0 && index < args.Count() {
 		args.items[index].value = value

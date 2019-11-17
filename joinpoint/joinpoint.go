@@ -30,6 +30,7 @@ type JoinPoint struct {
 	pkgPath string
 }
 
+// GetRecv return the fieldList
 func (f *JoinPoint) GetRecv() *ast.FieldList {
 	return f.decl.Recv
 }
@@ -54,6 +55,7 @@ func (f *JoinPoint) Path() string {
 	return f.path
 }
 
+// PkgPath return the pakcage path
 func (f *JoinPoint) PkgPath() string {
 	return f.pkgPath
 }

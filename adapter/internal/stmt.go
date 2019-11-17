@@ -88,6 +88,7 @@ func ReturnValuesStmt(fields []*FieldDef) ast.Stmt {
 	}
 }
 
+// TakeArgs takes the arguments from the method
 func TakeArgs(name string, method string) ast.Stmt {
 	return &ast.AssignStmt{
 		Lhs: []ast.Expr{
@@ -105,6 +106,7 @@ func TakeArgs(name string, method string) ast.Stmt {
 	}
 }
 
+// SetArgs set arguments
 func SetArgs(method string, name string) ast.Stmt {
 	return &ast.ExprStmt{
 		X: &ast.CallExpr{

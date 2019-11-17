@@ -7,8 +7,10 @@ import (
 	"strings"
 )
 
+// TracingAdvice trace your function invocations
 type TracingAdvice struct{}
 
+// Before required by Before interface
 func (c *TracingAdvice) Before(ctx *context.GoaContext) {
 	params := make([]string, ctx.Params().Count())
 	ctx.Params().ForEach(func(index int, arg *context.Arg) {
@@ -17,6 +19,7 @@ func (c *TracingAdvice) Before(ctx *context.GoaContext) {
 	fmt.Printf("[advice.tracing] %s.%s(%s)\n", ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
 }
 
+// NewTracingAdvice return an instance of TracingAdvice
 func NewTracingAdvice() api.Before {
 	return &TracingAdvice{}
 }

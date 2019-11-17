@@ -35,10 +35,12 @@ func (a *Arg) Kind() reflect.Type {
 	return a.kind
 }
 
+// Is check if argument has the provided type
 func (a *Arg) Is(t reflect.Type) bool {
 	return a.kind == t
 }
 
+// IsError check if argument is an error
 func (a *Arg) IsError() bool {
 	if _, ok := a.value.(error); ok {
 		return true
