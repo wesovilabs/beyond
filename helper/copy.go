@@ -2,6 +2,7 @@ package helper
 
 import (
 	"fmt"
+	"github.com/wesovilabs/goa/logger"
 	"io"
 	"io/ioutil"
 	"os"
@@ -9,13 +10,16 @@ import (
 	"syscall"
 )
 
+// CopyDirectory function that copies directories
 func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 	entries, err := ioutil.ReadDir(scrDir)
 	if err != nil {
 		return err
 	}
+
 	for index := range entries {
-		entry:=entries[index]
+		entry := entries[index]
+
 		if _, ok := excludes[entry.Name()]; ok {
 			continue
 		}
@@ -33,24 +37,7 @@ func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 			return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", sourcePath)
 		}
 
-		switch fileInfo.Mode() & os.ModeType {
-		case os.ModeDir:
-			if err := CreateIfNotExists(destPath, 0755); err != nil {
-				return err
-			}
-
-			if err := CopyDirectory(sourcePath, destPath, excludes); err != nil {
-				return err
-			}
-		case os.ModeSymlink:
-			if err := CopySymLink(sourcePath, destPath); err != nil {
-				return err
-			}
-		default:
-			if err := Copy(sourcePath, destPath); err != nil {
-				return err
-			}
-		}
+		copy(fileInfo, sourcePath,destPath,excludes)
 
 		if err := os.Lchown(destPath, int(stat.Uid), int(stat.Gid)); err != nil {
 			return err
@@ -67,6 +54,28 @@ func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 	return nil
 }
 
+func copy(fileInfo os.FileInfo, sourcePath, destPath string, excludes map[string]string) error {
+	switch fileInfo.Mode() & os.ModeType {
+	case os.ModeDir:
+		if err := CreateIfNotExists(destPath, 0755); err != nil {
+			return err
+		}
+
+		if err := CopyDirectory(sourcePath, destPath, excludes); err != nil {
+			return err
+		}
+	case os.ModeSymlink:
+		if err := CopySymLink(sourcePath, destPath); err != nil {
+			return err
+		}
+	default:
+		if err := Copy(sourcePath, destPath); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func Copy(srcFile, dstFile string) error {
 	out, err := os.Create(dstFile)
 	defer out.Close()
@@ -76,7 +85,12 @@ func Copy(srcFile, dstFile string) error {
 	}
 
 	in, err := os.Open(srcFile)
-	defer in.Close()
+
+	defer func() {
+		if closeErr := in.Close(); closeErr != nil {
+			logger.Errorf(closeErr.Error())
+		}
+	}()
 
 	if err != nil {
 		return err

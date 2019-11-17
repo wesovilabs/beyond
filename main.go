@@ -21,6 +21,7 @@ var excludeDirs = map[string]string{
 
 func setpUpRootDir(sourceDir, rootDir string) {
 	logger.Infof("copying resources to directory %s", rootDir)
+
 	if err := helper.CopyDirectory(sourceDir, rootDir, excludeDirs); err != nil {
 		panic(err.Error())
 	}
@@ -45,6 +46,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	if settings.Verbose {
 		logger.Enable()
 		defer logger.Close()
@@ -59,6 +61,7 @@ func main() {
 			logger.Error(err.Error())
 		}
 	}()
+
 	packages := goaParser.
 		New(settings.Path, settings.Project).
 		Parse("")

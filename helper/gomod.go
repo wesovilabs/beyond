@@ -5,14 +5,12 @@ import (
 	"github.com/pkg/errors"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
 const goModFileName = "go.mod"
 
-var projectRegExp = regexp.MustCompile(`module`)
-
+// GetModuleName returns the module name from a go.mod
 func GetModuleName(rootDir string) (string, error) {
 	goModPath := filepath.Join(rootDir, goModFileName)
 	if _, err := os.Stat(goModPath); err != nil {
