@@ -9,6 +9,7 @@ import (
 
 const defaultTargetDir = ".goa"
 
+// Settings Goa settings
 type Settings struct {
 	Path      string
 	Project   string
@@ -16,6 +17,7 @@ type Settings struct {
 	Verbose   bool
 }
 
+// GoaSettingFromCommandLine returns the GoaSettings from the command line args
 func GoaSettingFromCommandLine() (*Settings, error) {
 	var path, project, outputDir string
 
@@ -46,6 +48,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 	}, nil
 }
 
+// RemoveGoaArguments removes goa arguments from the list of arguments
 func RemoveGoaArguments(input []string) []string {
 	arguments := input
 
