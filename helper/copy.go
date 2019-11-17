@@ -14,10 +14,12 @@ func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 	if err != nil {
 		return err
 	}
-	for _, entry := range entries {
+	for index := range entries {
+		entry:=entries[index]
 		if _, ok := excludes[entry.Name()]; ok {
 			continue
 		}
+
 		sourcePath := filepath.Join(scrDir, entry.Name())
 		destPath := filepath.Join(dest, entry.Name())
 
@@ -36,6 +38,7 @@ func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 			if err := CreateIfNotExists(destPath, 0755); err != nil {
 				return err
 			}
+
 			if err := CopyDirectory(sourcePath, destPath, excludes); err != nil {
 				return err
 			}
@@ -60,18 +63,21 @@ func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 			}
 		}
 	}
+
 	return nil
 }
 
 func Copy(srcFile, dstFile string) error {
 	out, err := os.Create(dstFile)
 	defer out.Close()
+
 	if err != nil {
 		return err
 	}
 
 	in, err := os.Open(srcFile)
 	defer in.Close()
+
 	if err != nil {
 		return err
 	}
@@ -109,5 +115,6 @@ func CopySymLink(source, dest string) error {
 	if err != nil {
 		return err
 	}
+
 	return os.Symlink(link, dest)
 }

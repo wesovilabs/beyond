@@ -34,6 +34,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		project = module
 	}
 
@@ -47,6 +48,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 
 func RemoveGoaArguments(input []string) []string {
 	arguments := input
+
 	for i, arg := range input {
 		switch arg {
 		case "--project", "--output", "--path":
