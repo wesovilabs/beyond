@@ -3,12 +3,12 @@ package internal
 import (
 	"github.com/wesovilabs/goa/adapter"
 	"github.com/wesovilabs/goa/advice"
+	"github.com/wesovilabs/goa/helper"
 	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/logger"
 	"github.com/wesovilabs/goa/match"
 	"github.com/wesovilabs/goa/parser"
 
-	"github.com/wesovilabs/goa/writer"
 	"os"
 	"path/filepath"
 )
@@ -85,7 +85,7 @@ func (g *goa) save(packages map[string]*parser.Package, outputDir string) {
 				logger.Errorf("error creating output directory %s", err.Error())
 			}
 
-			if err := writer.Save(file, filepath.Join(outputPath, fileName)); err != nil {
+			if err := helper.Save(file, filepath.Join(outputPath, fileName)); err != nil {
 				logger.Error(err.Error())
 			}
 		}

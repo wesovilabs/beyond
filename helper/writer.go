@@ -1,4 +1,4 @@
-package writer
+package helper
 
 import (
 	"github.com/wesovilabs/goa/logger"

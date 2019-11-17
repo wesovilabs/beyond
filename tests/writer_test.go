@@ -2,7 +2,7 @@ package tests
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/writer"
+	"github.com/wesovilabs/goa/helper"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -21,7 +21,7 @@ func Test_Writer(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer os.RemoveAll(path.Name())
-			assert.Nil(writer.Save(file, path.Name()))
+			assert.Nil(helper.Save(file, path.Name()))
 		}
 
 	}
