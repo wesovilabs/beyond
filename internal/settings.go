@@ -68,9 +68,9 @@ func RemoveGoaArguments(input []string) []string {
 
 	for i, arg := range input {
 		switch arg {
-		case "--project", "--output", "--path":
+		case "--project", "--output", "--path", "--package":
 			arguments = append(arguments[0:i], arguments[i+2:]...)
-		case "--verbose":
+		case "--verbose", "--work":
 			arguments = append(arguments[0:i], arguments[i+1:]...)
 		}
 	}
