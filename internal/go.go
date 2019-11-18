@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"github.com/wesovilabs/goa/logger"
 	"log"
 	"os"
 	"os/exec"
@@ -68,7 +67,6 @@ type Executor struct {
 }
 
 func (e *Executor) Do() *exec.Cmd {
-	logger.Infof("Running go %v", e.args)
 	cmd := exec.Command("go", e.args...)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
