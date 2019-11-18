@@ -48,12 +48,16 @@ func main() {
 
 	setUp(settings.Path, settings.OutputDir)
 
-	defer func() {
-		logger.Infof("wipe out directory %s", settings.OutputDir)
-		if err := os.RemoveAll(settings.OutputDir); err != nil {
-			logger.Error(err.Error())
-		}
-	}()
+	if !settings.Work {
+		defer func() {
+			logger.Infof("wipe out directory %s", settings.OutputDir)
+			if err := os.RemoveAll(settings.OutputDir); err != nil {
+				logger.Error(err.Error())
+			}
+		}()
+	} else {
+		fmt.Printf("Temporary directory is %s\n", settings.OutputDir)
+	}
 
 	packages := goaParser.
 		New(settings.Path, settings.Project).
@@ -66,7 +70,9 @@ func main() {
 		if cmd.Wait() != nil {
 			<-sigCh
 			logger.Infof("Removing directory %s", settings.OutputDir)
-			os.RemoveAll(settings.OutputDir)
+			if !settings.Work {
+				os.RemoveAll(settings.OutputDir)
+			}
 			logger.Close()
 			os.Exit(0)
 		}

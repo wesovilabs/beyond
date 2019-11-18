@@ -17,13 +17,14 @@ type Settings struct {
 	OutputDir string
 	RootDir   string
 	Verbose   bool
+	Work      bool
 }
 
 // GoaSettingFromCommandLine returns the GoaSettings from the command line args
 func GoaSettingFromCommandLine() (*Settings, error) {
 	var path, project, outputDir string
 
-	var verbose bool
+	var verbose, work bool
 
 	pwd, _ := os.Getwd()
 
@@ -31,6 +32,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 	flag.StringVar(&path, "path", pwd, "path")
 	flag.StringVar(&outputDir, "output", "", "output directory")
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
+	flag.BoolVar(&work, "work", false, "print the name of the temporary work directory and do not delete it when exiting")
 	flag.Parse()
 
 	if project == "" {
@@ -56,6 +58,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 		OutputDir: outputDir,
 		Verbose:   verbose,
 		RootDir:   pwd,
+		Work:      work,
 	}, nil
 }
 
