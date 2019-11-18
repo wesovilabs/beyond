@@ -77,6 +77,7 @@ func main() {
 	run(settings.OutputDir, goArgs)
 
 	<-sigCh
+	logger.Infof("Removing directory %s",settings.OutputDir)
 	os.RemoveAll(settings.OutputDir)
 	logger.Close()
 	os.Exit(0)

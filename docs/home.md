@@ -24,6 +24,15 @@ A Golang library that will drive you to the AOP paradigm.
 {: .text-yellow-300}
 ### Installation
 
+{: .text-green-200}
+#### Install goa
+```bash
+go get -u github.com/wesovilabs/goa
+```
+
+{: .text-green-200}
+#### Add goa to your project 
+
 Add goa to go.mod. 
 
 
