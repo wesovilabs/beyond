@@ -70,9 +70,11 @@ func main() {
 		if cmd.Wait() != nil {
 			<-sigCh
 			logger.Infof("Removing directory %s", settings.OutputDir)
+
 			if !settings.Work {
 				os.RemoveAll(settings.OutputDir)
 			}
+
 			logger.Close()
 			os.Exit(0)
 		}
