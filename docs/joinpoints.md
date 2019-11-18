@@ -73,3 +73,163 @@ Let's check that our environment is ready to follow the tutorial!
 >> cd goa-examples
 >> git checkout feature/joinpoints
  ```
+
+{: .text-yellow-300}
+### Test application
+
+The application provices a Rest API with the below methods:
+
+- Create Employee
+- Get employee
+- Delete employee
+- List employees
+
+The application contains a Before advice that prints the functions/methods invocations.
+
+{: .text-green-300}
+*Intercept handler CreateEmployee*
+
+- Replace the regExp in function `Goa` in file `main.go` by on these:
+```go
+handler.CreateEmployee(...)...
+*.CreateEmployee(...)...
+handler.CreateEmployee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)
+handler.CreateEmployee(...,*net/http.Request,...)
+handler.Create*(...,*net/http.Request,...)
+```
+  
+- Run the server application
+```bash
+>> goa run main.go
+```
+- Run the client 
+```go
+>> go run test/main.go
+```  
+- Check the server stdout 
+```bash
+>> goa run main.go
+Launching server on localhost:8000
+handler.CreateEmployee
+```
+
+{: .text-green-300}
+*Intercept handlers*
+
+- Replace the regExp in function `Goa` in file `main.go` by on these:
+```go
+handler.*(...)...
+*.*Employee(...)...
+handler.*Employee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)
+handler.*(...,*net/http.Request,...)
+*.*(net/http.ResponseWriter,*net/http.Request,...)
+```
+  
+- Run the server application
+```bash
+>> goa run main.go
+```
+- Run the client 
+```go
+>> go run test/main.go
+```  
+- Check the server stdout 
+```bash
+>> goa run main.go
+Launching server on localhost:8000
+handler.CreateEmployee
+handler.GetEmployee
+handler.ListEmployees
+handler.DeleteEmployee
+```
+
+{: .text-green-300}
+*Intercept SaveEmployee method for type memDBClient*
+
+- Replace the regExp in function `Goa` in file `main.go` by on these:
+```go
+storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/goaexamples/model.Employee)error
+storage.*memDBClient.Save*(*github.com/wesovilabs/goa/model.Employee)error
+storage.*memDBClient.Save*(...)...
+*.*.SaveEmployee(...)...
+*.*memDBClient.Save*(...)...
+```
+  
+- Run the server application
+```bash
+>> goa run main.go
+```
+- Run the client 
+```go
+>> go run test/main.go
+```  
+- Check the server stdout 
+```bash
+>> goa run main.go
+Launching server on localhost:8000
+storage.*storage.memDBClient.SaveEmployee
+```
+
+
+{: .text-green-300}
+*Intercept  function RespondWithJSON in internal package handler/internal*
+
+- Replace the regExp in function `Goa` in file `main.go` by on these:
+```go
+handler/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})
+*/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})
+handler/*.RespondWithJSON(net/http.ResponseWriter,int,interface{})
+*.RespondWithJSON(net/http.ResponseWriter,...)
+*.RespondWithJSON(...,int,...)
+```
+  
+- Run the server application
+```bash
+>> goa run main.go
+```
+- Run the client 
+```go
+>> go run test/main.go
+```  
+- Check the server stdout 
+```bash
+>> goa run main.go
+Launching server on localhost:8000
+internal.RespondWithJSON
+internal.RespondWithJSON
+internal.RespondWithJSON
+internal.RespondWithJSON
+```
+
+{: .text-green-300}
+## Challenge
+
+Find valid expressions for intercepting...
+
+- All the memDBClient methods
+- Function `RandomString` in package helper
+- Function `RespondWithError`. By the way, you will need to force this error. In file `test/main.go`,  set an empty email. 
+```go
+res,_ := api.CreateEmployee(&model.Employee{
+   Email:    "",
+   Fullname: "John Doe",
+})
+```
+
+
+If you found any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
+be happy to give you some help.
+
+
+If you enjoyed this article, I would really appreciate if you shared it with your networks
+
+
+<div class="socialme">
+    <ul>
+        <li class="twitter">
+            <a href="https://twitter.com/intent/tweet?via={{site.data.social.twitter.username}}&url={{ site.data.social.twitter.url | uri_escape}}&text={{ site.data.social.twitter.message | uri_escape}}" target="_blank">
+                {% include social/twitter.svg %}
+            </a>
+        </li>
+    </ul>
+</div>

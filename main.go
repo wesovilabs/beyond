@@ -9,6 +9,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
+	"syscall"
 )
 
 const defaultTargetDir = ".goa"
@@ -36,12 +38,15 @@ func run(rootDir string, arguments []string) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	if err := cmd.Run(); err != nil {
+	if err := cmd.Start(); err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
+
 }
 
 func main() {
+	sigCh := make(chan os.Signal)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 	settings, err := internal.GoaSettingFromCommandLine()
 	if err != nil {
 		panic(err)
@@ -68,6 +73,13 @@ func main() {
 	internal.Run(settings.Project, packages, settings.OutputDir)
 	goArgs := internal.RemoveGoaArguments(os.Args[1:])
 	run(settings.OutputDir, goArgs)
+
+	select {
+	case <-sigCh:
+		os.RemoveAll(settings.OutputDir)
+		logger.Close()
+		os.Exit(0)
+	}
 }
 
 func showBanner() {
