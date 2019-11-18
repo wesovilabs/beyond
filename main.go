@@ -41,13 +41,15 @@ func run(rootDir string, arguments []string) {
 	if err := cmd.Start(); err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
-
 }
 
 func main() {
-	sigCh := make(chan os.Signal)
+	sigCh := make(chan os.Signal, 1)
+
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
 	settings, err := internal.GoaSettingFromCommandLine()
+
 	if err != nil {
 		panic(err)
 	}
@@ -74,12 +76,10 @@ func main() {
 	goArgs := internal.RemoveGoaArguments(os.Args[1:])
 	run(settings.OutputDir, goArgs)
 
-	select {
-	case <-sigCh:
-		os.RemoveAll(settings.OutputDir)
-		logger.Close()
-		os.Exit(0)
-	}
+	<-sigCh
+	os.RemoveAll(settings.OutputDir)
+	logger.Close()
+	os.Exit(0)
 }
 
 func showBanner() {
