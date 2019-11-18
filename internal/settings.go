@@ -15,6 +15,7 @@ type Settings struct {
 	Path      string
 	Project   string
 	OutputDir string
+	RootDir   string
 	Verbose   bool
 }
 
@@ -54,6 +55,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 		Project:   project,
 		OutputDir: outputDir,
 		Verbose:   verbose,
+		RootDir:   "",
 	}, nil
 }
 

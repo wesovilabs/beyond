@@ -2,7 +2,7 @@
 layout: page
 title: Contributing
 permalink: /contributors/
-nav_order: 6
+nav_order: 7
 ---
 
 {: .text-green-300}

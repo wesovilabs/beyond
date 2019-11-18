@@ -6,9 +6,7 @@ import (
 	"github.com/wesovilabs/goa/internal"
 	"github.com/wesovilabs/goa/logger"
 	goaParser "github.com/wesovilabs/goa/parser"
-	"log"
 	"os"
-	"os/exec"
 	"os/signal"
 	"syscall"
 )
@@ -29,18 +27,6 @@ func setUp(sourceDir, rootDir string) {
 	}
 
 	logger.Infof("directory %s contains a copy of your path", rootDir)
-}
-
-func run(rootDir string, arguments []string) {
-	cmd := exec.Command("go", arguments...)
-	cmd.Env = os.Environ()
-	cmd.Dir = rootDir
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	if err := cmd.Start(); err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
-	}
 }
 
 func main() {
@@ -74,13 +60,18 @@ func main() {
 		Parse("")
 	internal.Run(settings.Project, packages, settings.OutputDir)
 	goArgs := internal.RemoveGoaArguments(os.Args[1:])
-	run(settings.OutputDir, goArgs)
+	if goCommand := internal.GoCommand(settings, goArgs); goCommand != nil {
+		cmd := goCommand.Do()
+		if cmd.Wait() != nil {
+			<-sigCh
+			logger.Infof("Removing directory %s", settings.OutputDir)
+			os.RemoveAll(settings.OutputDir)
+			logger.Close()
+			os.Exit(0)
+		}
+		logger.Info("execution completed successfully!")
+	}
 
-	<-sigCh
-	logger.Infof("Removing directory %s",settings.OutputDir)
-	os.RemoveAll(settings.OutputDir)
-	logger.Close()
-	os.Exit(0)
 }
 
 func showBanner() {

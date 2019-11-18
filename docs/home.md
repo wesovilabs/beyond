@@ -3,7 +3,7 @@ layout: default
 title: Home
 description: "Goa is a Golang Library that provides AOP"
 nav_order: 1
-permalink: /home
+permalink: /
 ---
 
 {: .text-green-300}
