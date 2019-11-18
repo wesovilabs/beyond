@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -41,12 +42,12 @@ func newGoBuild(settings *Settings, args []string) *Executor {
 		arg := args[i]
 		if arg == "-o" {
 			hasOutputFlag = true
-			args[i+1] = transformPath(args[i+1], settings.RootDir)
+			args[i+1] = transformPath(args[i+1], settings.Pkg)
 		}
 	}
 
 	if !hasOutputFlag {
-		args = append(args, "-o", settings.RootDir)
+		args = append(args, "-o", settings.Pkg)
 	}
 
 	return &Executor{"build", args, settings}
@@ -68,6 +69,7 @@ type Executor struct {
 
 //nolint
 func (e *Executor) Do() *exec.Cmd {
+	fmt.Printf("go %v\n", e.args)
 	cmd := exec.Command("go", e.args...)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir

@@ -15,14 +15,14 @@ type Settings struct {
 	Path      string
 	Project   string
 	OutputDir string
-	RootDir   string
+	Pkg       string
 	Verbose   bool
 	Work      bool
 }
 
 // GoaSettingFromCommandLine returns the GoaSettings from the command line args
 func GoaSettingFromCommandLine() (*Settings, error) {
-	var path, project, outputDir string
+	var path, project, outputDir, pkg string
 
 	var verbose, work bool
 
@@ -31,6 +31,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 	flag.StringVar(&project, "project", "", "project name")
 	flag.StringVar(&path, "path", pwd, "path")
 	flag.StringVar(&outputDir, "output", "", "output directory")
+	flag.StringVar(&pkg, "package", "", "relative path to the main package")
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
 	flag.BoolVar(&work, "work", false, "print the name of the temporary work directory and do not delete it when exiting")
 	flag.Parse()
@@ -57,23 +58,28 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 		Project:   project,
 		OutputDir: outputDir,
 		Verbose:   verbose,
-		RootDir:   pwd,
+		Pkg:       pkg,
 		Work:      work,
 	}, nil
 }
 
 // RemoveGoaArguments removes goa arguments from the list of arguments
 func RemoveGoaArguments(input []string) []string {
-	arguments := input
-
+	out := make([]string, 0)
+	argsIndex := make(map[int]bool)
 	for i, arg := range input {
 		switch arg {
 		case "--project", "--output", "--path", "--package":
-			arguments = append(arguments[0:i], arguments[i+2:]...)
+			argsIndex[i] = true
+			argsIndex[i+1] = true
 		case "--verbose", "--work":
-			arguments = append(arguments[0:i], arguments[i+1:]...)
+			argsIndex[i] = true
 		}
 	}
-
-	return arguments
+	for i := range input {
+		if !argsIndex[i] {
+			out = append(out, input[i])
+		}
+	}
+	return out
 }

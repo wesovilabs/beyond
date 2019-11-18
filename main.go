@@ -58,10 +58,9 @@ func main() {
 	} else {
 		fmt.Printf("Temporary directory is %s\n", settings.OutputDir)
 	}
-
 	packages := goaParser.
 		New(settings.Path, settings.Project).
-		Parse("")
+		Parse(settings.Pkg)
 	internal.Run(settings.Project, packages, settings.OutputDir)
 	goArgs := internal.RemoveGoaArguments(os.Args[1:])
 
