@@ -8,13 +8,14 @@ import (
 	"path/filepath"
 )
 
-var goCmds = map[string]func(*Settings, []string) *executor{
+var goCmds = map[string]func(*Settings, []string) *Executor{
 	"build":    newGoBuild,
 	"run":      newGoRun,
 	"generate": newGoGenerate,
 }
 
-func GoCommand(settings *Settings, args []string) *executor {
+// GoCommand reutrns the go command to be executed
+func GoCommand(settings *Settings, args []string) *Executor {
 	for i := range args {
 		arg := args[i]
 
@@ -34,7 +35,7 @@ func transformPath(old string, baseDir string) string {
 	return filepath.Join(baseDir, old)
 }
 
-func newGoBuild(settings *Settings, args []string) *executor {
+func newGoBuild(settings *Settings, args []string) *Executor {
 	var hasOutputFlag bool
 
 	for i := range args {
@@ -49,25 +50,24 @@ func newGoBuild(settings *Settings, args []string) *executor {
 		args = append(args, "-o", settings.RootDir)
 	}
 
-	return &executor{"build", args, settings}
+	return &Executor{"build", args, settings}
 }
 
-func newGoRun(settings *Settings, args []string) *executor {
-
-	return &executor{"run", args, settings}
+func newGoRun(settings *Settings, args []string) *Executor {
+	return &Executor{"run", args, settings}
 }
-func newGoGenerate(settings *Settings, args []string) *executor {
-
-	return &executor{"generate", args, settings}
+func newGoGenerate(settings *Settings, args []string) *Executor {
+	return &Executor{"generate", args, settings}
 }
 
-type executor struct {
+// Executor struct for wrapping go commands
+type Executor struct {
 	cmd      string
 	args     []string
 	settings *Settings
 }
 
-func (e *executor) Do() *exec.Cmd {
+func (e *Executor) Do() *exec.Cmd {
 	logger.Infof("Running go %v", e.args)
 	cmd := exec.Command("go", e.args...)
 	cmd.Env = os.Environ()
@@ -78,5 +78,6 @@ func (e *executor) Do() *exec.Cmd {
 	if err := cmd.Start(); err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
+
 	return cmd
 }
