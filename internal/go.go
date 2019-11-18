@@ -66,6 +66,7 @@ type Executor struct {
 	settings *Settings
 }
 
+//nolint
 func (e *Executor) Do() *exec.Cmd {
 	cmd := exec.Command("go", e.args...)
 	cmd.Env = os.Environ()
