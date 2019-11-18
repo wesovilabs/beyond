@@ -17,10 +17,12 @@ var goCmds = map[string]func(*Settings, []string) *executor{
 func GoCommand(settings *Settings, args []string) *executor {
 	for i := range args {
 		arg := args[i]
+
 		if fn, ok := goCmds[arg]; ok {
 			return fn(settings, args)
 		}
 	}
+
 	return nil
 }
 
@@ -28,11 +30,13 @@ func transformPath(old string, baseDir string) string {
 	if filepath.IsAbs(old) {
 		return old
 	}
+
 	return filepath.Join(baseDir, old)
 }
 
 func newGoBuild(settings *Settings, args []string) *executor {
 	var hasOutputFlag bool
+
 	for i := range args {
 		arg := args[i]
 		if arg == "-o" {
@@ -40,9 +44,11 @@ func newGoBuild(settings *Settings, args []string) *executor {
 			args[i+1] = transformPath(args[i+1], settings.RootDir)
 		}
 	}
+
 	if !hasOutputFlag {
 		args = append(args, "-o", settings.RootDir)
 	}
+
 	return &executor{"build", args, settings}
 }
 
@@ -68,6 +74,7 @@ func (e *executor) Do() *exec.Cmd {
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
 	if err := cmd.Start(); err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}

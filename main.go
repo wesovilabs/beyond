@@ -60,6 +60,7 @@ func main() {
 		Parse("")
 	internal.Run(settings.Project, packages, settings.OutputDir)
 	goArgs := internal.RemoveGoaArguments(os.Args[1:])
+
 	if goCommand := internal.GoCommand(settings, goArgs); goCommand != nil {
 		cmd := goCommand.Do()
 		if cmd.Wait() != nil {
@@ -69,9 +70,9 @@ func main() {
 			logger.Close()
 			os.Exit(0)
 		}
+
 		logger.Info("execution completed successfully!")
 	}
-
 }
 
 func showBanner() {
