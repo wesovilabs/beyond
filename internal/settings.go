@@ -67,6 +67,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 func RemoveGoaArguments(input []string) []string {
 	out := make([]string, 0)
 	argsIndex := make(map[int]bool)
+
 	for i, arg := range input {
 		switch arg {
 		case "--project", "--output", "--path", "--package":
@@ -76,10 +77,12 @@ func RemoveGoaArguments(input []string) []string {
 			argsIndex[i] = true
 		}
 	}
+
 	for i := range input {
 		if !argsIndex[i] {
 			out = append(out, input[i])
 		}
 	}
+
 	return out
 }
