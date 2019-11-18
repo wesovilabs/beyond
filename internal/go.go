@@ -24,24 +24,24 @@ func GoCommand(settings *Settings, args []string) *executor {
 	return nil
 }
 
-func transformPath(old string,baseDir string) string{
-	filepath.IsAbs(old){
+func transformPath(old string, baseDir string) string {
+	if filepath.IsAbs(old) {
 		return old
 	}
-	return filepath.Join(baseDir,old)
+	return filepath.Join(baseDir, old)
 }
 
 func newGoBuild(settings *Settings, args []string) *executor {
 	var hasOutputFlag bool
-	for i:=range args{
-		arg:=args[i]
-		if arg=="-o"{
-			hasOutputFlag=true
-			args[i+1]=transformPath(args[i+1],settings.RootDir)
+	for i := range args {
+		arg := args[i]
+		if arg == "-o" {
+			hasOutputFlag = true
+			args[i+1] = transformPath(args[i+1], settings.RootDir)
 		}
 	}
-	if !hasOutputFlag{
-		args=append(args,"-o",settings.RootDir)
+	if !hasOutputFlag {
+		args = append(args, "-o", settings.RootDir)
 	}
 	return &executor{"build", args, settings}
 }

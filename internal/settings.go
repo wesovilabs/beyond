@@ -55,7 +55,7 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 		Project:   project,
 		OutputDir: outputDir,
 		Verbose:   verbose,
-		RootDir:   "",
+		RootDir:   pwd,
 	}, nil
 }
 
