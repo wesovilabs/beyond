@@ -15,7 +15,9 @@ func setUp(sourceDir, rootDir string, excludeDirs map[string]bool) {
 	logger.Infof("copying resources to directory %s", rootDir)
 
 	if _, err := os.Stat(rootDir); err != nil {
-		os.MkdirAll(rootDir, 0755)
+		if err:=os.MkdirAll(rootDir, 0755);err!=nil{
+			logger.Error(err.Error())
+		}
 	}
 
 	if err := helper.CopyDirectory(sourceDir, rootDir, excludeDirs); err != nil {
