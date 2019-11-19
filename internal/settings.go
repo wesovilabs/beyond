@@ -12,12 +12,13 @@ const defaultTargetDir = ".goa"
 
 // Settings Goa settings
 type Settings struct {
-	Path      string
-	Project   string
-	OutputDir string
-	Pkg       string
-	Verbose   bool
-	Work      bool
+	Path        string
+	Project     string
+	OutputDir   string
+	Pkg         string
+	ExcludeDirs map[string]bool
+	Verbose     bool
+	Work        bool
 }
 
 // GoaSettingFromCommandLine returns the GoaSettings from the command line args
@@ -45,21 +46,32 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 		project = module
 	}
 
+	var outErr error
+
 	if outputDir == "" {
 		if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
 			outputDir = targetDir
 		} else {
 			outputDir = filepath.Join(path, defaultTargetDir)
 		}
+	} else {
+		if outputDir, outErr = filepath.Abs(outputDir); outErr != nil {
+			outputDir = filepath.Join(path, defaultTargetDir)
+		}
 	}
 
+	excludeDirs := map[string]bool{}
+	addDefaultExcludes(".git", excludeDirs)
+	addDefaultExcludes(outputDir, excludeDirs)
+
 	return &Settings{
-		Path:      path,
-		Project:   project,
-		OutputDir: outputDir,
-		Verbose:   verbose,
-		Pkg:       pkg,
-		Work:      work,
+		Path:        path,
+		Project:     project,
+		OutputDir:   outputDir,
+		Verbose:     verbose,
+		ExcludeDirs: excludeDirs,
+		Pkg:         pkg,
+		Work:        work,
 	}, nil
 }
 
@@ -85,4 +97,10 @@ func RemoveGoaArguments(input []string) []string {
 	}
 
 	return out
+}
+
+func addDefaultExcludes(localPath string, excludes map[string]bool) {
+	if absPath, err := filepath.Abs(localPath); err == nil {
+		excludes[absPath] = true
+	}
 }

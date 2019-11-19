@@ -30,14 +30,7 @@ func CallCreateGoaContext(imports map[string]string) *ast.CallExpr {
 			X:   NewIdent(imports[goaCtx]),
 			Sel: NewIdent(opNewContext),
 		},
-		Args: []ast.Expr{
-			&ast.CallExpr{
-				Fun: &ast.SelectorExpr{
-					X:   NewIdent(imports["context"]),
-					Sel: NewIdent("Background"),
-				},
-			},
-		},
+		Args: []ast.Expr{},
 	}
 }
 

@@ -40,7 +40,8 @@ func Test_Copy(t *testing.T) {
 
 	if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
 		defer os.RemoveAll(targetDir)
-		if err := CopyDirectory(dir, targetDir, map[string]string{"child2": "child2"}); err != nil {
+		child2AbsPath, _ := filepath.Abs("child2")
+		if err := CopyDirectory(dir, targetDir, map[string]bool{child2AbsPath: true}); err != nil {
 			t.Fatal(err.Error())
 		} else {
 			if _, err := os.Stat(filepath.Join(targetDir, "child1")); err != nil {

@@ -24,10 +24,19 @@ func Params(fields []*ast.Field) []*FieldDef {
 				annonymousCounter++
 			}
 
-			params = append(params, &FieldDef{
+			fd := &FieldDef{
 				name: paramName,
-				kind: arg.Type,
-			})
+			}
+
+			if ell, ok := arg.Type.(*ast.Ellipsis); ok {
+				fd.kind = &ast.ArrayType{
+					Elt: ell.Elt,
+				}
+			} else {
+				fd.kind = arg.Type
+			}
+
+			params = append(params, fd)
 		}
 	}
 

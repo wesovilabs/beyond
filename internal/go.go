@@ -42,7 +42,7 @@ func newGoBuild(settings *Settings, args []string) *Executor {
 		arg := args[i]
 		if arg == "-o" {
 			hasOutputFlag = true
-			args[i+1] = transformPath(args[i+1], settings.Pkg)
+			args[i+1] = transformPath(args[i+1], settings.Path)
 		}
 	}
 

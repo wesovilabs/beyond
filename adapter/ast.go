@@ -6,7 +6,6 @@ import (
 )
 
 var requiredImports = map[string]string{
-	"context":                               "context",
 	"github.com/wesovilabs/goa/api/context": "goaContext",
 }
 

@@ -1,7 +1,6 @@
 package context
 
 import (
-	"context"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -9,8 +8,7 @@ import (
 )
 
 func Test_Context(t *testing.T) {
-	ctx := context.Background()
-	goaCtx := NewContext(ctx)
+	goaCtx := NewContext()
 	goaCtx.WithPkg("parent/child").
 		WithName("function").
 		SetParams(&Args{items: []*Arg{
@@ -38,7 +36,7 @@ func Test_Context(t *testing.T) {
 	goaCtx.Set("firstname", "Wenceslao")
 	assert.Equal("Wenceslao", goaCtx.Get("firstname"))
 
-	goaCtx = NewContext(context.Background())
+	goaCtx = NewContext()
 	assert.Empty(goaCtx.Function())
 	assert.Empty(goaCtx.Pkg())
 	assert.Empty(goaCtx.Params().items)
@@ -49,8 +47,7 @@ type Data struct {
 }
 
 func TestContext_ParamsGet(t *testing.T) {
-	ctx := context.Background()
-	goaCtx := NewContext(ctx)
+	goaCtx := NewContext()
 	d := Data{}
 	goaCtx.WithPkg("parent/child").
 		WithName("function").

@@ -11,16 +11,18 @@ import (
 )
 
 // CopyDirectory function that copies directories
-func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
+func CopyDirectory(scrDir, dest string, excludes map[string]bool) error {
 	entries, err := ioutil.ReadDir(scrDir)
+
 	if err != nil {
 		return err
 	}
 
 	for index := range entries {
 		entry := entries[index]
+		entryAbsPath, _ := filepath.Abs(entry.Name())
 
-		if _, ok := excludes[entry.Name()]; ok {
+		if _, ok := excludes[entryAbsPath]; ok {
 			continue
 		}
 
@@ -56,7 +58,7 @@ func CopyDirectory(scrDir, dest string, excludes map[string]string) error {
 	return nil
 }
 
-func copy(fileInfo os.FileInfo, sourcePath, destPath string, excludes map[string]string) error {
+func copy(fileInfo os.FileInfo, sourcePath, destPath string, excludes map[string]bool) error {
 	switch fileInfo.Mode() & os.ModeType {
 	case os.ModeDir:
 		if err := createIfNotExists(destPath, 0755); err != nil {

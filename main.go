@@ -11,16 +11,12 @@ import (
 	"syscall"
 )
 
-const defaultTargetDir = ".goa"
-
-var excludeDirs = map[string]string{
-	defaultTargetDir: defaultTargetDir,
-	".git":           ".git",
-	".gitignore":     ".gitignore",
-}
-
-func setUp(sourceDir, rootDir string) {
+func setUp(sourceDir, rootDir string, excludeDirs map[string]bool) {
 	logger.Infof("copying resources to directory %s", rootDir)
+
+	if _, err := os.Stat(rootDir); err != nil {
+		os.MkdirAll(rootDir, 0755)
+	}
 
 	if err := helper.CopyDirectory(sourceDir, rootDir, excludeDirs); err != nil {
 		panic(err.Error())
@@ -46,7 +42,7 @@ func main() {
 		showBanner()
 	}
 
-	setUp(settings.Path, settings.OutputDir)
+	setUp(settings.Path, settings.OutputDir, settings.ExcludeDirs)
 
 	if !settings.Work {
 		defer func() {
@@ -69,9 +65,9 @@ func main() {
 		cmd := goCommand.Do()
 		if cmd.Wait() != nil {
 			<-sigCh
-			logger.Infof("Removing directory %s", settings.OutputDir)
 
 			if !settings.Work {
+				logger.Infof("Removing directory %s", settings.OutputDir)
 				os.RemoveAll(settings.OutputDir)
 			}
 
