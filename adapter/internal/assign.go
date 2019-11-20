@@ -40,7 +40,7 @@ func CallFunctionAndAssign(currentPkg, pkg, name string, params, results []*Fiel
 	if len(results) > 0 {
 		outputVariables := make([]ast.Expr, len(results))
 		for index, field := range results {
-			outputVariables[index] = NewIdentObj(field.name)
+			outputVariables[index] = NewIdentObj(field.Name)
 		}
 
 		return &ast.AssignStmt{
@@ -64,7 +64,7 @@ func CallMethodAndAssign(recv *ast.FieldList, currentPkg, pkg, name string, para
 	if len(results) > 0 {
 		outputVariables := make([]ast.Expr, len(results))
 		for index, field := range results {
-			outputVariables[index] = NewIdentObj(field.name)
+			outputVariables[index] = NewIdentObj(field.Name)
 		}
 
 		return &ast.AssignStmt{

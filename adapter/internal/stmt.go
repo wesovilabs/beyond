@@ -7,7 +7,7 @@ import (
 )
 
 // ArgsToFunctionArgs return the list of statements
-func ArgsToFunctionArgs(name string, fields []*FieldDef) []ast.Stmt {
+func ArgsToFunctionArgs(argType string, name string, fields []*FieldDef) []ast.Stmt {
 	stmts := make([]ast.Stmt, 0)
 
 	for index, f := range fields {
@@ -27,13 +27,13 @@ func ArgsToFunctionArgs(name string, fields []*FieldDef) []ast.Stmt {
 					Args: []ast.Expr{
 						&ast.BasicLit{
 							Kind:  token.STRING,
-							Value: fmt.Sprintf(`"%s"`, f.name),
+							Value: fmt.Sprintf(`"%s"`, f.Name),
 						},
 					},
 				},
 			},
 		})
-		stmts = append(stmts, argumentToVariable(resultName, f))
+		stmts = append(stmts, argumentToVariable(resultName, fmt.Sprintf("%s%v", argType, index), f))
 	}
 
 	return stmts
@@ -55,11 +55,18 @@ func ifArgumentValueIsNotNil(variable string, stmt ast.Stmt) ast.Stmt {
 	}
 }
 
-func argumentToVariable(variable string, field *FieldDef) ast.Stmt {
-	return ifArgumentValueIsNotNil(variable, &ast.AssignStmt{
+func argumentToVariable(variable string, fieldName string, field *FieldDef) ast.Stmt {
+	kind := field.Kind
+	if ell, ok := kind.(*ast.Ellipsis); ok {
+		kind = &ast.ArrayType{
+			Elt: ell.Elt,
+		}
+	}
+
+	assigmentStmt := &ast.AssignStmt{
 		Tok: token.ASSIGN,
 		Lhs: []ast.Expr{
-			NewIdentObjVar(field.name),
+			NewIdentObjVar(fieldName),
 		},
 		Rhs: []ast.Expr{
 			&ast.TypeAssertExpr{
@@ -69,10 +76,12 @@ func argumentToVariable(variable string, field *FieldDef) ast.Stmt {
 						Sel: NewIdent("Value"),
 					},
 				},
-				Type: field.kind,
+				Type: kind,
 			},
 		},
-	})
+	}
+
+	return ifArgumentValueIsNotNil(variable, assigmentStmt)
 }
 
 // ReturnValuesStmt return the list of statements
@@ -80,7 +89,7 @@ func ReturnValuesStmt(fields []*FieldDef) ast.Stmt {
 	results := make([]ast.Expr, len(fields))
 
 	for index, field := range fields {
-		results[index] = NewIdentObjVar(field.name)
+		results[index] = NewIdentObjVar(field.Name)
 	}
 
 	return &ast.ReturnStmt{

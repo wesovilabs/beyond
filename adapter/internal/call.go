@@ -56,28 +56,51 @@ func CallCreateAspect(pkg, name string) ast.Expr {
 }
 
 // SetArgValue set value to context
-func SetArgValue(argsType string, field *FieldDef) ast.Expr {
-	return &ast.CallExpr{
+func SetArgValue(name string, field *FieldDef, paramName string) ast.Expr {
+	callExpr := &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
-			X:   NewIdentObjVar(argsType),
+			X:   NewIdentObjVar(name),
 			Sel: NewIdent("Set"),
 		},
 		Args: []ast.Expr{
 			&ast.BasicLit{
 				Kind:  token.STRING,
-				Value: fmt.Sprintf(`"%s"`, field.name),
+				Value: fmt.Sprintf(`"%s"`, field.Name),
 			},
-			NewIdentObjVar(field.name),
+			NewIdentObjVar(paramName),
 		},
 	}
+
+	return callExpr
+}
+
+func prepareArgs(fields []*FieldDef, withName bool) []ast.Expr {
+	args := make([]ast.Expr, len(fields))
+
+	for index, field := range fields {
+		var param string
+		if withName {
+			param = field.Name
+		} else {
+			param = fmt.Sprintf("param%v", index)
+		}
+
+		switch field.Kind.(type) {
+		case *ast.Ellipsis:
+			args[index] = NewIdentObj(param + "...")
+		default:
+			args[index] = NewIdentObj(param)
+		}
+	}
+
+	return args
 }
 
 // CallFunction return the call expression
 func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExpr {
-	args := make([]ast.Expr, len(fields))
-	for index, field := range fields {
-		args[index] = NewIdentObj(field.name)
-	}
+	argsWithName := pkg == "goaContext" && (name == "WithPkg" || name == "WithName" || name == "WithType")
+
+	args := prepareArgs(fields, argsWithName)
 
 	if currentPkg == pkg || pkg == "" {
 		return &ast.CallExpr{
@@ -97,10 +120,7 @@ func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExp
 
 // CallMethod return the call expression
 func CallMethod(objName string, currentPkg, pkg, name string, fields []*FieldDef) ast.Expr {
-	args := make([]ast.Expr, len(fields))
-	for index, field := range fields {
-		args[index] = NewIdentObj(field.name)
-	}
+	args := prepareArgs(fields, false)
 
 	return &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
@@ -117,16 +137,16 @@ func SetUpGoaContext(f *joinpoint.JoinPoint) []ast.Stmt {
 	stmts[0] = &ast.ExprStmt{
 		X: CallFunction("", varGoaContext, "WithPkg", []*FieldDef{
 			{
-				name: fmt.Sprintf(`"%s"`, f.Pkg()),
-				kind: NewIdent(f.Pkg()),
+				Name: fmt.Sprintf(`"%s"`, f.Pkg()),
+				Kind: NewIdent(f.Pkg()),
 			},
 		}),
 	}
 	stmts[1] = &ast.ExprStmt{
 		X: CallFunction("", varGoaContext, "WithName", []*FieldDef{
 			{
-				name: fmt.Sprintf(`"%s"`, f.Name()),
-				kind: NewIdent(f.Name()),
+				Name: fmt.Sprintf(`"%s"`, f.Name()),
+				Kind: NewIdent(f.Name()),
 			},
 		}),
 	}
@@ -137,8 +157,8 @@ func SetUpGoaContext(f *joinpoint.JoinPoint) []ast.Stmt {
 		stmts = append(stmts, &ast.ExprStmt{
 			X: CallFunction("", varGoaContext, "WithType", []*FieldDef{
 				{
-					name: objName,
-					kind: NewIdent(f.Name()),
+					Name: objName,
+					Kind: NewIdent(f.Name()),
 				},
 			}),
 		})

@@ -33,7 +33,7 @@ func wrapBeforeStatements(definitions map[string]*advice.Advice, params []*inter
 		}
 	}
 
-	stmts = append(stmts, internal.ArgsToFunctionArgs(argsVariable, params)...)
+	stmts = append(stmts, internal.ArgsToFunctionArgs("param", argsVariable, params)...)
 
 	return stmts
 }
@@ -54,7 +54,7 @@ func wrapReturningStatements(definitions map[string]*advice.Advice, results []*i
 	}
 
 	if len(results) > 0 {
-		stmts = append(stmts, internal.ArgsToFunctionArgs(argsVariable, results)...)
+		stmts = append(stmts, internal.ArgsToFunctionArgs("result", argsVariable, results)...)
 	}
 
 	return stmts
@@ -146,8 +146,13 @@ func setArgsValues(name string, argsType string, params []*internal.FieldDef) []
 	stmts[0] = internal.TakeArgs(name, argsType)
 
 	for index, param := range params {
+		paramName := param.Name
+		if argsType == "Params" {
+			paramName = fmt.Sprintf("param%v", index)
+		}
+
 		stmts[index+1] = &ast.ExprStmt{
-			X: internal.SetArgValue(name, param),
+			X: internal.SetArgValue(name, param, paramName),
 		}
 	}
 
