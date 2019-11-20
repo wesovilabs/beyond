@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -69,7 +68,6 @@ type Executor struct {
 
 //nolint
 func (e *Executor) Do() *exec.Cmd {
-	fmt.Printf("go %v\n", e.args)
 	cmd := exec.Command("go", e.args...)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir

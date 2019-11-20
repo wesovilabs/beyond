@@ -63,15 +63,18 @@ func wrapReturningStatements(definitions map[string]*advice.Advice, results []*i
 func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.Advice) *ast.FuncDecl {
 	imports := internal.GetImports(joinPoint.Parent())
 
-	for _, advice := range advices {
-		for _, importPath := range advice.Imports() {
-			if imports[importPath] == "" {
+	for i := range advices {
+		advice := advices[i]
+		for j := range advice.Imports() {
+			importPath := advice.Imports()[j]
+			if importPath != joinPoint.PkgPath() && imports[importPath] == "" {
 				lastIndex := strings.LastIndex(importPath, "/")
 				requiredImports[importPath] = findImportName(requiredImports, importPath[lastIndex+1:], importPath)
 			}
 		}
 	}
 
+	delete(requiredImports, joinPoint.PkgPath())
 	ensureImports(imports, requiredImports, joinPoint)
 	recv := joinPoint.GetRecv()
 	imports[joinPoint.Pkg()] = ""
@@ -116,10 +119,16 @@ func applyAdvices(name string, d *advice.Advice, imports map[string]string, join
 	if importName, found := imports[d.Pkg()]; !found {
 		index := strings.LastIndex(d.Pkg(), "/")
 		pkgName := findImportName(imports, d.Pkg()[index+1:], d.Pkg())
-		addImportSpec(joinPoint, importName, d.Pkg())
 
-		imports[d.Pkg()] = pkgName
-		stmts = append(stmts, internal.AssignAspect(name, pkgName, d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+		if joinPoint.PkgPath() != d.Pkg() {
+			addImportSpec(joinPoint, importName, d.Pkg())
+
+			imports[d.Pkg()] = pkgName
+			stmts = append(stmts, internal.AssignAspect(name, pkgName, d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+		} else {
+			imports[d.Pkg()] = pkgName
+			stmts = append(stmts, internal.AssignAspect(name, "", d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+		}
 	} else {
 		if importName == "" {
 			index := strings.LastIndex(d.Pkg(), "/")

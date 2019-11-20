@@ -20,38 +20,50 @@ func CopyDirectory(scrDir, dest string, excludes map[string]bool) error {
 
 	for index := range entries {
 		entry := entries[index]
-		entryAbsPath, _ := filepath.Abs(entry.Name())
-
-		if _, ok := excludes[entryAbsPath]; ok {
-			continue
-		}
-
-		sourcePath := filepath.Join(scrDir, entry.Name())
-		destPath := filepath.Join(dest, entry.Name())
-
-		fileInfo, err := os.Stat(sourcePath)
-		if err != nil {
+		if err := copyEntry(scrDir, dest, excludes, entry); err != nil {
 			return err
 		}
+	}
 
-		stat, ok := fileInfo.Sys().(*syscall.Stat_t)
-		if !ok {
-			return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", sourcePath)
-		}
+	return nil
+}
 
-		if err := copy(fileInfo, sourcePath, destPath, excludes); err != nil {
+func copyEntry(scrDir, dest string, excludes map[string]bool, entry os.FileInfo) error {
+	entryAbsPath, _ := filepath.Abs(entry.Name())
+
+	if _, ok := excludes[entryAbsPath]; ok {
+		return nil
+	}
+
+	sourcePath := filepath.Join(scrDir, entry.Name())
+	destPath := filepath.Join(dest, entry.Name())
+
+	if exists(destPath) {
+		return nil
+	}
+
+	fileInfo, err := os.Stat(sourcePath)
+	if err != nil {
+		return err
+	}
+
+	stat, ok := fileInfo.Sys().(*syscall.Stat_t)
+	if !ok {
+		return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", sourcePath)
+	}
+
+	if err := copy(fileInfo, sourcePath, destPath, excludes); err != nil {
+		return err
+	}
+
+	if err := os.Lchown(destPath, int(stat.Uid), int(stat.Gid)); err != nil {
+		return err
+	}
+
+	isSymlink := entry.Mode()&os.ModeSymlink != 0
+	if !isSymlink {
+		if err := os.Chmod(destPath, entry.Mode()); err != nil {
 			return err
-		}
-
-		if err := os.Lchown(destPath, int(stat.Uid), int(stat.Gid)); err != nil {
-			return err
-		}
-
-		isSymlink := entry.Mode()&os.ModeSymlink != 0
-		if !isSymlink {
-			if err := os.Chmod(destPath, entry.Mode()); err != nil {
-				return err
-			}
 		}
 	}
 

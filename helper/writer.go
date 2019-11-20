@@ -29,7 +29,7 @@ func Save(node *ast.File, path string) error {
 		Tabwidth: 8,
 	}
 
-	logger.Infof("[output] %s", path)
+	logger.Infof("[generated] %s", path)
 
 	return cfg.Fprint(f, fileSet, node)
 }

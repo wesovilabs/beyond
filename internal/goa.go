@@ -21,23 +21,23 @@ type goa struct {
 func (g *goa) removeNonInterceptedJoinPoints() {
 	output := &joinpoint.JoinPoints{}
 
-	for _, f := range g.joinPoints.List() {
+	for _, jp := range g.joinPoints.List() {
 		valid := true
 
-		if f.Name() == "main" || f.Name() == "Goa" {
+		if jp.Name() == "main" || jp.Name() == "Goa" {
 			continue
 		}
 
 		for index := range g.advices.List() {
-			d := g.advices.List()[index]
-			if d.Name() == f.Name() && d.Pkg() == f.PkgPath() {
+			a := g.advices.List()[index]
+			if a.Name() == jp.Name() && a.Pkg() == jp.PkgPath() {
 				valid = false
 				continue
 			}
 		}
 
 		if valid {
-			output.AddJoinPoint(f)
+			output.AddJoinPoint(jp)
 		}
 	}
 

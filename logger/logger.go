@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"github.com/google/logger"
 	"io/ioutil"
+	"log"
 )
 
 var (
-	log      = logger.Init("GoaErrorLogger", true, false, ioutil.Discard)
+	goaLog   = logger.Init("GoaErrorLogger", true, false, ioutil.Discard)
 	debugLog = logger.Init("GoaDebugLogger", false, false, ioutil.Discard)
 )
 
@@ -19,12 +20,12 @@ func Enable() {
 // Close close loggers
 func Close() {
 	debugLog.Close()
-	log.Close()
+	goaLog.Close()
 }
 
 // Infof the messages
 func Infof(text string, args ...interface{}) {
-	debugLog.InfoDepth(1, fmt.Sprintf(text, args...))
+	debugLog.InfoDepth(0, fmt.Sprintf(text, args...))
 }
 
 // Info the messages
@@ -34,12 +35,12 @@ func Info(text string) {
 
 // Error log error messages
 func Error(text string) {
-	log.ErrorDepth(1, text)
+	goaLog.ErrorDepth(1, text)
 }
 
 // Errorf log error messages
 func Errorf(text string, args ...interface{}) {
-	log.ErrorDepth(1, fmt.Sprintf(text, args...))
+	goaLog.ErrorDepth(1, fmt.Sprintf(text, args...))
 }
 
 // Fatal log fatal messages
