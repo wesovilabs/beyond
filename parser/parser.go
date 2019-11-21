@@ -78,7 +78,7 @@ func (pp *GoaParser) Parse(path string) map[string]*Package {
 					}
 				}
 
-				logger.Infof("[path] %s", fmt.Sprintf("%s/%s", pp.project, path))
+				logger.Infof("[ path  ] %s", fmt.Sprintf("%s/%s", pp.project, path))
 
 				packages[path] = &Package{
 					node: pkg,

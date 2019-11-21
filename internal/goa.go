@@ -56,10 +56,6 @@ func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) 
 		logger.Infof(`[function] %s.%s => %s`, f.Pkg(), f.Name(), f.Path())
 	}
 
-	for _, a := range goa.advices.List() {
-		logger.Infof(`[ advice ] %s.%s`, a.Pkg(), a.Name())
-	}
-
 	matches := match.GetMatches(goa.joinPoints, goa.advices)
 
 	for _, match := range matches {

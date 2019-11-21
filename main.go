@@ -35,7 +35,7 @@ func main() {
 
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	settings, err := internal.GoaSettingFromCommandLine()
+	settings, err := internal.GoaSettingFromCommandLine(os.Args[1:])
 
 	if err != nil {
 		panic(err)

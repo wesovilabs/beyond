@@ -120,14 +120,16 @@ Open file [cmd/before/main.go](https://github.com/wesovilabs/goa-examples/blob/m
 ```go
 func Goa() *api.Goa {
   return api.New().
-    WithBefore(advice.NewTracingAdvice, "*.*(...)*").
-    WithBefore(advice.NewTracingAdviceWithPrefix("[goa]"), "*.Bye(...)error")
+    WithBefore(advice.NewTracingAdvice, "greeting.Hello(...)...").
+    WithBefore(advice.NewTracingAdviceWithPrefix("[goa]"), "greeting.Bye(...)...")
 }
 ```
+Two functions will be intercepted:
 
-Function `Bye` invocations will be traced with `[goa]` prefix and the function `Hello` won't.
+- Function `NewTracingAdvice` will be executed before function [Hello](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go#L8) in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked
+- Function `NewTracingAdviceWithPrefix` will be executed before function [Bye](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go#L16) in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked.
 
-We will dive into registering advices in [JoinPoint Expressions](/joinpoints)
+We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)
 
 {: .text-yellow-300}
 ### > Execution
@@ -139,8 +141,7 @@ This would be the normal behavior
 Hey John
 Bye John
 ```
-
-but if you make use of Goa ...
+but if you execute goa command ...
 
 ```bash
 >> goa run main.go
