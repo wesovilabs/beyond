@@ -10,11 +10,13 @@ import (
 
 const timeStartKey = "time.start"
 
-// TimerAdvice supported timer modes
+// TimerMode supported timer modes
 type TimerMode int32
 
 const (
+	// Nanoseconds timerMode
 	Nanoseconds TimerMode = iota
+	// Microseconds timerMode
 	Microseconds
 )
 
