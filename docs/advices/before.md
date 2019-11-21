@@ -85,7 +85,7 @@ ctx.Params().ForEach(func(index int, arg *context.Arg) {
 printTrace(ctx,a.prefix,params)
 ```
 
-**GoaContext** is the guy that provides us with the **joinpoint details**.
+**GoaContext** is the type that provides us with the **joinpoint details**.
 You can find the full list of provided methods by GoaContext in section [The GoaContext API](/goacontext)
 
 {: .text-yellow-300}
@@ -123,11 +123,16 @@ func Goa() *api.Goa {
     WithBefore(advice.NewTracingAdvice, "greeting.Hello(...)...").
     WithBefore(advice.NewTracingAdviceWithPrefix("[goa]"), "greeting.Bye(...)...")
 }
+
+func main() {
+  greeting.Hello("John")
+  greeting.Bye("John")
+}
 ```
 Two functions will be intercepted:
 
-- Function `NewTracingAdvice` will be executed before function [Hello](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go#L8) in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked
-- Function `NewTracingAdviceWithPrefix` will be executed before function [Bye](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go#L16) in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked.
+- Function `NewTracingAdvice` will be executed before function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked
+- Function `NewTracingAdviceWithPrefix` will be executed before **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked.
 
 We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)
 
@@ -141,7 +146,7 @@ This would be the normal behavior
 Hey John
 Bye John
 ```
-but if you execute goa command ...
+but when we execute goa command ... 
 
 ```bash
 >> goa run main.go
@@ -160,20 +165,27 @@ I purpose you to implement a new advice to put in practice what we learnt in thi
 2. This new advice will be applied to both `greeting.Hello` and `greeting.Bye`  functions. For the Hello function
 the advice will transform the retrieved param to uppercase and for the function `Bye ` the param will be transformed
 to lowercase.
-
-The output must be 
-
+3. The result when running `goa run cmd/before/main.go` must be:
 ```bash
->> goa run main.go
+>> goa run cmd/before/main.go
 Hey JOHN
 Bye john
 ```
 
-If you found any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
+**Hint** *To face the challenge you could find useful the next functions*
+
+- `ctx.Params().At(index int)`: It returns the `*Arg` in the provided position.
+- `ctx.Params().SetAt(index int,value interface{})`: It updates the value for the argument in the provided position.
+- `ctx.Params().Get(paramName string)`: It returns the `*Arg` with the provided name.
+- `ctx.Params().Set(paramName string,paramValue interface{})`: It updates the value for the argument with the provided name.
+
+Other useful functions can be found in section [GoaContext](/goacontext).
+
+If you find any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
 be happy to give you some help.
 
-
-If you enjoyed this article, I would really appreciate if you shared it with your networks
+---
+If you enjoyed this article, I would really appreciate if you share it with your networks
 
 
 <div class="socialme">
