@@ -54,7 +54,7 @@ func Test_GoaSettingFromCommandLine(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		setting, err := createSettings(c.project, c.path, c.outputDir, c.pkg, c.verbose, c.work)
+		setting, err := createSettings([]string{},c.project, c.path, c.outputDir, c.pkg, c.verbose, c.work)
 		if c.setting == nil {
 			assert.Nil(setting)
 			assert.NotNil(err)
