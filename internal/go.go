@@ -1,10 +1,12 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 var goCmds = map[string]func(*Settings, []string) *Executor{
@@ -67,7 +69,8 @@ type Executor struct {
 }
 
 func (e *Executor) Do() *exec.Cmd {
-	cmd := exec.Command("go", e.args...)
+	command := fmt.Sprintf("go %s", strings.Join(e.args, " "))
+	cmd := exec.Command(command)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
