@@ -24,8 +24,10 @@ type Settings struct {
 // GoaSettingFromCommandLine returns the GoaSettings from the command line args
 func GoaSettingFromCommandLine(args []string) (*Settings, error) {
 	var path, project, outputDir, pkg string
+
 	pwd, err := os.Getwd()
-	if err!=nil{
+
+	if err != nil {
 		panic(err)
 	}
 
