@@ -36,8 +36,8 @@ func GoaSettingFromCommandLine() (*Settings, error) {
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
 	flag.BoolVar(&work, "work", false, "print the name of the temporary work directory and do not delete it when exiting")
 	flag.Parse()
-	return createSettings(project, path, outputDir, pkg, verbose, work)
 
+	return createSettings(project, path, outputDir, pkg, verbose, work)
 }
 
 func createSettings(project, path, outputDir, pkg string, verbose, work bool) (*Settings, error) {
