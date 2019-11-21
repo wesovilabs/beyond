@@ -18,8 +18,7 @@ The piece that you were missing...
  
 {: .text-green-300}
 ## Types of advices
-
-First of all, we'll go through the supported types of advices by Goa. 
+ 
 
 {: .text-yellow-300}
 ### Before 

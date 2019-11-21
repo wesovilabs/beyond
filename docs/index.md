@@ -14,7 +14,7 @@ permalink: /
 A Golang library that will drive you to the AOP paradigm.
 {: .fs-6 .fw-300 }
 
-[Get started now](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/wesovilabs/goa){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View it on GitHub](https://github.com/wesovilabs/goa){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
@@ -41,7 +41,7 @@ Add goa to go.mod.
 ```text
 module github.com/wesovilabs/goa-examples/greetings
 ...
-require github.com/wesovilabs/goa master
+require github.com/wesovilabs/goa v0.0.1
 ...
 ```
 
@@ -53,7 +53,7 @@ Available Goa releases can be found [here](https://github.com/wesovilabs/goa/rel
 {: .text-green-200}
 #### Advices registration
 
-Advices are registered programmatically in a function whose signature must be the below
+Let's write a function to register the advices.
 ```go
 func Goa()*api.Goa{
   ...

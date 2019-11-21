@@ -18,7 +18,8 @@ Born to be the bouncer of your functions
 {: .text-green-200}
 ## About
 
-We will go though an advice that traces functions invocations. 
+Along this section, we wil learn to implement an advice that will
+print the function invocations. 
 
 
 {: .text-yellow-300}
@@ -26,16 +27,10 @@ We will go though an advice that traces functions invocations.
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool 
+- Install goa tool & clone the goa-examples repository
 ```bash
 >> go get github.com/wesovilabs/goa
-```
-
-- Clone the [goa-examples repository](https://github.com/wesovilabs/goa-examples.git)
-```bash
 >> git clone https://github.com/wesovilabs/goa-examples.git
->> cd goa-examples
->> git checkout feature/advice-before
 ```
 
 {: .text-green-200}
@@ -51,7 +46,7 @@ type Before interface {
 }
 ```
 
-Let's a have a look at type `TracingAdvice` that is declared in file `advice/tracing.go`.
+Open file [advice/tracing.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/tracing.go) and have a look at type `TracingAdvice`.
 
 ```go
 type TracingAdvice struct {
@@ -63,11 +58,7 @@ func (a *TracingAdvice) Before(ctx *context.GoaContext) {
   ctx.Params().ForEach(func(index int, arg *context.Arg) {
     params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())
   })
-  if a.prefix == "" {
-    fmt.Printf("%s.%s(%s)\n", ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
-    return
-  }
-  fmt.Printf("[%s] %s.%s(%s)\n", a.prefix, ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
+  printTrace(ctx,a.prefix,params)
 }
 ```
 
@@ -76,6 +67,8 @@ func (a *TracingAdvice) Before(ctx *context.GoaContext) {
 This is our advice. We can build more reusable and customizable advices by making use of attributes (`TracingAdvice` has a `prefix` attribute)
 
 **Method Before**: 
+
+We need to implement this since is required by interface `Before`
 
 1. Define a list to put the params info (`name:value`)
 ```go 
@@ -87,12 +80,9 @@ ctx.Params().ForEach(func(index int, arg *context.Arg) {
   params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())
 })
 ```
-3. Print the traces
+3. Call function the will print the trace
 ```go
-if a.prefix == "" {
-  fmt.Printf("%s.%s(%s)\n", ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
-}
-fmt.Printf("[%s] %s.%s(%s)\n", a.prefix, ctx.Pkg(), ctx.Function(), strings.Join(params, ","))
+printTrace(ctx,a.prefix,params)
 ```
 
 **GoaContext** is the guy that provides us with the **joinpoint details**.
@@ -105,7 +95,7 @@ To register a Before advice,  we need to provide functions that matches with the
 func() Before
 ```
 
-In file `advice/tracing.go` we can find a couple of functions that we will use to register the advice.
+In this file we see the next functions:
 ```go
 func NewTracingAdvice() api.Before {
   return &TracingAdvice{}
@@ -113,23 +103,25 @@ func NewTracingAdvice() api.Before {
 
 func NewTracingAdviceWithPrefix(prefix string) func() api.Before {
   return func() api.Before {
-    return &TracingAdvice{ prefix: prefix }
+    return &TracingAdvice{
+      prefix: prefix,
+    }
   }
 }
 ```
 
-These functions must be `public`. If not, they will be ignored when registering the advice.
+**IMPORTANT**: These functions must be `public`. 
 
 {: .text-yellow-300}
 ### > Register the advice
 
-Function `Goa() * api.Goa` in file`main.go` is used to register the advices.
+Open file [cmd/before/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/before/main.go) and have a look at type `TracingAdvice`.
 
 ```go
 func Goa() *api.Goa {
   return api.New().
-    WithBefore(advice.NewTracingAdvice, "greeting.Hello(...)").
-    WithBefore(advice.NewTracingAdviceWithPrefix("goa"), "greeting.Bye(...)")
+    WithBefore(advice.NewTracingAdvice, "*.*(...)*").
+    WithBefore(advice.NewTracingAdviceWithPrefix("[goa]"), "*.Bye(...)error")
 }
 ```
 
@@ -143,7 +135,7 @@ We will dive into registering advices in [JoinPoint Expressions](/joinpoints)
 This would be the normal behavior
 
 ```bash
->> go run main.go
+>> go run cmd/before/main.go
 Hey John
 Bye John
 ```
@@ -154,7 +146,7 @@ but if you make use of Goa ...
 >> goa run main.go
 greeting.Hello(firstName:John)
 Hey John
-[my-preffix] greeting.Bye(firstName:John)
+[goa] greeting.Bye(firstName:John)
 Bye John
 ```
 

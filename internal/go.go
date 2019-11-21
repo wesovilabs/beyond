@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -69,8 +68,8 @@ type Executor struct {
 }
 
 func (e *Executor) Do() *exec.Cmd {
-	command := fmt.Sprintf("go %s", strings.Join(e.args, " "))
-	cmd := exec.Command(command)
+	command := strings.Join(e.args, " ")
+	cmd := exec.Command("go", command)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
