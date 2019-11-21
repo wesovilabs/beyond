@@ -24,7 +24,11 @@ type Settings struct {
 // GoaSettingFromCommandLine returns the GoaSettings from the command line args
 func GoaSettingFromCommandLine(args []string) (*Settings, error) {
 	var path, project, outputDir, pkg string
-	pwd, _ := os.Getwd()
+	pwd, err := os.Getwd()
+	if err!=nil{
+		panic(err)
+	}
+
 	var verbose, work bool
 
 	flag.StringVar(&project, "project", "", "project name")
@@ -35,19 +39,20 @@ func GoaSettingFromCommandLine(args []string) (*Settings, error) {
 	flag.BoolVar(&work, "work", false, "print the name of the temporary work directory and do not delete it when exiting")
 	flag.Parse()
 
-	return createSettings(args,project, path, outputDir, pkg, verbose, work)
+	return createSettings(args, project, path, outputDir, pkg, verbose, work)
 }
 
 func takePackage(args []string) string {
 	for i := range args {
-		arg:=args[i]
-		if arg=="build" || arg=="generate" || arg=="run"{
-			if len(args)>=i+1{
-				file:= args[i+1]
+		arg := args[i]
+		if arg == "build" || arg == "generate" || arg == "run" {
+			if len(args) >= i+1 {
+				file := args[i+1]
 				return filepath.Dir(file)
 			}
 		}
 	}
+
 	return ""
 }
 
@@ -74,8 +79,9 @@ func createSettings(args []string, project, path, outputDir, pkg string, verbose
 			outputDir = filepath.Join(path, defaultTargetDir)
 		}
 	}
-	if pkg==""{
-		pkg=takePackage(args)
+
+	if pkg == "" {
+		pkg = takePackage(args)
 	}
 
 	excludeDirs := map[string]bool{}
