@@ -46,7 +46,7 @@ func newGoBuild(settings *Settings, args []string) *Executor {
 	}
 
 	if !hasOutputFlag {
-		args = append(args, "-o", settings.Pkg)
+		args = append(args, "-o", filepath.Join(settings.Path, "app"))
 	}
 
 	return &Executor{"build", args, settings}

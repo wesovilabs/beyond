@@ -11,4 +11,5 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.4.0
 	github.com/tebeka/go2xunit v1.4.10
+	golang.org/x/tools v0.0.0-20190930201159-7c411dea38b0
 )
