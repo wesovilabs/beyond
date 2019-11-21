@@ -69,6 +69,7 @@ type Executor struct {
 
 func (e *Executor) Do() *exec.Cmd {
 	command := strings.Join(e.args[1:], " ")
+	//nolint
 	cmd := exec.Command("go", e.cmd, command)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
