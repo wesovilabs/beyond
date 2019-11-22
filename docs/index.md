@@ -126,3 +126,12 @@ which functions or methods must be intercepted by the advices.
  
 ---
 
+<div class="socialme">
+    <ul>
+        <li class="twitter">
+            <a href="https://twitter.com/intent/tweet?via={{site.data.social.twitter.username}}&url={{ site.data.social.twitter.url | uri_escape}}&text={{ site.data.social.twitter.message | uri_escape}}" target="_blank">
+                {% include social/twitter.svg %}
+            </a>
+        </li>
+    </ul>
+</div>
