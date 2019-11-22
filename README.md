@@ -6,32 +6,14 @@
 
 # Goa
 
-Goa (*Golang Oriented to Aspects*) is a Golang library that provides us aspect-oriented programming (AOP).
+The Golang library that will drive you to the AOP paradigm world!
+
 
 ## What's AOP?
 
 > In computing, aspect-oriented programming (AOP) is a programming paradigm that aims to increase modularity by allowing the separation of cross-cutting concerns. It does so by adding additional behavior to existing code (an advice) without modifying the code itself, instead separately specifying which code is modified via a "pointcut" specification
 
-* Extracted  from [Wikipedia](https://en.wikipedia.org/wiki/Aspect-oriented_programming)
-
-
-## Goals
-
-- Provide a handy tool that helps us to build reusable aspects.
-- Code generation based in AST modifications
-- A mechanism to build golang applications under AOP paradigm. 
-
-
-## How does Go work?
-
-Goa is mainly bassed in AST manipulation of our code. The steps are:
-
-1. Take the defined aspects in our code.
-2. Inspect both the functions and methods.
-3. Check which functions and methods match with defined aspects.
-4. From the current AST, It makes the required changes and save the generated code
-
-The generated code is transparent for us, and this is completely functional. 
+* Extracted  from [Wikipedia](https://en.wikipedia.org/wiki/Aspect-oriented_programming) 
 
 # Getting Started
 
@@ -47,131 +29,9 @@ require github.com/wesovilabs/goa <goa.version>
 ...
 ```
 
-> Available Goa versions are available [here](https://github.com/wesovilabs/goa/releases)
+# Documentation
 
-In case of you're working with Glide or GoDeps you can add Goa to your project as described:
-
-**Glide**
-```bash
-glide get github.com/wesovilabs/goa
-```
-
-**Go dep**
-```bash
-go get github.com/wesovilabs/goa
-```
-
-## Usage
-
-1. Register your aspects
-
-Define a function named Goa that returns a `*api.Goa`. In this function
-we will define which aspects (before,returning or/and around) will be applied
-to the functions that match with the provided expression.
-
-```go
-package main
-
-import "github.com/wesovilabs/goa/api"
-
-func Goa()*api.Goa{
-	return api.Init().
-		WithBefore("*.*(...)...",TracingAspect).
-		WithAround("*.StringUtils.*(string)string",MemorizeAspect)
-}
-```
-
-2. Generate code
-
-2.1 With go generate
-
-- Add the `go:generate` comment to your main file. (For example, to your main.go)
-
-```go
-//go:generate  go run github.com/wesovilabs/goa --project <your-project-name> --goPath ../
-```
-
-and then
-
-```bash
-go generate <main.go>
-```
-2.2 Run goa command
-
-```bash
-go run github.com/wesovilabs/goa --project <your-project-name> --goPath ../
-```
-
-By default, your generated code will be created into `.goa` directory.
-
-## Guides & Tutorials
-
-## Roadmap
-
-# For Collaborators
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://github.com/wesovilabs/goa/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Checkout the code
-
-In order to work on a Goa enhancement or on a bug fix you just need to fork the repository.
-
-Once you forked the repository you can checkout it locally. 
-
-```bash
-git clone https://github.com/<user>/goa.git
-```
-
-## Setup Git hooks
-
-All the commited code must pass tests and linter checks. These are defined with golangci. To ensure
-your committed code will be valid to be merged you can setup some Git hooks by running
-
-```bash
-make init
-```
-
-## Running the tests
-
-Run the tests with the below command
-
-```bash
-make test
-```
-
-and to check the test coverage... 
-
-```bash
-make test-coverage
-``` 
-
-> Keep in mind that for approval a Pull Request the test coverage must be equal or higher than the existing one.
-
-## Check your code
-
-As it was mentioned on the above, the code must pass all the defined linter checks. You can check it locally
-
-```bash
-make lint
-```
-
-## Build an executable
-
-To generate an executable of Goa for your current os you just need to run:
-
-```bash
-make run
-```
-Alternatively you can do cross compiling by running. The below command will generate Goa executables for linux, darwin and 
-windows.
-
-```bash
-make build-all
-``` 
-
-Linters configuration can be found [here](https://github.com/wesovilabs/goa/blob/master/.golangci.yml)
+Goa Documentation is published at [http://wesovilabs.github.io/goa](http://wesovilabs.github.io/goa)
 
 ## Versioning
     
