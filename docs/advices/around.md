@@ -18,24 +18,18 @@ The one that takes the full control of your functions.
 {: .text-green-200}
 ## About
  
-We will go though an advice that print the spent time by the functions.
+We will go though a real Around advice. This advice prints the taken time by the function.
  
 {: .text-yellow-300}
 ### Prerequisites
- 
+
 Let's check that our environment is ready to follow the tutorial!
-  
-- Install goa tool 
+ 
+- Install goa tool & clone the goa-examples repository
 ```bash
 >> go get github.com/wesovilabs/goa
-```
-
-- Clone the [goa-examples repository](https://github.com/wesovilabs/goa-examples.git)
-```bash
 >> git clone https://github.com/wesovilabs/goa-examples.git
->> cd goa-examples
->> git checkout feature/advice-around
- ```
+```
 
 {: .text-green-200}
 ## Let's do it!
@@ -51,9 +45,11 @@ type Around interface {
 }
 ```
 
-Let's a have a look at type `TimerAdvice` that is declared in file `advice/timer.go`.
+Open file [advice/timer.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/timer.go#L20).
 
 ```go
+const timeStartKey = "time.start"
+
 type TimerMode int32
 
 const (
@@ -88,56 +84,30 @@ func (a *TimerAdvice) Returning(ctx *context.GoaContext) {
 
 **Type TimerAdvice** 
 
-This type has an attribute named `mode` that will be used to print the spent time in microseconds or nanoseconds.
+This is our advice. It implements `Around` interface.
 
 **Method Before**:
 
-It set to the GoaContext the time when the function is invoked.
-
-```go
-ctx.Set(timeStartKey, time.Now())
-```
+It contains the code to be executed before intercepted functions are executed.
 
 **Method Returning**:
 
-It calculates the spent time by the function and it prints the result.
-
-1. It recoveries the start time, that was set by the Before method
-```go
-start := ctx.Get(timeStartKey).(time.Time)
-```
-
-2. It calculates the spent time
-```go
-switch a.mode {
-case Nanoseconds:
-  timeDuration = fmt.Sprintf("%v nanoseconds\n", time.Since(start).Nanoseconds())
-case Microseconds:
-  timeDuration = fmt.Sprintf("%v microseconds\n", time.Since(start).Microseconds())
-}
-```
-
-3. It prints the function invocation (`package.function(params)`) and the spent time by the function.
-```go
-params := make([]string, ctx.Params().Count())
-ctx.Params().ForEach(func(index int, arg *context.Arg) {
-  params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())
-})
-fmt.Printf("%s.%s(%s) took %s", ctx.Pkg(), ctx.Function(), strings.Join(params, ","),timeDuration)
-```
-
-**GoaContext** is the guy that provides us with the **joinpoint details**.
-You can find the full list of provided methods by GoaContext in section [The GoaContext API](/goacontext)
+It contains the code to be executed after intercepted functions are executed.
 
 
 {: .text-yellow-300}
-### > Write a function (or many) that returns the advice
-To register an Around advice,  we need to provide functions that matches with the below signature
+### > Register the advice 
+
+- Write a function (or many) that returns the Returning advice
+
+The function signature must be:
+
 ```go
 func() Around
 ```
 
-In file `advice/timer.go` we can find the function that will be used to register the advice.
+Check the following functions, in file [advice/timer.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/timer.go#L44),
+
 ```go
 func NewTimerAdvice(mode TimerMode) func() api.Around {
 	return func() api.Around{
@@ -146,50 +116,51 @@ func NewTimerAdvice(mode TimerMode) func() api.Around {
 }
 ```
 
-This function must be `public`. If not, it will be ignored when registering the advice.
+Keep in mind that Goa ignores non-exported functions.
 
-{: .text-yellow-300}
-### > Register the advice
+- Register the above function
 
-Function `Goa() * api.Goa` in file`main.go` is used to register the advices.
+Open file [cmd/around/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/around/main.go) and have a look at function `Goa()`.
 
 ```go
 func Goa() *api.Goa {
   return api.New().
-    WithAround(advice.NewTimerAdvice(advice.Microseconds), "*.Greetings(...)...").
-    WithAround(advice.NewTimerAdvice(advice.Nanoseconds), "*.hello(...)...").
-    WithAround(advice.NewTimerAdvice(advice.Nanoseconds), "*.bye(...)..."
+    WithAround(advice.NewTimerAdvice(advice.Microseconds), "greeting.Hello(string)...").
+    WithAround(advice.NewTimerAdvice(advice.Nanoseconds), "greeting.Bye(string)...")
+}
+
+func main() {
+  greeting.Greetings("Hello", "John")
+  greeting.Greetings("Bye", "John")
 }
 ```
+Two functions will be intercepted:
 
-As you can guess, the spent time by functions `hello` and `bye` will be shown in nanoseconds and spent time by function
-`Greetings` will be shown in microseconds. 
+- Taken time by function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) will be shown in microseconds.
+- Taken time by function **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) will be shown in nanoseconds.
 
-
-We will dive into registering advices in [JoinPoint Expressions](/joinpoints)
+*We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 
 {: .text-yellow-300}
-### > Execution
+### > Goa in action
 
 This would be the normal behavior
 
 ```bash
->> go run main.go
+>> go run cmd/around/main.go
 Hey John
 Bye John
 ```
 
-but if you make use of Goa  the output would look like this...
+but when we execute **goa** command ... (time won't be exactly the same)
 
 ```bash
->> goa run main.go
-greeting.hello(firstName:John) took 31803 nanoseconds
-greeting.Greetings(mode:hello,firstName:John) took 49 microseconds
+>> goa run cmd/around/main.go
+Hey John
+greeting.Hello(firstName:John) took 37 microseconds
 Bye John
-greeting.bye(firstName:John) took 4876 nanoseconds
-greeting.Greetings(mode:bye,firstName:John) took 12 microseconds
+greeting.Bye(firstName:John) took 4102 nanoseconds
 ```
-
 
 {: .text-green-300}
 ## Challenge
@@ -197,7 +168,9 @@ greeting.Greetings(mode:bye,firstName:John) took 12 microseconds
 This time, the challenge must be decided by yourself!!! Extend the TimerAdvice or build a new one that you think it could
 be useful for other developers too.
 
-Why don't you post an article sharing your experience with Goa?  I would be very grateful! 
+When you complete this challenge, why dont you post an article sharing your experience with Goa!  I would be very grateful! 
+
+---
 
 If you enjoyed this article, I would really appreciate if you shared it with your networks
 

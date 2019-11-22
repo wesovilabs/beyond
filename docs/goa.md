@@ -25,41 +25,42 @@ go get -u github.com/wesovilabs/goa
 {: .text-green-200}
 ## But... how does goa work?
 
-goa could be understood like a go wrapper.. that enriches our code with the registered aspects and then
-If delegates the work to go. 
+Goa could be understood like a go wrapper that takes the below steps:
+- It enriches our code with the registered aspects
+- It delegates the work to `go`.
 
 {: .text-green-200}
 ## Goa in action
 
 `[env_vars] goa [goa_flags] go_command [go_flags]`
 
+{: .text-yellow-300}
+### Environment variables (env_vars)
+Environment variables can be provided. They will be propagated to the go command too.
+
 
 {: .text-yellow-300}
-### Flags
-
+### Flags (goa_flags)
 Goa provides some flags that we can use to customize default behavior 
 
-|  Flag                                         |Default         |  Description              |
-|:-----------------------------------------------|:----------------------------------------------|:-------------------------|:
-|`--project <projectname>`      | module name in go.mod          |    only required if you don't use go.mod |
-|`--verbose`                    | false                          | It displays the goa logs         |
-|`--output <directory>`         | a temporal directory           | goa clone your path and generate code in it |
-|`--path <directory>`           | current directory              | path where your project is |
-|`--package <directory>`        | .                              | relative path where your main package is |
-|`--work`                       | false                          | print the name of the temporary work directory and do not delete it when exiting |
+|  Flag                         |Default                   |Description                                                     |
+|:------------------------------|:-------------------------|:---------------------------------------------------------------|:
+|`--project <projectname>`      | module name in go.mod    | only required if you don't use go.mod                          |
+|`--output <directory>`         | a temporal directory     | directory used by goa to copy de generated code                |
+|`--path <directory>`           | current directory        | path to your project                                           |
+|`--verbose`                    | false                    | enable verbose mode                                       |
+|`--work`                       | false                    | print the name of the temporary work directory and do not delete it when exiting |
+
 
 {: .text-yellow-300}
-### Commands
-
-Any command provided by go can be used.
-
-{: .text-yellow-300}
-### Environment variables
-
-Environment variables can be provided and they will passed to the go command too.
+### Commands (go_command)
+So far, allowed commands are: `build`, `run` and `generate`.
 
 {: .text-yellow-300}
-### Examples
+### Go glags (go_flags)
+
+{: .text-green-200}
+## Goa in action by examples
 
 Let's suppose we have a code organization like the one shown below
 
@@ -73,14 +74,13 @@ Let's suppose we have a code organization like the one shown below
 + constants
     - app.go
     
-The next command could be fine for building our application
+The next command could be fine to build the application
 
 ```bash
-CGO_ENABLED=0 goa --project myapp --package cmd/app \
-    build -ldflags "-X constants.Version=0.0.1" cmd/app/main.go
+>> CGO_ENABLED=0 goa --project myapp build -ldflags "-X constants.Version=0.0.1" cmd/app/main.go
 ```
 
-However when we work with go modules command we con ignore flag project
+However when we work with go modules command we con ignore th flag `--project`.
 
 + cmd
     + app
@@ -94,21 +94,5 @@ However when we work with go modules command we con ignore flag project
 - go.mod
 
 ```bash
-CGO_ENABLED=0 goa --package cmd/app \
-    build -ldflags "-X constants.Version=0.0.1" cmd/app/main.go
-```
-
-On the other hand,  if the main.go is in the root of the project, the command can be even more straightforward
-
-- main.go
-+ internal
-    - files.go  
-    + helper
-        - strings.go
-+ constants
-    - app.go
-- go.mod
-
-```bash
-CGO_ENABLED=0 goa build -ldflags "-X constants.Version=0.0.1" main.go
+>> CGO_ENABLED=0 goa build -ldflags "-X constants.Version=0.0.1" cmd/app/main.go
 ```

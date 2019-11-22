@@ -6,7 +6,7 @@ nav_order: 3
 
 
 {: .text-green-300}
-# Joinpoint
+# Joinpoint Expressions
 {: .fs-9 }
 
 {: .text-green-200}
@@ -15,125 +15,104 @@ Where the magic happens...  Keep open your eyes!
 
 ---
 
-
-{: .text-green-300}
-## Introduction
-
-It's important to keep in mind that Goa provides a mechanism to intercept both functions and methods invocations.
-
----
-
 {: .text-green-300}
 ## Syntax
 
-Goa interprets  the provided expressions in order to decide which functions must be intercepted by the advices.
+It’s important to keep in mind that Goa provides a mechanism to intercept both functions and methods invocations.
+
+Goa interprets  the provided expressions to decide which functions must be intercepted by the advices. The expressions have the 
+following format.
 
 `<package>.<type>?.<function>(<params)<results>`
 
-* `<type>.` is only required when the advice needs to intercept a method instead of a function. 
+*`<type>.` is only required when the advice needs to intercept a method instead of a function.* 
 
 {: .text-yellow-300}
 ### A brief cheat sheet 
 
-We will go through some examples to understand how the aspects expressions work.
+The table contains some examples, that could help us to get a better understanding.
 
 | Expression                               | Intercepted               |
 |:-----------------------------------------|:--------------------------|:
 | `*.*(...)...`                            | Any function invocation with 0 or N params and 0 or N results |
 | `*.*.*(...)...`                          | Any method invocation with 0 or N params and 0 or N results |
-| `model.*.*(...)...`                      | Any function in invocation, in package `model`,  with 0 or N params and 0 or N results |
-| `handlers/employee.*.*(...)...`          | Any function in invocation, in package `handlers/employee`,  with 0 or N params and 0 or N results |
+| `model.*(...)...`                      | Any function invocation, in package `model`,  with 0 or N params and 0 or N results |
+| `handlers/employee.*(...)...`          | Any function invocation, in package `handlers/employee`,  with 0 or N params and 0 or N results |
 | `model.*.*(...)...`                      | Any method invocation, in package `model`,  with 0 or N params and 0 or N results |
 | `model.person.*(...)...`                 | Any method invocation, for type `person` in package `model`,  with 0 or N params and 0 or N results |
 | `database.*(string)...`                  | Any function in package `database`, with 1 param of type string and 0 or N results |
 | `database.*(string,*int32)...`           | Any function in package `database`, with 2 params of types string and *int32, and 0 or N results |
 | `database.*(string,*)...`                | Any function in package `database`, with 2 params of types string and the second param of any type, and 0 or N results |
-| `database.*(string,...)...`              | Any function in package `database`, with 2 params of types string and the second param of any type, and 0 or N results |
-| `database.*(string,...)func()string`     | Any function in package `database`, with 2 params of types string and the second param of any type, and 1 result whose type is `func()string`|
-| `database.set*(*model.Person)...`        | Any function whose name `starts with set` in package `database`, with 1 params of type `*model.Person`, and 0 or N results |
+| `database.*(string,...)...`              | Any function in package `database`, with 1 string param and 1 or more params of any type, and 0 or N results |
+| `database.*(string,...)func()string`     | Any function in package `database`, with 1 string param and 1 or more params of any type, and 1 result whose type is `func()string`|
+| `database.set*(*model.Person)`        | Any function whose name `starts with set` in package `database`, with 1 params of type `*model.Person`, and 0 results |
 
 ---
 
-{: .text-green-300}
-## Let’s practice!
-
 {: .text-yellow-300}
-### Prerequisites
- 
+### Let's practice
+
 Let's check that our environment is ready to follow the tutorial!
-  
-- Install goa tool 
+ 
+- Install goa tool & clone the goa-examples repository
 ```bash
 >> go get github.com/wesovilabs/goa
+>> git clone https://github.com/wesovilabs/goa-examples.git
 ```
 
-- Clone the [goa-examples repository](https://github.com/wesovilabs/goa-examples.git)
-```bash
->> git clone https://github.com/wesovilabs/goa-examples.git
->> cd goa-examples
->> git checkout feature/joinpoints
- ```
+-  The application provides a Rest API to interact with employee resources. A test purposed advice is 
+registered in file [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L14).
 
-{: .text-yellow-300}
-### Test application
+To test the joinpoints expreessions we need to launch the server with command `goa run cmd/joinpoints/main.go` and then, 
+run `go test/main.go` to make some requests to the server. 
 
-The application provices a Rest API with the below methods:
+Server main is found in file [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19) 
+and client main in [test/main.go](https://github.com/wesovilabs/goa-examples/blob/master/test/main.go)
 
-- Create Employee
-- Get employee
-- Delete employee
-- List employees
-
-The application contains a Before advice that prints the functions/methods invocations.
 
 {: .text-green-300}
-*Intercept handler CreateEmployee*
+**Intercepting function [CreateEmployee](https://github.com/wesovilabs/goa-examples/blob/master/handler/employee.go#L12)**
 
-- Replace the regExp in function `Goa` in file `main.go` by on these:
+Any of these expressions would be valid to intercept the above function.
+- `handler.CreateEmployee(...)...`
+- `*.CreateEmployee(...)...`
+- `handler.CreateEmployee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)`
+- `handler.CreateEmployee(...,*net/http.Request,...)`
+- `handler.Create*(...,*net/http.Request,...)`
+
+To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
 ```go
-handler.CreateEmployee(...)...
-*.CreateEmployee(...)...
-handler.CreateEmployee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)
-handler.CreateEmployee(...,*net/http.Request,...)
-handler.Create*(...,*net/http.Request,...)
+func Goa() *api.Goa {
+  return api.New().
+  WithBefore(advice.NewSimpleTracingAdvice, `handler.Create*(...,*net/http.Request,...)`)
+}
 ```
-  
-- Run the server application
-```bash
->> goa run main.go
-```
-- Run the client 
-```go
->> go run test/main.go
-```  
-- Check the server stdout 
+and then, run the server and the client.
 ```bash
 >> goa run main.go
 Launching server on localhost:8000
 handler.CreateEmployee
 ```
+```bash
+>> go run test/main.go
+```
 
 {: .text-green-300}
-*Intercept handlers*
+**Intercepting any function in package [handler](https://github.com/wesovilabs/goa-examples/blob/master/handler/employee.go)**
 
-- Replace the regExp in function `Goa` in file `main.go` by on these:
+Any of these expressions would be valid to intercept the above function.
+- `handler.*(...)...`
+- `handler.*(...,*net/http.Request,...)`
+- `*.*(net/http.ResponseWriter,*net/http.Request,...)`
+
+To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
 ```go
-handler.*(...)...
-*.*Employee(...)...
-handler.*Employee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)
-handler.*(...,*net/http.Request,...)
-*.*(net/http.ResponseWriter,*net/http.Request,...)
+func Goa() *api.Goa {
+  return api.New().
+  WithBefore(advice.NewSimpleTracingAdvice, `handler.*(...,*net/http.Request,...)`)
+}
 ```
-  
-- Run the server application
-```bash
->> goa run main.go
-```
-- Run the client 
-```go
->> go run test/main.go
-```  
-- Check the server stdout 
+and then, run the server and the client.
 ```bash
 >> goa run main.go
 Launching server on localhost:8000
@@ -142,56 +121,60 @@ handler.GetEmployee
 handler.ListEmployees
 handler.DeleteEmployee
 ```
+```bash
+>> go run test/main.go
+```
+
+Why don't these other expressions print the same output?
+- `*.*Employee(...)...`
+- `handler.*Employee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)`
+  
 
 {: .text-green-300}
-*Intercept SaveEmployee method for type memDBClient*
+**Intercepting method SaveEmployee of type [memDBClient](https://github.com/wesovilabs/goa-examples/blob/master/storage/mem.go#L20)**
 
-- Replace the regExp in function `Goa` in file `main.go` by on these:
-```go
-storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/goaexamples/model.Employee)error
-storage.*memDBClient.Save*(*github.com/wesovilabs/goa/model.Employee)error
-storage.*memDBClient.Save*(...)...
-*.*.SaveEmployee(...)...
-*.*memDBClient.Save*(...)...
-```
+Any of these expressions would be valid to intercept the above function.
+- `storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/goaexamples/model.Employee)error`
+- `storage.*memDBClient.Save*(*github.com/wesovilabs/goaexamples/model.Employee)error`
+- `storage.*memDBClient.Save*(...)...`
+- `*.*.SaveEmployee(...)...`
+- `*.*memDBClient.Save*(...)...`
   
-- Run the server application
-```bash
->> goa run main.go
-```
-- Run the client 
+To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
 ```go
->> go run test/main.go
-```  
-- Check the server stdout 
+func Goa() *api.Goa {
+  return api.New().
+  WithBefore(advice.NewSimpleTracingAdvice, `handler.*(...,*net/http.Request,...)`)
+}
+```
+and then, run the server and the client.
 ```bash
 >> goa run main.go
 Launching server on localhost:8000
 storage.*storage.memDBClient.SaveEmployee
 ```
-
+```bash
+>> go run test/main.go
+```
 
 {: .text-green-300}
-*Intercept  function RespondWithJSON in internal package handler/internal*
+**Intercepting function RespondWithJSON in package [handler/internal](https://github.com/wesovilabs/goa-examples/blob/master/handler/internal/helper.go#L14)**
 
-- Replace the regExp in function `Goa` in file `main.go` by on these:
+Any of these expressions would be valid to intercept the above function.
+- `handler/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})`
+- `*/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})`
+- `handler/*.RespondWithJSON(net/http.ResponseWriter,int,interface{})`
+- `*.RespondWithJSON(net/http.ResponseWriter,...)`
+- `*.RespondWithJSON(...,int,...)`
+
+To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
 ```go
-handler/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})
-*/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})
-handler/*.RespondWithJSON(net/http.ResponseWriter,int,interface{})
-*.RespondWithJSON(net/http.ResponseWriter,...)
-*.RespondWithJSON(...,int,...)
+func Goa() *api.Goa {
+  return api.New().
+  WithBefore(advice.NewSimpleTracingAdvice, `*.RespondWithJSON(...,int,...)`)
+}
 ```
-  
-- Run the server application
-```bash
->> goa run main.go
-```
-- Run the client 
-```go
->> go run test/main.go
-```  
-- Check the server stdout 
+and then, run the server and the client.
 ```bash
 >> goa run main.go
 Launching server on localhost:8000
@@ -200,15 +183,18 @@ internal.RespondWithJSON
 internal.RespondWithJSON
 internal.RespondWithJSON
 ```
+```bash
+>> go run test/main.go
+```
 
 {: .text-green-300}
 ## Challenge
 
-Find valid expressions for intercepting...
+Find valid expressions that intercept the following:
 
-- All the memDBClient methods
+- All the invocations to memDBClient methods
 - Function `RandomString` in package helper
-- Function `RespondWithError`. By the way, you will need to force this error. In file `test/main.go`,  set an empty email. 
+- Function `RespondWithError`. To check it, you will need to force an error. You can do it in file [test/main.go](https://github.com/wesovilabs/goa-examples/blob/master/test/main.go#L22) by making the below change. 
 ```go
 res,_ := api.CreateEmployee(&model.Employee{
    Email:    "",
@@ -216,10 +202,10 @@ res,_ := api.CreateEmployee(&model.Employee{
 })
 ```
 
-
 If you found any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
 be happy to give you some help.
 
+---
 
 If you enjoyed this article, I would really appreciate if you shared it with your networks
 

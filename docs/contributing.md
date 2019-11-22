@@ -21,8 +21,8 @@ Open source would die if there're were no contributors...
 {: .text-yellow-300}
 ### Sharing Goa via Social networks
 
-When you spend time on doing open source projects, one of the most appreciated There's nothing most appreciated than retrieve feedback from other people. And much more if they like what you
-do and they let you know and share with other people so 
+It's really appreciated retrieving feedback from other people. And much more if they like what you
+do and they share it with other people so 
 
 <div class="socialme">
     <ul>
@@ -37,7 +37,7 @@ do and they let you know and share with other people so
             </a>
         </li>
         <li class="linkedin">
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ site.data.social.linkedin.url | uri_escape}}&title={{ site.data.social.linkedin.title | uri_escape}}" target="_blank">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ site.data.social.linkedin.url | uri_escape}}&title={{ site.data.social.linkedin.title}}" target="_blank">
                 {% include social/linkedin.svg %}
             </a>
         </li>
@@ -77,18 +77,18 @@ It's awesome to find out that people recognize your work. If you like this proje
 {: .text-green-300}
 ## Do you want to contribute with your code?
 
-Great projects are build when great developers work together. That's
+Great projects are built when great developers work together. That's
 the reason I encourage you to take part of Goa!
 
 Have a look at open issues and contribute with your code:
 
 - [Fixing bugs](https://github.com/wesovilabs/goa/projects/1)
-- [Implementing new features](https://github.com/wesovilabs/goa/projects/2)
+- [Features on roadmap](https://github.com/wesovilabs/goa/projects/2)
+- [Implementing new features](https://github.com/wesovilabs/goa/projects/4)]
 
 
 {: .text-yellow-300}
 ### Working with Goa code
-
 
 #### Checkout the code
 
@@ -112,13 +112,13 @@ make init
 
 #### Running the tests
 
-Run tests to verify Goa works as expected
+Run tests to verify Goa works
 
 ```bash
 make test
 ```
 
-eventually you could check the test coverage with
+Eventually you could check the test coverage with
 
 ```bash
 make test-coverage
@@ -149,4 +149,16 @@ make build-all
 
 ---
 
-> Don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` if you have any doubt!
+Don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` if you want to collaborate!
+
+---
+
+<div class="socialme">
+    <ul>
+        <li class="twitter">
+            <a href="https://twitter.com/intent/tweet?via={{site.data.social.twitter.username}}&url={{ site.data.social.twitter.url | uri_escape}}&text={{ site.data.social.twitter.message | uri_escape}}" target="_blank">
+                {% include social/twitter.svg %}
+            </a>
+        </li>
+    </ul>
+</div>

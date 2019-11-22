@@ -18,8 +18,8 @@ Born to be the bouncer of your functions
 {: .text-green-200}
 ## About
 
-Along this section, we wil learn to implement an advice that will
-print the function invocations. 
+We will go though a real Before advice. This advice prints a trace with the function
+invocations. 
 
 
 {: .text-yellow-300}
@@ -68,34 +68,21 @@ This is our advice. We can build more reusable and customizable advices by makin
 
 **Method Before**: 
 
-We need to implement this since is required by interface `Before`
-
-1. Define a list to put the params info (`name:value`)
-```go 
-params := make([]string, ctx.Params().Count())
-```
-2. Iterate over the params and put them into the list
-```go
-ctx.Params().ForEach(func(index int, arg *context.Arg) {
-  params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())
-})
-```
-3. Call function the will print the trace
-```go
-printTrace(ctx,a.prefix,params)
-```
-
-**GoaContext** is the type that provides us with the **joinpoint details**.
-You can find the full list of provided methods by GoaContext in section [The GoaContext API](/goacontext)
+It contains the code to be executed before intercepted functions are invoked.
 
 {: .text-yellow-300}
-### > Write a function (or many) that returns the advice
-To register a Before advice,  we need to provide functions that matches with the below signature
+### > Register the advice 
+
+- Write a function (or many) that returns the Before advice
+
+The functions signature must be:
 ```go
 func() Before
 ```
 
-In this file we see the next functions:
+Check the following functions, in file [advice/tracing.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/tracing.go),
+
+
 ```go
 func NewTracingAdvice() api.Before {
   return &TracingAdvice{}
@@ -110,18 +97,17 @@ func NewTracingAdviceWithPrefix(prefix string) func() api.Before {
 }
 ```
 
-**IMPORTANT**: These functions must be `public`. 
+Keep in mind that Goa ignores non-exported functions.
 
-{: .text-yellow-300}
-### > Register the advice
+- Register the above functions
 
-Open file [cmd/before/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/before/main.go) and have a look at type `TracingAdvice`.
+Open file [cmd/before/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/before/main.go) and have a look at function `Goa()`.
 
 ```go
 func Goa() *api.Goa {
   return api.New().
     WithBefore(advice.NewTracingAdvice, "greeting.Hello(...)...").
-    WithBefore(advice.NewTracingAdviceWithPrefix("[goa]"), "greeting.Bye(...)...")
+    WithBefore(advice.NewTracingAdviceWithPrefix("goa"), "greeting.Bye(...)...")
 }
 
 func main() {
@@ -134,10 +120,10 @@ Two functions will be intercepted:
 - Function `NewTracingAdvice` will be executed before function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked
 - Function `NewTracingAdviceWithPrefix` will be executed before **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked.
 
-We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)
+*We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 
 {: .text-yellow-300}
-### > Execution
+### > Goa in action
 
 This would be the normal behavior
 
@@ -146,7 +132,7 @@ This would be the normal behavior
 Hey John
 Bye John
 ```
-but when we execute goa command ... 
+but when we execute **goa** command ... 
 
 ```bash
 >> goa run main.go
@@ -161,11 +147,11 @@ Bye John
 
 I purpose you to implement a new advice to put in practice what we learnt in this article.
  
-1. Create a new advice that transforms the string params to uppercase or lowercase. 
-2. This new advice will be applied to both `greeting.Hello` and `greeting.Bye`  functions. For the Hello function
+- Create a new advice that transforms the string params to uppercase or lowercase. 
+- This new advice will be applied to both `greeting.Hello` and `greeting.Bye`  functions. For the Hello function
 the advice will transform the retrieved param to uppercase and for the function `Bye ` the param will be transformed
 to lowercase.
-3. The result when running `goa run cmd/before/main.go` must be:
+- The result when running `goa run cmd/before/main.go` must be:
 ```bash
 >> goa run cmd/before/main.go
 Hey JOHN
@@ -179,7 +165,7 @@ Bye john
 - `ctx.Params().Get(paramName string)`: It returns the `*Arg` with the provided name.
 - `ctx.Params().Set(paramName string,paramValue interface{})`: It updates the value for the argument with the provided name.
 
-Other useful functions can be found in section [GoaContext](/goacontext).
+*Check sections [GoaContext](/goacontext) for more details.*
 
 If you find any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
 be happy to give you some help.

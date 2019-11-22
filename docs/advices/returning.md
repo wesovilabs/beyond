@@ -18,24 +18,18 @@ The guy that always has the last word....
 {: .text-green-200}
 ## About
 
-We will go though an advice that enriches returned errors with info from the function invocation that through
-the error.
+We will go though a real Returning advice. This advice enriches returned errors by the intercepted functions. 
+
 
 {: .text-yellow-300}
 ### Prerequisites
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool 
+- Install goa tool & clone the goa-examples repository
 ```bash
 >> go get github.com/wesovilabs/goa
-```
-
-- Clone the [goa-examples repository](https://github.com/wesovilabs/goa-examples.git)
-```bash
 >> git clone https://github.com/wesovilabs/goa-examples.git
->> cd goa-examples
->> git checkout feature/advice-returning
 ```
 
 {: .text-green-200}
@@ -51,20 +45,14 @@ type Returning interface {
 }
 ```
 
-Let's a have a look at type `ErrorsEnrichAdvice` that is declared in file `advice/errors.go`.
+Open file [advice/error.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/error.go#L10) and have a look at type `ErrorsEnrichAdvice`.
 
 ```go
-type ErrorsEnrichAdvice struct {}
+type ErrorsEnrichAdvice struct {
+}
 
 func (a *ErrorsEnrichAdvice) Returning(ctx *context.GoaContext) {
-  if index, result := ctx.Results().Find(func(_ int, arg *context.Arg) bool {
-    if val := arg.Value(); val != nil {
-      if _, ok := val.(*CustomError);!ok{
-        return arg.IsError()
-      }
-    }
-    return false
-  });index>=0{
+  if index, result := ctx.Results().Find(isError);index>=0{
     ctx.Results().SetAt(index, &CustomError{
       err:      result.Value().(error),
       pkg:      ctx.Pkg(),
@@ -73,6 +61,16 @@ func (a *ErrorsEnrichAdvice) Returning(ctx *context.GoaContext) {
     })
   }
 }
+
+func isError(_ int, arg *context.Arg) bool{
+  if val := arg.Value(); val != nil {
+    if _, ok := val.(*CustomError);!ok{
+      return arg.IsError()
+    }
+  }
+  return false
+}
+
 
 type CustomError struct {
   err      error
@@ -91,102 +89,92 @@ func (e *CustomError) Error() string {
 }
 ```
 
-**CustomError**
-
-This type will be used to wrap the returning error from the function. As you can observe `CustomError implements interface error`. The
-method `Error()` will print the function invocation.
-
-
 **Type ErrorsEnrichAdvice**
 
-Type that implements interface `Returning` 
+This is our advice. It implements `Returning` interface. 
 
 **Method Returning**
 
-1. It iterates over the results searching for a result that implements interface `error` and whose values is not nil. In case
-of the error was a `CustomError` the function would return false.
-```go
-func(_ int, arg *context.Arg) bool {
-  if val := arg.Value(); val != nil {
-    if _, ok := val.(*CustomError);!ok{
-      return arg.IsError()
-    }
-  }
-  return false
-}
-```
+It contains the code to be executed after intercepted functions are executed.
 
-2. In case of finding a result, then wwe modify its value. As you see, the returned error is override.
-```go
-ctx.Results().SetAt(index, &CustomError{
-  err:      result.Value().(error),
-  pkg:      ctx.Pkg(),
-  function: ctx.Function(),
-  params:   ctx.Params(),
-})
-```
+**CustomError**
 
-**GoaContext** is the guy that provides us with the **joinpoint details**.
-You can find the full list of provided methods by GoaContext in section [The GoaContext API](/goacontext)
+It implements interface `error` and It's used to wrap the returning errors by the functions.
+
 
 {: .text-yellow-300}
-### > Write a function (or many) that returns the advice
-To register a Returning advice,  we need to provide functions that matches with the below signature
+### > Register the advice 
+
+- Write a function (or many) that returns the Returning advice
+
+The function signature must be:
+
 ```go
 func() Returning
 ```
 
-In file `advice/errors.go` we can find a function that we will use to register the advice.
+Check the following functions, in file [advice/error.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/error.go#L50),
+
 ```go
 func NewErrorsEnrichAdviceAdvice() api.Returning {
   return &ErrorsEnrichAdviceAdvice{}
 }
 ```
 
-These functions must be `public`. If not, It will be ignored when registering the advice.
+Keep in mind that Goa ignores non-exported functions.
 
-{: .text-yellow-300}
-### > Register the advice
+- Register the above function
 
-Function `Goa() * api.Goa` in file`main.go` is used to register the advices.
+Open file [cmd/returning/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/returning/main.go) and have a look at function `Goa()`.
 
 ```go
 func Goa() *api.Goa {
   return api.New().
     WithReturning(advice.NewErrorsEnrichAdviceAdvice, "*.*(...)error")
 }
+func main() {
+  checkError(greeting.Greetings("Hello", ""))
+  checkError(greeting.Greetings("Bye", ""))
+  checkError(greeting.Greetings("--", "John"))
+}
+
+func checkError(err error){
+  if err!=nil{
+    fmt.Println(err.Error())
+  }
+}
 ```
 
-Only functions that returns an error will be intercepted
+- Only functions, with an error result, will be intercepted.
 
-We will dive into registering advices in [JoinPoint Expressions](/joinpoints)
+*We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 
 
 {: .text-yellow-300}
-### > Execution
+### > Goa in action
 
 This would be the normal behavior
 
 ```bash
->> go run main.go
+>> go run cmd/returning/main.go
 [ERR] invalid firstName
 [ERR] invalid firstName
 [ERR] unexpected greeting
 ```
 
-but if you make use of Goa ...
+but when we execute **goa** command ...
 
 ```bash
->> goa run main.go
-[greeting.hello(firstName:)] => [ERR] invalid firstName
-[greeting.bye(firstName:)] => [ERR] invalid firstName
+>> goa run cmd/returning/main.go
+[greeting.Hello(firstName:)] => [ERR] invalid firstName
+[greeting.Bye(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:--,firstName:John)] => [ERR] unexpected greeting
 ```
 
 {: .text-green-300}
 ## Challenge
 
-You should make the aspect print the full list of functions invocation until the error is thrown. So the output would be
+- Make changes in code to obtain the below output:
 
 ```bash
 >> goa run main.go
@@ -195,12 +183,15 @@ You should make the aspect print the full list of functions invocation until the
 [greeting.Greetings(mode:--,firstName:John)] => [ERR] unexpected greeting
 ```
 
-Just like a tip... maybe you only need to remove a code statemen to complete the challenge... 
+We should print to the console the full list of invoked function until the error was thrown.
+
+**Hint** *You could do it by removing a code statement* 
 
 
 If you found any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
 be happy to give you some help.
 
+---
 If you enjoyed this article, I would really appreciate if you shared it with your networks
 
 
