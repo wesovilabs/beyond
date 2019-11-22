@@ -17,15 +17,21 @@ The Golang library that will drive you to the AOP paradigm world!
 
 # Getting Started
 
-## Installation
+## Install goa
+```bash
+go get -u github.com/wesovilabs/goa
+```
 
-Add Goa dependency to your go.mod
+## Add goa to your project 
+
+Add goa to go.mod. 
 
 **go.mod**
+
 ```text
 module github.com/wesovilabs/goa-examples/greetings
 ...
-require github.com/wesovilabs/goa <goa.version>
+require github.com/wesovilabs/goa v0.0.1
 ...
 ```
 
