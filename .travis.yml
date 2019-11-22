@@ -1,7 +1,7 @@
 anguage: go
 
 go:
-  - "1.13"
+  - 1.13
 
 install:
   - make build
