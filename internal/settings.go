@@ -113,6 +113,7 @@ func RemoveGoaArguments(input []string) []string {
 			argsIndex[i+1] = true
 		case "--verbose", "--work":
 			argsIndex[i] = true
+
 			if len(input) >= i+1 {
 				if input[i+1] == "true" || input[i+1] == "false" {
 					argsIndex[i+1] = true
