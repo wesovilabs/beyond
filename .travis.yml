@@ -10,10 +10,26 @@ script:
   - make deps
   - make test-coverage
   - make lint
-  - make build
+  - make build-all
+
+deploy:
+  provider: releases
+  api_key:
+    secure: <your key>
+  file:
+    - goa.linux
+    - goa.darwin
+    - goa.exe
+  skip_cleanup: true
+  on:
+    tags: true
+
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+
+
 
 notifications:
   email:

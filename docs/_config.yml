@@ -1,6 +1,5 @@
 title: Goa
 remote_theme: pmarsceill/just-the-docs
-#theme: "just-the-docs"
 search_enabled: true
 search_tokenizer_separator: /[\s/]+/
 aux_links:
@@ -20,15 +19,3 @@ plugins:
   - jekyll-remote-theme
 
 github_username: wesovilabs
-
-
-
-#baseurl: "" # the subpath of your site, e.g. /blog
-#url: "" # the base hostname & protocol for your site, e.g. http://example.com
-#twitter_username: wesovilabs
-
-
-# Build settings
-#markdown: kramdown
-#plugins:
-#  - jekyll-feed
