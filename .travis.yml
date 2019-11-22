@@ -1,7 +1,8 @@
-anguage: go
+language: go
 
 go:
-  - 1.13
+  - 1.13.x
+  - master
 
 install:
   - make build
