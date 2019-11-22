@@ -8,6 +8,7 @@
 
 The Golang library that will drive you to the AOP paradigm world!
 
+Check [Goa Documentation](http://wesovilabs.github.io/goa)
 
 ## What's AOP?
 
