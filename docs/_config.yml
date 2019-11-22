@@ -12,7 +12,7 @@ email: ivan.corrales.solera@gmail.com
 
 permalink: pretty
 
-ga_tracking:
+ga_tracking: UA-153120957-1
 
 plugins:
   - jekyll-seo-tag
