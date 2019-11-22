@@ -15,7 +15,7 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: <your key>
+    secure: $GITHUB_OAUTH_TOKEN
   file:
     - goa.linux
     - goa.darwin
