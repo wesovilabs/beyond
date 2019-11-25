@@ -213,7 +213,6 @@ func takeAdvice(expr ast.Expr, advice *Advice, importSpecs []*ast.ImportSpec) {
 			invocation.pkg = pkgPath
 		}
 	case *ast.CallExpr:
-		fmt.Println("---__")
 		addAdviceCallExpr(arg, importSpecs, invocation)
 		invocation.isCall = true
 	default:

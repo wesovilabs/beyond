@@ -55,13 +55,13 @@ Available Goa releases can be found [here](https://github.com/wesovilabs/goa/rel
 
 Let's write a function to register the advices.
 ```go
+package main
+
 func Goa()*api.Goa{
   ...
 }
 ```
-The function could be found in any package in our project. Anyway, 
-and just for convection, I suggest you to write this function in your main package. 
-
+- The function must be declared in **main package**.
 - The function must be **named Goa**.
 - It must **not receive any argument**.
 - It must **return a pointer of type Goa** (`*github.com/wesovilabs/goa/api.Goa`).

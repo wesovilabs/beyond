@@ -26,10 +26,11 @@ We will go though a real Returning advice. This advice enriches returned errors 
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool & clone the goa-examples repository
+- Install goa tool & clone the goaexamples repository
 ```bash
 >> go get github.com/wesovilabs/goa
->> git clone https://github.com/wesovilabs/goa-examples.git
+>> git clone https://github.com/wesovilabs/goaexamples.git
+>> cd returning
 ```
 
 {: .text-green-200}
@@ -45,7 +46,7 @@ type Returning interface {
 }
 ```
 
-Open file [advice/error.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/error.go#L10) and have a look at type `ErrorsEnrichAdvice`.
+Open file [advice/error.go](https://github.com/wesovilabs/goaexamples/blob/master/returning/advice/error.go#L10) and have a look at type `ErrorsEnrichAdvice`.
 
 ```go
 type ErrorsEnrichAdvice struct {
@@ -113,7 +114,7 @@ The function signature must be:
 func() Returning
 ```
 
-Check the following functions, in file [advice/error.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/error.go#L50),
+Check the following functions, in file [advice/error.go](https://github.com/wesovilabs/goaexamples/blob/master/returning/advice/error.go#L50),
 
 ```go
 func NewErrorsEnrichAdviceAdvice() api.Returning {
@@ -125,7 +126,7 @@ Keep in mind that Goa ignores non-exported functions.
 
 - Register the above function
 
-Open file [cmd/returning/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/returning/main.go) and have a look at function `Goa()`.
+Open file [cmd/returning/main.go](https://github.com/wesovilabs/goaexamples/blob/master/returning/cmd/main.go) and have a look at function `Goa()`.
 
 ```go
 func Goa() *api.Goa {
@@ -156,7 +157,7 @@ func checkError(err error){
 This would be the normal behavior
 
 ```bash
->> go run cmd/returning/main.go
+>> go run cmd/main.go
 [ERR] invalid firstName
 [ERR] invalid firstName
 [ERR] unexpected greeting

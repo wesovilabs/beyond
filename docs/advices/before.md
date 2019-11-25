@@ -27,10 +27,11 @@ invocations.
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool & clone the goa-examples repository
+- Install goa tool & clone the goaexamples repository
 ```bash
 >> go get github.com/wesovilabs/goa
->> git clone https://github.com/wesovilabs/goa-examples.git
+>> git clone https://github.com/wesovilabs/goaexamples.git
+>> cd before
 ```
 
 {: .text-green-200}
@@ -46,7 +47,7 @@ type Before interface {
 }
 ```
 
-Open file [advice/tracing.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/tracing.go) and have a look at type `TracingAdvice`.
+Open file [advice/tracing.go](https://github.com/wesovilabs/goaexamples/blob/master/before/advice/tracing.go#L10) and have a look at type `TracingAdvice`.
 
 ```go
 type TracingAdvice struct {
@@ -80,7 +81,7 @@ The functions signature must be:
 func() Before
 ```
 
-Check the following functions, in file [advice/tracing.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/tracing.go),
+Check the following functions, in file [advice/tracing.go](https://github.com/wesovilabs/goaexamples/blob/master/before/advice/tracing.go#L22),
 
 
 ```go
@@ -101,7 +102,7 @@ Keep in mind that Goa ignores non-exported functions.
 
 - Register the above functions
 
-Open file [cmd/before/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/before/main.go) and have a look at function `Goa()`.
+Open file [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/before/cmd/main.go#L9) and have a look at function `Goa()`.
 
 ```go
 func Goa() *api.Goa {
@@ -117,8 +118,8 @@ func main() {
 ```
 Two functions will be intercepted:
 
-- Function `NewTracingAdvice` will be executed before function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked
-- Function `NewTracingAdviceWithPrefix` will be executed before **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) is invoked.
+- Function `NewTracingAdvice` will be executed before function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goaexamples/blob/master/before/greeting/greeting.go#L8) is invoked
+- Function `NewTracingAdviceWithPrefix` will be executed before **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goaexamples/blob/master/before/greeting/greeting.go#L16) is invoked.
 
 *We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 
@@ -128,7 +129,7 @@ Two functions will be intercepted:
 This would be the normal behavior
 
 ```bash
->> go run cmd/before/main.go
+>> go run cmd/main.go
 Hey John
 Bye John
 ```
@@ -151,9 +152,9 @@ I purpose you to implement a new advice to put in practice what we learnt in thi
 - This new advice will be applied to both `greeting.Hello` and `greeting.Bye`  functions. For the Hello function
 the advice will transform the retrieved param to uppercase and for the function `Bye ` the param will be transformed
 to lowercase.
-- The result when running `goa run cmd/before/main.go` must be:
+- The result when running `goa run cmd/main.go` must be:
 ```bash
->> goa run cmd/before/main.go
+>> goa run cmd/main.go
 Hey JOHN
 Bye john
 ```
