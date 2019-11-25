@@ -25,10 +25,11 @@ We will go though a real Around advice. This advice prints the taken time by the
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool & clone the goa-examples repository
+- Install goa tool & clone the goaexamples repository
 ```bash
 >> go get github.com/wesovilabs/goa
->> git clone https://github.com/wesovilabs/goa-examples.git
+>> git clone https://github.com/wesovilabs/goaexamples.git
+>> cd around
 ```
 
 {: .text-green-200}
@@ -45,7 +46,7 @@ type Around interface {
 }
 ```
 
-Open file [advice/timer.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/timer.go#L20).
+Open file [advice/timer.go](https://github.com/wesovilabs/goaexamples/blob/master/around/advice/timer.go#L20).
 
 ```go
 const timeStartKey = "time.start"
@@ -106,7 +107,7 @@ The function signature must be:
 func() Around
 ```
 
-Check the following functions, in file [advice/timer.go](https://github.com/wesovilabs/goa-examples/blob/master/advice/timer.go#L44),
+Check the following functions, in file [advice/timer.go](https://github.com/wesovilabs/goaexamples/blob/master/around/advice/timer.go#L44),
 
 ```go
 func NewTimerAdvice(mode TimerMode) func() api.Around {
@@ -120,7 +121,7 @@ Keep in mind that Goa ignores non-exported functions.
 
 - Register the above function
 
-Open file [cmd/around/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/around/main.go) and have a look at function `Goa()`.
+Open file [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/around/cmd/main.go#L9) and have a look at function `Goa()`.
 
 ```go
 func Goa() *api.Goa {
@@ -136,8 +137,8 @@ func main() {
 ```
 Two functions will be intercepted:
 
-- Taken time by function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) will be shown in microseconds.
-- Taken time by function **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goa-examples/blob/master/greeting/greeting.go) will be shown in nanoseconds.
+- Taken time by function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goaexamples/blob/master/around/greeting/greeting.go#L8) will be shown in microseconds.
+- Taken time by function **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goaexamples/blob/master/around/greeting/greeting.go#L16) will be shown in nanoseconds.
 
 *We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 
@@ -147,7 +148,7 @@ Two functions will be intercepted:
 This would be the normal behavior
 
 ```bash
->> go run cmd/around/main.go
+>> go run cmd/main.go
 Hey John
 Bye John
 ```
@@ -155,7 +156,7 @@ Bye John
 but when we execute **goa** command ... (time won't be exactly the same)
 
 ```bash
->> goa run cmd/around/main.go
+>> goa run cmd/main.go
 Hey John
 greeting.Hello(firstName:John) took 37 microseconds
 Bye John

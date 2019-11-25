@@ -64,12 +64,7 @@ func (a *ErrorsEnrichAdvice) Returning(ctx *context.GoaContext) {
 }
 
 func isError(_ int, arg *context.Arg) bool{
-  if val := arg.Value(); val != nil {
-    if _, ok := val.(*CustomError);!ok{
-      return arg.IsError()
-    }
-  }
-  return false
+  return arg.IsError()
 }
 
 
@@ -166,28 +161,37 @@ This would be the normal behavior
 but when we execute **goa** command ...
 
 ```bash
->> goa run cmd/returning/main.go
-[greeting.Hello(firstName:)] => [ERR] invalid firstName
-[greeting.Bye(firstName:)] => [ERR] invalid firstName
+>> goa run cmd/main.go
+[greeting.Greetings(mode:Hello,firstName:)] => [greeting.Hello(firstName:)] => [ERR] invalid firstName
+[greeting.Greetings(mode:Bye,firstName:)] => [greeting.Bye(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:--,firstName:John)] => [ERR] unexpected greeting
 ```
 
 {: .text-green-300}
 ## Challenge
 
-- Make changes in code to obtain the below output:
+- Modify `main` function. Add a new statement
+
+```go
+func main() {
+  checkError(greeting.Greetings("Hello", ""))
+  checkError(greeting.Greetings("Bye", ""))
+  checkError(greeting.Greetings("--", "John"))
+  checkError(greeting.Greetings("Hello", "Sally"))
+}
+```
+
+when running `goa run cmd/main.go` a panic will be thrown... 
+
+How could you fix it?  The output should be the below
 
 ```bash
 >> goa run main.go
-[greeting.Greetings(mode:hello,firstName:)] => [greeting.hello(firstName:)] => [ERR] invalid firstName
-[greeting.Greetings(mode:bye,firstName:)] => [greeting.bye(firstName:)] => [ERR] invalid firstName
+[greeting.Greetings(mode:Hello,firstName:)] => [greeting.Hello(firstName:)] => [ERR] invalid firstName
+[greeting.Greetings(mode:Bye,firstName:)] => [greeting.Bye(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:--,firstName:John)] => [ERR] unexpected greeting
+Hey Sally
 ```
-
-We should print to the console the full list of invoked function until the error was thrown.
-
-**Hint** *You could do it by removing a code statement* 
-
 
 If you found any problem to resolve this challenge, don't hesitate to drop me an email at `ivan.corrales.solera@gmail.com` and I will
 be happy to give you some help.

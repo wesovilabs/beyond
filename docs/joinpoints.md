@@ -54,24 +54,25 @@ The table contains some examples, that could help us to get a better understandi
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool & clone the goa-examples repository
+- Install goa tool & clone the goaexamples repository
 ```bash
 >> go get github.com/wesovilabs/goa
->> git clone https://github.com/wesovilabs/goa-examples.git
+>> git clone https://github.com/wesovilabs/goaexamples.git
+>> cd joinpoints
 ```
 
 -  The application provides a Rest API to interact with employee resources. A test purposed advice is 
-registered in file [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L14).
+registered in file [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/cmd/joinpoints/main.go#L14).
 
-To test the joinpoints expreessions we need to launch the server with command `goa run cmd/joinpoints/main.go` and then, 
+To test the joinpoints expreessions we need to launch the server with command `goa run cmd/main.go` and then, 
 run `go test/main.go` to make some requests to the server. 
 
-Server main is found in file [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19) 
-and client main in [test/main.go](https://github.com/wesovilabs/goa-examples/blob/master/test/main.go)
+Server main is found in file [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/cmd/main.go#L19) 
+and client main in [test/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/test/main.go)
 
 
 {: .text-green-300}
-**Intercepting function [CreateEmployee](https://github.com/wesovilabs/goa-examples/blob/master/handler/employee.go#L12)**
+**Intercepting function [CreateEmployee](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/handler/employee.go#L12)**
 
 Any of these expressions would be valid to intercept the above function.
 - `handler.CreateEmployee(...)...`
@@ -80,7 +81,7 @@ Any of these expressions would be valid to intercept the above function.
 - `handler.CreateEmployee(...,*net/http.Request,...)`
 - `handler.Create*(...,*net/http.Request,...)`
 
-To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/cmd/joinpoints/main.go#L19)
 ```go
 func Goa() *api.Goa {
   return api.New().
@@ -98,14 +99,14 @@ handler.CreateEmployee
 ```
 
 {: .text-green-300}
-**Intercepting any function in package [handler](https://github.com/wesovilabs/goa-examples/blob/master/handler/employee.go)**
+**Intercepting any function in package [handler](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/handler/employee.go)**
 
 Any of these expressions would be valid to intercept the above function.
 - `handler.*(...)...`
 - `handler.*(...,*net/http.Request,...)`
 - `*.*(net/http.ResponseWriter,*net/http.Request,...)`
 
-To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Goa() *api.Goa {
   return api.New().
@@ -127,11 +128,11 @@ handler.DeleteEmployee
 
 Why don't these other expressions print the same output?
 - `*.*Employee(...)...`
-- `handler.*Employee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)`
+- `handler.*Employee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/joinpoints/storage.Database)`
   
 
 {: .text-green-300}
-**Intercepting method SaveEmployee of type [memDBClient](https://github.com/wesovilabs/goa-examples/blob/master/storage/mem.go#L20)**
+**Intercepting method SaveEmployee of type [memDBClient](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/storage/mem.go#L20)**
 
 Any of these expressions would be valid to intercept the above function.
 - `storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/goaexamples/model.Employee)error`
@@ -140,7 +141,7 @@ Any of these expressions would be valid to intercept the above function.
 - `*.*.SaveEmployee(...)...`
 - `*.*memDBClient.Save*(...)...`
   
-To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Goa() *api.Goa {
   return api.New().
@@ -158,7 +159,7 @@ storage.*storage.memDBClient.SaveEmployee
 ```
 
 {: .text-green-300}
-**Intercepting function RespondWithJSON in package [handler/internal](https://github.com/wesovilabs/goa-examples/blob/master/handler/internal/helper.go#L14)**
+**Intercepting function RespondWithJSON in package [handler/internal](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/handler/internal/helper.go#L14)**
 
 Any of these expressions would be valid to intercept the above function.
 - `handler/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})`
@@ -167,7 +168,7 @@ Any of these expressions would be valid to intercept the above function.
 - `*.RespondWithJSON(net/http.ResponseWriter,...)`
 - `*.RespondWithJSON(...,int,...)`
 
-To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/goa-examples/blob/master/cmd/joinpoints/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Goa() *api.Goa {
   return api.New().
@@ -194,7 +195,7 @@ Find valid expressions that intercept the following:
 
 - All the invocations to memDBClient methods
 - Function `RandomString` in package helper
-- Function `RespondWithError`. To check it, you will need to force an error. You can do it in file [test/main.go](https://github.com/wesovilabs/goa-examples/blob/master/test/main.go#L22) by making the below change. 
+- Function `RespondWithError`. To check it, you will need to force an error. You can do it in file [test/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/test/main.go#L22) by making the below change. 
 ```go
 res,_ := api.CreateEmployee(&model.Employee{
    Email:    "",
