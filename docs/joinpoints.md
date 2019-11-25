@@ -77,11 +77,11 @@ and client main in [test/main.go](https://github.com/wesovilabs/goaexamples/blob
 Any of these expressions would be valid to intercept the above function.
 - `handler.CreateEmployee(...)...`
 - `*.CreateEmployee(...)...`
-- `handler.CreateEmployee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/storage.Database)`
+- `handler.CreateEmployee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/goaexamples/joinpoints/storage.Database)`
 - `handler.CreateEmployee(...,*net/http.Request,...)`
 - `handler.Create*(...,*net/http.Request,...)`
 
-To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/cmd/joinpoints/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Goa() *api.Goa {
   return api.New().
@@ -135,8 +135,8 @@ Why don't these other expressions print the same output?
 **Intercepting method SaveEmployee of type [memDBClient](https://github.com/wesovilabs/goaexamples/blob/master/joinpoints/storage/mem.go#L20)**
 
 Any of these expressions would be valid to intercept the above function.
-- `storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/goaexamples/model.Employee)error`
-- `storage.*memDBClient.Save*(*github.com/wesovilabs/goaexamples/model.Employee)error`
+- `storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/goaexamples/joinpoints/model.Employee)error`
+- `storage.*memDBClient.Save*(*github.com/wesovilabs/goaexamples/joinpoints/model.Employee)error`
 - `storage.*memDBClient.Save*(...)...`
 - `*.*.SaveEmployee(...)...`
 - `*.*memDBClient.Save*(...)...`
