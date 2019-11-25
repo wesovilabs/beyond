@@ -87,6 +87,6 @@ func TestContext_ParamsGet(t *testing.T) {
 
 	goaCtx.Results().SetAt(0, "tom")
 	assert.Equal("tom", goaCtx.Results().Get("salary").value)
-	assert.Equal(reflect.TypeOf("tom"), goaCtx.Results().Get("salary").kind)
+	assert.Equal(reflect.TypeOf("tom").String(), goaCtx.Results().Get("salary").kind)
 
 }

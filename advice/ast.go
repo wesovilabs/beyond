@@ -8,6 +8,7 @@ import (
 	"go/ast"
 	"go/token"
 	"reflect"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -21,14 +22,16 @@ const (
 )
 
 // GetAdvices return the list of advices (aspects)
-func GetAdvices(rootPkg string, packages map[string]*parser.Package) *Advices {
+func GetAdvices(packages map[string]*parser.Package) *Advices {
 	defs := &Advices{
 		items: make([]*Advice, 0),
 	}
 
-	for _, pkg := range packages {
-		for _, file := range pkg.Node().Files {
-			searchAdvices(file, defs)
+	for _, pkgParser := range packages {
+		if pkgParser.Node().Name == "main" {
+			for _, file := range pkgParser.Node().Files {
+				searchAdvices(file, defs)
+			}
 		}
 	}
 
@@ -119,6 +122,13 @@ func adviceCallText(ar ast.Expr) string {
 		argText = unaryToString(a)
 	case *ast.Ident:
 		argText = a.Name
+	case *ast.CallExpr:
+		args := make([]string, len(a.Args))
+		for i := range a.Args {
+			args[i] = adviceCallText(a.Args[i])
+		}
+
+		argText = fmt.Sprintf("%s(%s)", adviceCallText(a.Fun), strings.Join(args, ","))
 	default:
 		argText = "unknown"
 	}
@@ -126,33 +136,53 @@ func adviceCallText(ar ast.Expr) string {
 	return argText
 }
 
+func isNumeric(s string) bool {
+	_, err := strconv.ParseFloat(s, 64)
+	return err == nil
+}
+
 func addAdviceCallExpr(arg *ast.CallExpr, importSpecs []*ast.ImportSpec, invocation *adviceInvocation) {
 	invocationArgs := make([]*adviceInvocationArg, 0)
 
 	for _, ar := range arg.Args {
-		argText := adviceCallText(ar)
+		argText := ""
+		switch ar.(type) {
+		case *ast.CallExpr:
+			argText = adviceCallText(ar)
 
-		items := strings.Split(argText, ".")
-		if len(items) == 2 {
-			isPointer := false
-
-			if items[0][0] == '&' {
-				items[0] = items[0][1:]
-				isPointer = true
-			}
-
-			pkgPath := pkgPathForType(items[0], importSpecs)
-			invocation.addImport(pkgPath)
-
-			invocationArgs = append(invocationArgs, &adviceInvocationArg{
-				pkg:     pkgPath,
-				val:     items[1],
-				pointer: isPointer,
-			})
-		} else {
 			invocationArgs = append(invocationArgs, &adviceInvocationArg{
 				val: argText,
 			})
+		default:
+			argText = adviceCallText(ar)
+			if isNumeric(argText) {
+				invocationArgs = append(invocationArgs, &adviceInvocationArg{
+					val: argText,
+				})
+			} else {
+				items := strings.Split(argText, ".")
+				if len(items) == 2 {
+					isPointer := false
+
+					if items[0][0] == '&' {
+						items[0] = items[0][1:]
+						isPointer = true
+					}
+
+					pkgPath := pkgPathForType(items[0], importSpecs)
+					invocation.addImport(pkgPath)
+
+					invocationArgs = append(invocationArgs, &adviceInvocationArg{
+						pkg:     pkgPath,
+						val:     items[1],
+						pointer: isPointer,
+					})
+				} else {
+					invocationArgs = append(invocationArgs, &adviceInvocationArg{
+						val: argText,
+					})
+				}
+			}
 		}
 	}
 
@@ -163,7 +193,7 @@ func addAdviceCallExpr(arg *ast.CallExpr, importSpecs []*ast.ImportSpec, invocat
 			invocation.pkg = pkgPathForType(x.Name, importSpecs)
 		}
 	default:
-		fmt.Println(reflect.TypeOf(f))
+		logger.Errorf("Unexpected type %s", reflect.TypeOf(f))
 	}
 
 	invocation.args = invocationArgs
@@ -183,10 +213,11 @@ func takeAdvice(expr ast.Expr, advice *Advice, importSpecs []*ast.ImportSpec) {
 			invocation.pkg = pkgPath
 		}
 	case *ast.CallExpr:
+		fmt.Println("---__")
 		addAdviceCallExpr(arg, importSpecs, invocation)
 		invocation.isCall = true
 	default:
-		fmt.Println(reflect.TypeOf(arg))
+		logger.Errorf("Unexpected type %s", reflect.TypeOf(arg))
 	}
 
 	advice.call = invocation
@@ -201,16 +232,18 @@ func addAdvice(expr *ast.CallExpr, advices *Advices,
 			}
 			takeAdvice(expr.Args[0], advice, importSpecs)
 
-			if unicode.IsUpper(rune(advice.call.function[0])) {
-				if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
-					if len(arg.Value) < 2 {
-						return
+			if len(advice.call.function) > 0 {
+				if unicode.IsUpper(rune(advice.call.function[0])) {
+					if arg, ok := expr.Args[1].(*ast.BasicLit); ok {
+						if len(arg.Value) < 2 {
+							return
+						}
+
+						advice.regExp = internal.NormalizePointcut(arg.Value[1 : len(arg.Value)-1])
 					}
 
-					advice.regExp = internal.NormalizePointcut(arg.Value[1 : len(arg.Value)-1])
+					advices.Add(advice)
 				}
-
-				advices.Add(advice)
 			}
 		}
 

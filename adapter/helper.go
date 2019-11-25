@@ -20,7 +20,9 @@ func ensureImports(currentImports, requiredImports map[string]string, function *
 			}
 		}
 
-		currentImports[path] = currentName
+		if path != "" {
+			currentImports[path] = currentName
+		}
 	}
 
 	updateImportSpec(function, specs)
@@ -41,6 +43,10 @@ func findImportName(imports map[string]string, name, path string) string {
 }
 
 func addImportSpec(function *joinpoint.JoinPoint, name, path string) *ast.ImportSpec {
+	if path == "" {
+		return nil
+	}
+
 	spec := &ast.ImportSpec{
 		Name: ast.NewIdent(name),
 		Path: &ast.BasicLit{

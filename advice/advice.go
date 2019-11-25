@@ -87,7 +87,6 @@ func (a *Advice) GetAdviceCall(currentPkg string, imports map[string]string) str
 
 	for index := range a.call.args {
 		arg := a.call.args[index]
-
 		if arg.pkg != "" && currentPkg != arg.pkg {
 			pkgName := imports[arg.pkg]
 			args[index] = fmt.Sprintf("%s.%s", pkgName, arg.val)

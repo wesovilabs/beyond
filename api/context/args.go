@@ -57,7 +57,7 @@ func (args *Args) Set(name string, value interface{}) {
 	for _, arg := range args.items {
 		if arg.name == name {
 			arg.value = value
-			arg.kind = reflect.TypeOf(value)
+			arg.kind = reflect.TypeOf(value).Name()
 
 			return
 		}
@@ -66,7 +66,25 @@ func (args *Args) Set(name string, value interface{}) {
 	args.items = append(args.items, &Arg{
 		name:  name,
 		value: value,
-		kind:  reflect.TypeOf(value),
+		kind:  reflect.TypeOf(value).Name(),
+	})
+}
+
+// SetWithType set a value for the given argument
+func (args *Args) SetWithType(name string, value interface{}, argType string) {
+	for _, arg := range args.items {
+		if arg.name == name {
+			arg.value = value
+			arg.kind = argType
+
+			return
+		}
+	}
+
+	args.items = append(args.items, &Arg{
+		name:  name,
+		value: value,
+		kind:  argType,
 	})
 }
 
@@ -74,6 +92,6 @@ func (args *Args) Set(name string, value interface{}) {
 func (args *Args) SetAt(index int, value interface{}) {
 	if args.Count() > 0 && index >= 0 && index < args.Count() {
 		args.items[index].value = value
-		args.items[index].kind = reflect.TypeOf(value)
+		args.items[index].kind = reflect.TypeOf(value).String()
 	}
 }

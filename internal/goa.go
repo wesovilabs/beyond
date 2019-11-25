@@ -47,7 +47,7 @@ func (g *goa) removeNonInterceptedJoinPoints() {
 // Run main function in charge of orchestrating code generation
 func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) {
 	goa := &goa{}
-	goa.advices = advice.GetAdvices(rootPkg, packages)
+	goa.advices = advice.GetAdvices(packages)
 	goa.joinPoints = joinpoint.GetJoinPoints(rootPkg, packages)
 
 	goa.removeNonInterceptedJoinPoints()

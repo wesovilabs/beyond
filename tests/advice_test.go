@@ -10,7 +10,7 @@ func Test_Advice(t *testing.T) {
 	assert := assert.New(t)
 	packages := testPackages()
 	assert.NotNil(packages)
-	advices := advice.GetAdvices(pkg, packages)
+	advices := advice.GetAdvices(packages)
 	assert.NotNil(advices)
 	assert.NotNil(advices.List())
 	assert.Len(advices.List(), 4)

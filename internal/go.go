@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -75,10 +74,6 @@ func (e *Executor) Do() *exec.Cmd {
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-
-	if err := cmd.Start(); err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
-	}
 
 	return cmd
 }

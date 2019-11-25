@@ -57,10 +57,11 @@ func CallCreateAspect(pkg, name string) ast.Expr {
 
 // SetArgValue set value to context
 func SetArgValue(name string, field *FieldDef, paramName string) ast.Expr {
+	kind := astToExpression(field.Kind, true)
 	callExpr := &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
 			X:   NewIdentObjVar(name),
-			Sel: NewIdent("Set"),
+			Sel: NewIdent("SetWithType"),
 		},
 		Args: []ast.Expr{
 			&ast.BasicLit{
@@ -68,6 +69,7 @@ func SetArgValue(name string, field *FieldDef, paramName string) ast.Expr {
 				Value: fmt.Sprintf(`"%s"`, field.Name),
 			},
 			NewIdentObjVar(paramName),
+			NewIdentObj(kind),
 		},
 	}
 
@@ -99,7 +101,6 @@ func prepareArgs(fields []*FieldDef, withName bool) []ast.Expr {
 // CallFunction return the call expression
 func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExpr {
 	argsWithName := pkg == "goaContext" && (name == "WithPkg" || name == "WithName" || name == "WithType")
-
 	args := prepareArgs(fields, argsWithName)
 
 	if currentPkg == pkg || pkg == "" {

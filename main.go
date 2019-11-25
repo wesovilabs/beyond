@@ -6,6 +6,8 @@ import (
 	"github.com/wesovilabs/goa/internal"
 	"github.com/wesovilabs/goa/logger"
 	goaParser "github.com/wesovilabs/goa/parser"
+
+	"log"
 	"os"
 	"os/signal"
 	"strings"
@@ -80,20 +82,35 @@ func main() {
 }
 
 func command(settings *internal.Settings, goArgs []string, sigCh chan os.Signal) {
-	if goCommand := internal.GoCommand(settings, goArgs); goCommand != nil {
-		cmd := goCommand.Do()
-		if cmd.Wait() != nil {
-			<-sigCh
+	goCommand := internal.GoCommand(settings, goArgs).Do()
 
-			if !settings.Work {
-				logger.Infof("Removing directory %s", settings.OutputDir)
-				os.RemoveAll(settings.OutputDir)
-			}
+	var execStatus syscall.WaitStatus
 
-			logger.Close()
-			os.Exit(0)
-		}
+	exitStatus := 0
+
+	if err := goCommand.Start(); err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
+
+	go func() {
+		if err := goCommand.Wait(); err != nil {
+			fmt.Println(err.Error())
+		}
+		execStatus = goCommand.ProcessState.Sys().(syscall.WaitStatus)
+		exitStatus = execStatus.ExitStatus()
+		if exitStatus >= 0 {
+			close(sigCh)
+		}
+	}()
+	<-sigCh
+
+	if !settings.Work {
+		logger.Infof("Removing directory %s", settings.OutputDir)
+		os.RemoveAll(settings.OutputDir)
+	}
+
+	logger.Close()
+	os.Exit(exitStatus)
 }
 
 func showBanner() {

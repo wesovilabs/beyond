@@ -82,8 +82,8 @@ func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.
 	stmts = append(stmts, internal.AssignGoaContext(imports))
 	stmts = append(stmts, internal.SetUpGoaContext(joinPoint)...)
 
-	for name, d := range advices {
-		stmts = append(stmts, applyAdvices(name, d, imports, joinPoint)...)
+	for name, advice := range advices {
+		stmts = append(stmts, applyAdvices(name, advice, imports, joinPoint)...)
 	}
 
 	params := internal.Params(joinPoint.ParamsList())
@@ -113,29 +113,31 @@ func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.
 	return funcDecl
 }
 
-func applyAdvices(name string, d *advice.Advice, imports map[string]string, joinPoint *joinpoint.JoinPoint) []ast.Stmt {
+func applyAdvices(name string, advice *advice.Advice, imports map[string]string,
+	joinPoint *joinpoint.JoinPoint) []ast.Stmt {
 	stmts := make([]ast.Stmt, 0)
 
-	if importName, found := imports[d.Pkg()]; !found {
-		index := strings.LastIndex(d.Pkg(), "/")
-		pkgName := findImportName(imports, d.Pkg()[index+1:], d.Pkg())
+	if importName, found := imports[advice.Pkg()]; !found {
+		index := strings.LastIndex(advice.Pkg(), "/")
+		pkgName := findImportName(imports, advice.Pkg()[index+1:], advice.Pkg())
 
-		if joinPoint.PkgPath() != d.Pkg() {
-			addImportSpec(joinPoint, importName, d.Pkg())
+		if joinPoint.PkgPath() != advice.Pkg() {
+			if i := addImportSpec(joinPoint, importName, advice.Pkg()); i != nil {
+				imports[advice.Pkg()] = pkgName
+			}
 
-			imports[d.Pkg()] = pkgName
-			stmts = append(stmts, internal.AssignAspect(name, pkgName, d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+			stmts = append(stmts, internal.AssignAspect(name, pkgName, advice.GetAdviceCall(joinPoint.PkgPath(), imports)))
 		} else {
-			imports[d.Pkg()] = pkgName
-			stmts = append(stmts, internal.AssignAspect(name, "", d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+			imports[advice.Pkg()] = pkgName
+			stmts = append(stmts, internal.AssignAspect(name, "", advice.GetAdviceCall(joinPoint.PkgPath(), imports)))
 		}
 	} else {
 		if importName == "" {
-			index := strings.LastIndex(d.Pkg(), "/")
-			importName = d.Pkg()[index+1:]
+			index := strings.LastIndex(advice.Pkg(), "/")
+			importName = advice.Pkg()[index+1:]
 		}
 
-		stmts = append(stmts, internal.AssignAspect(name, importName, d.GetAdviceCall(joinPoint.PkgPath(), imports)))
+		stmts = append(stmts, internal.AssignAspect(name, importName, advice.GetAdviceCall(joinPoint.PkgPath(), imports)))
 	}
 
 	return stmts

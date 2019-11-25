@@ -12,7 +12,7 @@ func Test_Matcher(t *testing.T) {
 	assert := assert.New(t)
 	packages := testPackages()
 	assert.NotNil(packages)
-	advices := advice.GetAdvices(pkg, packages)
+	advices := advice.GetAdvices(packages)
 	joinPoints := joinpoint.GetJoinPoints(pkg, packages)
 	matches := match.GetMatches(joinPoints, advices)
 	assert.NotNil(matches)

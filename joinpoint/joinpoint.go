@@ -83,7 +83,11 @@ func (f *JoinPoint) AddImportSpecs(decls []ast.Spec) {
 	}}, f.parent.Decls...)
 
 	for _, d := range decls {
-		f.parent.Imports = append(f.parent.Imports, d.(*ast.ImportSpec))
+		i := d.(*ast.ImportSpec)
+
+		if i.Path.Value != `""` {
+			f.parent.Imports = append(f.parent.Imports, i)
+		}
 	}
 }
 
