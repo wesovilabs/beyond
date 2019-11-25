@@ -50,5 +50,5 @@ func (a *Arg) Is(t reflect.Type) bool {
 
 // IsError check if argument is an error
 func (a *Arg) IsError() bool {
-	return a.kind =="error" || a.kind == "*errors.fundamental"
+	return a.kind == "error" || a.kind == "*errors.fundamental"
 }
