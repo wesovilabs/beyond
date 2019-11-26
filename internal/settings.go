@@ -2,13 +2,28 @@ package internal
 
 import (
 	"flag"
+	"github.com/BurntSushi/toml"
 	"github.com/wesovilabs/goa/helper"
+	"github.com/wesovilabs/goa/logger"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 )
 
-const defaultTargetDir = ".goa"
+const (
+	defaultTargetDir   = ".goa"
+	defaultGoaSettings = "goa.toml"
+)
+
+func load(settingsPath string) *Settings {
+	settings := Settings{}
+	if _, err := os.Stat(settingsPath); err == nil {
+		if _, err := toml.DecodeFile(settingsPath, &settings); err != nil {
+			logger.Errorf(err.Error())
+		}
+	}
+	return &settings
+}
 
 // Settings Goa settings
 type Settings struct {
@@ -16,6 +31,7 @@ type Settings struct {
 	Project     string
 	OutputDir   string
 	Pkg         string
+	Excludes    []string
 	ExcludeDirs map[string]bool
 	Verbose     bool
 	Work        bool
@@ -23,7 +39,7 @@ type Settings struct {
 
 // GoaSettingFromCommandLine returns the GoaSettings from the command line args
 func GoaSettingFromCommandLine(args []string) (*Settings, error) {
-	var path, project, outputDir, pkg string
+	var path, project, outputDir, pkg, settingsPath string
 
 	pwd, err := os.Getwd()
 
@@ -35,13 +51,17 @@ func GoaSettingFromCommandLine(args []string) (*Settings, error) {
 
 	flag.StringVar(&project, "project", "", "project name")
 	flag.StringVar(&path, "path", pwd, "path")
+	flag.StringVar(&settingsPath, "config", filepath.Join(path, defaultGoaSettings), "goa.tml path")
 	flag.StringVar(&outputDir, "output", "", "output directory")
 	flag.StringVar(&pkg, "package", "", "relative path to the main package")
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
 	flag.BoolVar(&work, "work", false, "print the name of the temporary work directory and do not delete it when exiting")
 	flag.Parse()
 
-	return createSettings(args, project, path, outputDir, pkg, verbose, work)
+	settings := load(settingsPath)
+
+	settings.updateWithFlags(args, project, path, outputDir, pkg, verbose, work)
+	return settings, nil
 }
 
 func takePackage(args []string) string {
@@ -58,47 +78,60 @@ func takePackage(args []string) string {
 	return ""
 }
 
-func createSettings(args []string, project, path, outputDir, pkg string, verbose, work bool) (*Settings, error) {
-	if project == "" {
+func (settings *Settings) updateWithFlags(args []string, project, path, outputDir, pkg string, verbose, work bool) error {
+	if project != "" {
+		settings.Project = project
+	} else if settings.Project == "" {
 		module, err := helper.GetModuleName(path)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
-		project = module
+		settings.Project = module
 	}
 
 	var outErr error
 
-	if outputDir == "" {
-		if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
-			outputDir = targetDir
-		} else {
-			outputDir = filepath.Join(path, defaultTargetDir)
-		}
-	} else {
+	if outputDir != "" {
 		if outputDir, outErr = filepath.Abs(outputDir); outErr != nil {
-			outputDir = filepath.Join(path, defaultTargetDir)
+			settings.OutputDir = filepath.Join(path, defaultTargetDir)
+		}
+	} else if settings.OutputDir == "" && settings.OutputDir == "" {
+
+		if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
+			settings.OutputDir = targetDir
+		} else {
+			settings.OutputDir = filepath.Join(path, defaultTargetDir)
 		}
 	}
+	settings.Path = path
 
-	if pkg == "" {
-		pkg = takePackage(args)
+	if settings.Pkg == "" && pkg == "" {
+		settings.Pkg = takePackage(args)
 	}
 
-	excludeDirs := map[string]bool{}
-	addDefaultExcludes(".git", excludeDirs)
-	addDefaultExcludes(outputDir, excludeDirs)
+	if work && !settings.Work {
+		settings.Work = true
+	}
+	if verbose && !settings.Verbose {
+		settings.Verbose = true
+	}
+	settings.ExcludeDirs = map[string]bool{
+		".git":true,
+	}
+	if settings.Excludes != nil {
+		for i := range settings.Excludes {
+			if absPath,err:=filepath.Abs(settings.Excludes[i]);err==nil{
+				settings.ExcludeDirs[absPath] = true
+			}
+		}
+	}
+	if outPath, err := filepath.Abs(settings.OutputDir); err == nil {
+		settings.ExcludeDirs[outPath] = true
+	}
 
-	return &Settings{
-		Path:        path,
-		Project:     project,
-		OutputDir:   outputDir,
-		Verbose:     verbose,
-		ExcludeDirs: excludeDirs,
-		Pkg:         pkg,
-		Work:        work,
-	}, nil
+	return nil
+
 }
 
 // RemoveGoaArguments removes goa arguments from the list of arguments
@@ -108,7 +141,7 @@ func RemoveGoaArguments(input []string) []string {
 
 	for i, arg := range input {
 		switch arg {
-		case "--project", "--output", "--path", "--package":
+		case "--config", "--project", "--output", "--path", "--package":
 			argsIndex[i] = true
 			argsIndex[i+1] = true
 		case "--verbose", "--work":
