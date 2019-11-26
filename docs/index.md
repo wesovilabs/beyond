@@ -1,17 +1,17 @@
 ---
 layout: default
 title: Home
-description: "Goa is a Golang Library that provides AOP"
+description: "Goa is a Go Library that provides AOP"
 nav_order: 1
 permalink: /
 ---
 
 {: .text-green-300}
-# Golang Oriented to Aspects (Goa)
+# Go Oriented to Aspects (Goa)
 {: .fs-9 }
 
 {: .text-green-200}
-A Golang library that will drive you to the AOP paradigm.
+A Go library that will drive you to the AOP paradigm.
 {: .fs-6 .fw-300 }
 
 [View it on GitHub](https://github.com/wesovilabs/goa){: .btn .fs-5 .mb-4 .mb-md-0 }

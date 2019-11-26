@@ -9,8 +9,8 @@ nav_order: 8
 # About Goa
 {: .fs-9 }
 
-Goa (Golang Oriented to Aspects) is a Golang library whose main goals are:
-- It provides Golang developers with a mechanism to **code under AOP paradigm**.
+Goa (Go Oriented to Aspects) is a Go library whose main goals are:
+- It provides Go developers with a mechanism to **code under AOP paradigm**.
 - You can build useful advices and **share with other developers**. at time you can also take advantages of existing 
 ones.
 - Goa usage is really straightforward.
