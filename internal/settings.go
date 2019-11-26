@@ -117,11 +117,11 @@ func (settings *Settings) updateWithFlags(args []string, project, path, outputDi
 		settings.Verbose = true
 	}
 	settings.ExcludeDirs = map[string]bool{
-		".git":true,
+		".git": true,
 	}
 	if settings.Excludes != nil {
 		for i := range settings.Excludes {
-			if absPath,err:=filepath.Abs(settings.Excludes[i]);err==nil{
+			if absPath, err := filepath.Abs(settings.Excludes[i]); err == nil {
 				settings.ExcludeDirs[absPath] = true
 			}
 		}
