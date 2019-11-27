@@ -69,6 +69,7 @@ func searchAdvices(node *ast.File, advices *Advices) {
 
 func searchExcludePaths(node *ast.File) []*regexp.Regexp {
 	paths := make([]*regexp.Regexp, 0)
+
 	if funcDecl := containsAdvices(node); funcDecl != nil {
 		for _, stmt := range funcDecl.Body.List {
 			if expr, ok := stmt.(*ast.ReturnStmt); ok {
@@ -85,13 +86,13 @@ func searchExcludePaths(node *ast.File) []*regexp.Regexp {
 							}
 						}
 					}
-
 				}
 
 				return paths
 			}
 		}
 	}
+
 	return paths
 }
 

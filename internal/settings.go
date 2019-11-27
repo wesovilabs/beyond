@@ -17,11 +17,13 @@ const (
 
 func load(settingsPath string) *Settings {
 	settings := Settings{}
+
 	if _, err := os.Stat(settingsPath); err == nil {
 		if _, err := toml.DecodeFile(settingsPath, &settings); err != nil {
 			logger.Errorf(err.Error())
 		}
 	}
+
 	return &settings
 }
 
@@ -38,7 +40,7 @@ type Settings struct {
 }
 
 // GoaSettingFromCommandLine returns the GoaSettings from the command line args
-func GoaSettingFromCommandLine(args []string) (*Settings, error) {
+func GoaSettingFromCommandLine(args []string) *Settings {
 	var path, project, outputDir, pkg, settingsPath string
 
 	pwd, err := os.Getwd()
@@ -61,7 +63,8 @@ func GoaSettingFromCommandLine(args []string) (*Settings, error) {
 	settings := load(settingsPath)
 
 	settings.updateWithFlags(args, project, path, outputDir, pkg, verbose, work)
-	return settings, nil
+
+	return settings
 }
 
 func takePackage(args []string) string {
@@ -78,53 +81,63 @@ func takePackage(args []string) string {
 	return ""
 }
 
-func (settings *Settings) updateWithFlags(args []string, project, path, outputDir, pkg string, verbose, work bool) error {
+func (settings *Settings) withProject(path, project string) {
 	if project != "" {
 		settings.Project = project
 	} else if settings.Project == "" {
-		module, err := helper.GetModuleName(path)
-		if err != nil {
-			return err
+		if module, err := helper.GetModuleName(path); err == nil {
+			settings.Project = module
 		}
-
-		settings.Project = module
 	}
+}
 
+func (settings *Settings) withOutputDir(path, outputDir string) {
 	if outputDir != "" {
 		settings.OutputDir = outputDir
 	}
+
 	if settings.OutputDir != "" {
 		if outputDir, outErr := filepath.Abs(settings.OutputDir); outErr != nil {
 			settings.OutputDir = filepath.Join(path, defaultTargetDir)
-
 		} else {
 			settings.OutputDir = outputDir
 		}
 	} else {
-
 		if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
 			settings.OutputDir = targetDir
 		} else {
 			settings.OutputDir = filepath.Join(path, defaultTargetDir)
 		}
 	}
-	settings.Path = path
+}
+
+func (settings *Settings) withPkg(pkg string, args []string) {
 	if pkg != "" {
 		settings.Pkg = pkg
 	}
+
 	if settings.Pkg == "" {
 		settings.Pkg = takePackage(args)
 	}
+}
 
+func (settings *Settings) withWork(work bool) {
 	if work && !settings.Work {
 		settings.Work = true
 	}
+}
+
+func (settings *Settings) withVerbose(verbose bool) {
 	if verbose && !settings.Verbose {
 		settings.Verbose = true
 	}
+}
+
+func (settings *Settings) withExcludes() {
 	settings.ExcludeDirs = map[string]bool{
 		".git": true,
 	}
+
 	if settings.Excludes != nil {
 		for i := range settings.Excludes {
 			if absPath, err := filepath.Abs(settings.Excludes[i]); err == nil {
@@ -132,12 +145,20 @@ func (settings *Settings) updateWithFlags(args []string, project, path, outputDi
 			}
 		}
 	}
+
 	if outPath, err := filepath.Abs(settings.OutputDir); err == nil {
 		settings.ExcludeDirs[outPath] = true
 	}
+}
 
-	return nil
-
+func (settings *Settings) updateWithFlags(args []string, project, path, outputDir, pkg string, verbose, work bool) {
+	settings.withProject(path, project)
+	settings.withOutputDir(path, outputDir)
+	settings.Path = path
+	settings.withPkg(pkg, args)
+	settings.withWork(work)
+	settings.withVerbose(verbose)
+	settings.withExcludes()
 }
 
 // RemoveGoaArguments removes goa arguments from the list of arguments

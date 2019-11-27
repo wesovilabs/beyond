@@ -35,11 +35,8 @@ func astToExpressionEval(expr ast.Expr) string {
 		return fmt.Sprintf("[]%s", astToExpression(t.Elt, false))
 	case *ast.SelectorExpr:
 		return fmt.Sprintf("%s.%s", astToExpression(t.X, false), t.Sel.String())
-	case *ast.FuncType:
-
 	default:
 		logger.Errorf("Unexpected type %s", reflect.TypeOf(t))
+		return ""
 	}
-
-	return ""
 }

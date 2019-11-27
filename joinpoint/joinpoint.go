@@ -125,15 +125,18 @@ func (jp *JoinPoint) ResultsList() []*ast.Field {
 
 func (jp *JoinPoint) findMatches(advices *advice.Advices) {
 	matches := make(map[string]*advice.Advice)
+
 	for index, adv := range advices.List() {
 		if adv.Pkg() == jp.PkgPath() && adv.Name() == jp.Name() {
 			jp.advices = make(map[string]*advice.Advice)
 			return
 		}
+
 		if adv.Match(jp.Path()) {
 			matches[fmt.Sprintf("advice%v", index)] = adv
 		}
 	}
+
 	jp.advices = matches
 }
 
@@ -141,8 +144,8 @@ func (jp *JoinPoint) canBeIntercepted(ignoredPaths []*regexp.Regexp) bool {
 	if jp.pkg == "main" && (jp.Name() == "main" || jp.Name() == "Goa") {
 		return false
 	}
-	for _, ignorePath := range ignoredPaths {
 
+	for _, ignorePath := range ignoredPaths {
 		if ignorePath.MatchString(jp.Path()) {
 			return false
 		}

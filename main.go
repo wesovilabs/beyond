@@ -37,11 +37,7 @@ func main() {
 
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	settings, err := internal.GoaSettingFromCommandLine(os.Args[1:])
-
-	if err != nil {
-		panic(err)
-	}
+	settings := internal.GoaSettingFromCommandLine(os.Args[1:])
 
 	if settings.Verbose {
 		logger.Enable()

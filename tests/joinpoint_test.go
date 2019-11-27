@@ -184,7 +184,8 @@ func Test_JoinPoint(t *testing.T) {
 	packages := testPackages()
 	assert.NotNil(packages)
 	advices := advice.GetAdvices(packages)
-	jps := joinpoint.GetJoinPoints(pkg, advices, packages)
+	excluds := advice.GetExcludePaths(packages)
+	jps := joinpoint.GetJoinPoints(pkg, advices, excluds, packages)
 	for _, jp := range jps.List() {
 		jpType := ""
 		if jp.GetRecv() != nil {

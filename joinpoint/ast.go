@@ -9,8 +9,11 @@ import (
 	"strings"
 )
 
+const mainPkg = "main"
+
 // GetJoinPoints return the functions
-func GetJoinPoints(rootPkg string, advices *advice.Advices, ignored []*regexp.Regexp, packages map[string]*parser.Package) *JoinPoints {
+func GetJoinPoints(rootPkg string, advices *advice.Advices,
+	ignored []*regexp.Regexp, packages map[string]*parser.Package) *JoinPoints {
 	functions := &JoinPoints{}
 
 	for _, pkg := range packages {
@@ -64,7 +67,25 @@ func isAspectFunction(decl *ast.FuncDecl) bool {
 	return false
 }
 
-func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, advices *advice.Advices, ignored []*regexp.Regexp, functions *JoinPoints) {
+func objectType(decl *ast.FuncDecl) string {
+	objType := ""
+
+	if decl.Recv != nil {
+		switch p := decl.Recv.List[0].Type.(type) {
+		case *ast.StarExpr:
+			if id, ok := p.X.(*ast.Ident); ok {
+				objType = fmt.Sprintf("*%s", id.String())
+			}
+		case *ast.Ident:
+			objType = p.String()
+		}
+	}
+
+	return objType
+}
+
+func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, advices *advice.Advices,
+	ignored []*regexp.Regexp, functions *JoinPoints) {
 	imports := calculateImports(pkg, file.Imports)
 
 	for _, obj := range file.Decls {
@@ -73,18 +94,7 @@ func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, adv
 				continue
 			}
 
-			objType := ""
-
-			if decl.Recv != nil {
-				switch p := decl.Recv.List[0].Type.(type) {
-				case *ast.StarExpr:
-					if id, ok := p.X.(*ast.Ident); ok {
-						objType = fmt.Sprintf("*%s", id.String())
-					}
-				case *ast.Ident:
-					objType = p.String()
-				}
-			}
+			objType := objectType(decl)
 
 			path := buildPath(rootPkg, parentPath, objType, decl, imports)
 			jp := &JoinPoint{
@@ -94,12 +104,15 @@ func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, adv
 				pkg:     pkg,
 				pkgPath: fmt.Sprintf("%s/%s", rootPkg, parentPath),
 			}
-			if pkg == "main" {
+
+			if pkg == mainPkg {
 				index := strings.Index(path, ".")
-				jp.path = fmt.Sprintf("%s.%s", "main", path[index+1:])
+				jp.path = fmt.Sprintf("%s.%s", mainPkg, path[index+1:])
 			}
+
 			if jp.canBeIntercepted(ignored) {
 				jp.findMatches(advices)
+
 				if len(jp.Advices()) > 0 {
 					functions.AddJoinPoint(jp)
 				}

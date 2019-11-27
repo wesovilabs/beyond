@@ -46,34 +46,25 @@ func Test_GoaSettingFromCommandLine(t *testing.T) {
 				Project:   "myproject",
 			},
 		},
-		{
-			project:   "",
-			path:      "",
-			outputDir: "",
-			pkg:       "",
-		},
 	}
 
 	for i, c := range cases {
 		setting := &Settings{}
 		fmt.Println(i)
 		setting.updateWithFlags([]string{}, c.project, c.path, c.outputDir, c.pkg, c.verbose, c.work)
-		if c.setting != nil {
-			assert.Equal(c.setting.Project, setting.Project)
-			assert.Equal(c.setting.Path, setting.Path)
-			assert.Equal(c.setting.Pkg, setting.Pkg)
 
-			if c.outputDir != "" {
-				assert.Equal(c.setting.OutputDir, setting.OutputDir)
-			} else {
-				assert.NotEmpty(setting.OutputDir)
-			}
-			assert.Equal(c.setting.Work, setting.Work)
-			assert.Equal(c.setting.Verbose, setting.Verbose)
-			assert.Len(setting.ExcludeDirs, 2)
+		assert.Equal(c.setting.Project, setting.Project)
+		assert.Equal(c.setting.Path, setting.Path)
+		assert.Equal(c.setting.Pkg, setting.Pkg)
+
+		if c.outputDir != "" {
+			assert.Equal(c.setting.OutputDir, setting.OutputDir)
 		} else {
-			assert.Empty(setting)
+			assert.NotEmpty(setting.OutputDir)
 		}
+		assert.Equal(c.setting.Work, setting.Work)
+		assert.Equal(c.setting.Verbose, setting.Verbose)
+		assert.Len(setting.ExcludeDirs, 2)
 
 	}
 }
