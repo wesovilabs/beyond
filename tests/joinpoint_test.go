@@ -3,6 +3,7 @@ package tests
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/wesovilabs/goa/advice"
 	"github.com/wesovilabs/goa/joinpoint"
 	"testing"
 )
@@ -182,7 +183,8 @@ func Test_JoinPoint(t *testing.T) {
 	assert := assert.New(t)
 	packages := testPackages()
 	assert.NotNil(packages)
-	jps := joinpoint.GetJoinPoints(pkg, packages)
+	advices := advice.GetAdvices(packages)
+	jps := joinpoint.GetJoinPoints(pkg, advices, packages)
 	for _, jp := range jps.List() {
 		jpType := ""
 		if jp.GetRecv() != nil {

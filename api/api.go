@@ -22,3 +22,8 @@ func (g *Goa) WithBefore(func() Before, string) *Goa {
 func (g *Goa) WithReturning(func() Returning, string) *Goa {
 	return g
 }
+
+// Exclude add path to be ignored by goa advices
+func (g *Goa) Exclude(...string) *Goa {
+	return g
+}

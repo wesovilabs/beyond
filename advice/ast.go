@@ -8,6 +8,7 @@ import (
 	"go/ast"
 	"go/token"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -20,6 +21,20 @@ const (
 	pkgSeparator = "/"
 	apiPath      = "github.com/wesovilabs/goa/api"
 )
+
+func GetExcludePaths(packages map[string]*parser.Package) []*regexp.Regexp {
+	paths := make([]*regexp.Regexp, 0)
+
+	for _, pkgParser := range packages {
+		if pkgParser.Node().Name == "main" {
+			for _, file := range pkgParser.Node().Files {
+				paths = append(paths, searchExcludePaths(file)...)
+			}
+		}
+	}
+
+	return paths
+}
 
 // GetAdvices return the list of advices (aspects)
 func GetAdvices(packages map[string]*parser.Package) *Advices {
@@ -50,6 +65,34 @@ func searchAdvices(node *ast.File, advices *Advices) {
 			}
 		}
 	}
+}
+
+func searchExcludePaths(node *ast.File) []*regexp.Regexp {
+	paths := make([]*regexp.Regexp, 0)
+	if funcDecl := containsAdvices(node); funcDecl != nil {
+		for _, stmt := range funcDecl.Body.List {
+			if expr, ok := stmt.(*ast.ReturnStmt); ok {
+				if callExpr, ok := expr.Results[0].(*ast.CallExpr); ok {
+					if selExpr, ok := callExpr.Fun.(*ast.SelectorExpr); ok {
+						if selExpr.Sel.Name == "Exclude" {
+							for i := range callExpr.Args {
+								arg := callExpr.Args[i]
+								if basic, ok := arg.(*ast.BasicLit); ok {
+									val := basic.Value
+									regExp := regexp.MustCompile(val[1 : len(val)-1])
+									paths = append(paths, regExp)
+								}
+							}
+						}
+					}
+
+				}
+
+				return paths
+			}
+		}
+	}
+	return paths
 }
 
 func containsAdvices(file *ast.File) *ast.FuncDecl {

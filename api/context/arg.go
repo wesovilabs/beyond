@@ -1,7 +1,6 @@
 package context
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -17,7 +16,6 @@ func NewArg(name string, value interface{}) *Arg {
 	kind := ""
 
 	if value != nil {
-		fmt.Println(reflect.TypeOf(value).String())
 		kind = reflect.TypeOf(value).String()
 	}
 

@@ -6,72 +6,34 @@ import (
 	"github.com/wesovilabs/goa/helper"
 	"github.com/wesovilabs/goa/joinpoint"
 	"github.com/wesovilabs/goa/logger"
-	"github.com/wesovilabs/goa/match"
 	"github.com/wesovilabs/goa/parser"
 
 	"os"
 	"path/filepath"
 )
 
-type goa struct {
-	joinPoints *joinpoint.JoinPoints
-	advices    *advice.Advices
-}
-
-func (g *goa) removeNonInterceptedJoinPoints() {
-	output := &joinpoint.JoinPoints{}
-
-	for _, jp := range g.joinPoints.List() {
-		valid := true
-
-		if jp.Name() == "main" || jp.Name() == "Goa" {
-			continue
-		}
-
-		for index := range g.advices.List() {
-			a := g.advices.List()[index]
-			if a.Name() == jp.Name() && a.Pkg() == jp.PkgPath() {
-				valid = false
-				continue
-			}
-		}
-
-		if valid {
-			output.AddJoinPoint(jp)
-		}
-	}
-
-	g.joinPoints = output
-}
-
 // Run main function in charge of orchestrating code generation
 func Run(rootPkg string, packages map[string]*parser.Package, outputDir string) {
-	goa := &goa{}
-	goa.advices = advice.GetAdvices(packages)
-	goa.joinPoints = joinpoint.GetJoinPoints(rootPkg, packages)
+	excludePaths := advice.GetExcludePaths(packages)
+	advices := advice.GetAdvices(packages)
+	joinPoints := joinpoint.GetJoinPoints(rootPkg, advices, excludePaths, packages)
 
-	goa.removeNonInterceptedJoinPoints()
+	for _, jp := range joinPoints.List() {
+		if len(jp.Advices()) > 0 {
+			logger.Infof(`[joinpoint] %s.%s => %s`, jp.Pkg(), jp.Name(), jp.Path())
 
-	for _, f := range goa.joinPoints.List() {
-		logger.Infof(`[function] %s.%s => %s`, f.Pkg(), f.Name(), f.Path())
-	}
+			for _, d := range jp.Advices() {
+				logger.Infof("   - %s", d.Name())
+			}
 
-	matches := match.GetMatches(goa.joinPoints, goa.advices)
-
-	for _, match := range matches {
-		logger.Infof("[ match  ] %s", match.JoinPoint.Name())
-
-		for _, d := range match.Advices {
-			logger.Infof("   - %s", d.Name())
+			adapter.Adapter(jp, jp.Advices())
 		}
-
-		adapter.Adapter(match.JoinPoint, match.Advices)
 	}
 
-	goa.save(packages, outputDir)
+	save(packages, outputDir)
 }
 
-func (g *goa) save(packages map[string]*parser.Package, outputDir string) {
+func save(packages map[string]*parser.Package, outputDir string) {
 	for pkgPath, pkg := range packages {
 		for filePath, file := range pkg.Node().Files {
 			fileName := filepath.Base(filePath)

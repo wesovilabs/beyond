@@ -90,13 +90,17 @@ func (settings *Settings) updateWithFlags(args []string, project, path, outputDi
 		settings.Project = module
 	}
 
-	var outErr error
-
 	if outputDir != "" {
-		if outputDir, outErr = filepath.Abs(outputDir); outErr != nil {
+		settings.OutputDir = outputDir
+	}
+	if settings.OutputDir != "" {
+		if outputDir, outErr := filepath.Abs(settings.OutputDir); outErr != nil {
 			settings.OutputDir = filepath.Join(path, defaultTargetDir)
+
+		} else {
+			settings.OutputDir = outputDir
 		}
-	} else if settings.OutputDir == "" && settings.OutputDir == "" {
+	} else {
 
 		if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
 			settings.OutputDir = targetDir
@@ -105,8 +109,10 @@ func (settings *Settings) updateWithFlags(args []string, project, path, outputDi
 		}
 	}
 	settings.Path = path
-
-	if settings.Pkg == "" && pkg == "" {
+	if pkg != "" {
+		settings.Pkg = pkg
+	}
+	if settings.Pkg == "" {
 		settings.Pkg = takePackage(args)
 	}
 
@@ -162,10 +168,4 @@ func RemoveGoaArguments(input []string) []string {
 	}
 
 	return out
-}
-
-func addDefaultExcludes(localPath string, excludes map[string]bool) {
-	if absPath, err := filepath.Abs(localPath); err == nil {
-		excludes[absPath] = true
-	}
 }

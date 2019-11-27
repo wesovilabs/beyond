@@ -1,5 +1,6 @@
 package tests
 
+/**
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/wesovilabs/goa/advice"
@@ -19,3 +20,4 @@ func Test_Matcher(t *testing.T) {
 	assert.Equal(10, len(matches))
 
 }
+**/

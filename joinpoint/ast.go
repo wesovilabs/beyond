@@ -2,18 +2,20 @@ package joinpoint
 
 import (
 	"fmt"
+	"github.com/wesovilabs/goa/advice"
 	"github.com/wesovilabs/goa/parser"
 	"go/ast"
+	"regexp"
 	"strings"
 )
 
 // GetJoinPoints return the functions
-func GetJoinPoints(rootPkg string, packages map[string]*parser.Package) *JoinPoints {
+func GetJoinPoints(rootPkg string, advices *advice.Advices, ignored []*regexp.Regexp, packages map[string]*parser.Package) *JoinPoints {
 	functions := &JoinPoints{}
 
 	for _, pkg := range packages {
 		for _, file := range pkg.Node().Files {
-			searchFunctions(rootPkg, pkg.Path(), pkg.Node().Name, file, functions)
+			searchFunctions(rootPkg, pkg.Path(), pkg.Node().Name, file, advices, ignored, functions)
 		}
 	}
 
@@ -62,7 +64,7 @@ func isAspectFunction(decl *ast.FuncDecl) bool {
 	return false
 }
 
-func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, functions *JoinPoints) {
+func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, advices *advice.Advices, ignored []*regexp.Regexp, functions *JoinPoints) {
 	imports := calculateImports(pkg, file.Imports)
 
 	for _, obj := range file.Decls {
@@ -85,19 +87,23 @@ func searchFunctions(rootPkg string, parentPath, pkg string, file *ast.File, fun
 			}
 
 			path := buildPath(rootPkg, parentPath, objType, decl, imports)
-
-			if pkg == "main" {
-				index := strings.Index(path, ".")
-				path = fmt.Sprintf("%s.%s", "main", path[index+1:])
-			}
-
-			functions.AddJoinPoint(&JoinPoint{
+			jp := &JoinPoint{
 				parent:  file,
 				decl:    decl,
 				path:    path,
 				pkg:     pkg,
 				pkgPath: fmt.Sprintf("%s/%s", rootPkg, parentPath),
-			})
+			}
+			if pkg == "main" {
+				index := strings.Index(path, ".")
+				jp.path = fmt.Sprintf("%s.%s", "main", path[index+1:])
+			}
+			if jp.canBeIntercepted(ignored) {
+				jp.findMatches(advices)
+				if len(jp.Advices()) > 0 {
+					functions.AddJoinPoint(jp)
+				}
+			}
 		}
 	}
 }
