@@ -65,5 +65,14 @@ run:
 		--output /Users/ivan/Workspace/Wesovilabs/goa/testdata/generated \
 		--verbose
 
+TMPDIR := $(shell mktemp -d)
+dist:
+	cp build/goa.linux $(TMPDIR)/;
+	cp scripts/docker/1.13.4/Dockerfile $(TMPDIR)/;
+	cd $(TMPDIR); \
+	docker build -t=wesovilabs/goa:${VERSION}-golang1.13.4 .
+
+
+
 help:
 	@grep -E '^[a-zA-Z_-]+[%]?:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

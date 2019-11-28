@@ -1,16 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/wesovilabs/goa/helper"
 	"github.com/wesovilabs/goa/internal"
 	"github.com/wesovilabs/goa/logger"
 	goaParser "github.com/wesovilabs/goa/parser"
-
 	"log"
 	"os"
+	"os/exec"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 )
@@ -38,6 +38,20 @@ func main() {
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
 	settings := internal.GoaSettingFromCommandLine(os.Args[1:])
+	goArgs := internal.RemoveGoaArguments(os.Args[1:])
+
+	goCmd:=goCommand(settings,goArgs)
+	if goCmd == nil{
+		showBanner()
+		fmt.Println("usage: [env_vars] goa [goa_flags] go_command [go_flags]\n\n")
+		fmt.Println("[goa_flags]")
+		flag.PrintDefaults()
+		fmt.Println("\n[go_command]")
+		fmt.Println("  build: Build compiles the packages named by the import paths")
+		fmt.Println("  run: Run compiles and runs the named main Go package.")
+		fmt.Println("  generate: Generate runs commands described by directives within existing files.")
+		return
+	}
 
 	if settings.Verbose {
 		logger.Enable()
@@ -63,22 +77,30 @@ func main() {
 		Parse(settings.Pkg)
 
 	internal.Run(settings.Project, packages, settings.OutputDir)
-	goArgs := internal.RemoveGoaArguments(os.Args[1:])
+
 	end := time.Now()
 	logger.Infof("[goa] goa transformation took %v milliseconds", end.Sub(start).Milliseconds())
 	logger.Infof("[workdir] %s", settings.OutputDir)
-	logger.Infof("[command] go %s", strings.Join(goArgs, " "))
+	logger.Infof("[command] %s",goCmd.String())
 
 	if settings.Verbose {
 		println("---")
 		println()
 	}
 
-	command(settings, goArgs, sigCh)
+	runGoCommand(goCmd, settings, sigCh)
 }
 
-func command(settings *internal.Settings, goArgs []string, sigCh chan os.Signal) {
-	goCommand := internal.GoCommand(settings, goArgs).Do()
+func goCommand(settings *internal.Settings, goArgs []string) *exec.Cmd {
+	executor := internal.GoCommand(settings, goArgs)
+	if executor == nil {
+		return nil
+	}
+	return executor.Do()
+
+}
+
+func runGoCommand(goCommand *exec.Cmd, settings *internal.Settings, sigCh chan os.Signal) {
 
 	var execStatus syscall.WaitStatus
 

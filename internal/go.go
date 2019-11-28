@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -40,13 +41,14 @@ func newGoBuild(settings *Settings, args []string) *Executor {
 	for i := range args {
 		arg := args[i]
 		if arg == "-o" {
+
 			hasOutputFlag = true
 			args[i+1] = transformPath(args[i+1], settings.Path)
 		}
 	}
 
 	if !hasOutputFlag {
-		args = append(args, "-o", filepath.Join(settings.Path, "app"))
+		args = append(args[1:], fmt.Sprintf("-o %s", filepath.Join(settings.Path, "app")), args[1])
 	}
 
 	return &Executor{"build", args, settings}

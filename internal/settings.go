@@ -71,7 +71,7 @@ func takePackage(args []string) string {
 	for i := range args {
 		arg := args[i]
 		if arg == "build" || arg == "generate" || arg == "run" {
-			if len(args) >= i+1 {
+			if len(args) > i+1 {
 				file := args[i+1]
 				return filepath.Dir(file)
 			}
@@ -174,7 +174,7 @@ func RemoveGoaArguments(input []string) []string {
 		case "--verbose", "--work":
 			argsIndex[i] = true
 
-			if len(input) >= i+1 {
+			if len(input) > i+1 {
 				if input[i+1] == "true" || input[i+1] == "false" {
 					argsIndex[i+1] = true
 				}
