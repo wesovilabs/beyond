@@ -44,13 +44,14 @@ func main() {
 	if goCmd == nil {
 		showBanner()
 
-		fmt.Println("usage: [env_vars] goa [goa_flags] go_command [go_flags]\n\n")
+		fmt.Println("usage: [env_vars] goa [goa_flags] go_command [go_flags]")
 		fmt.Println("[goa_flags]")
 		flag.PrintDefaults()
 		fmt.Println("\n[go_command]")
 		fmt.Println("  build: Build compiles the packages named by the import paths")
 		fmt.Println("  run: Run compiles and runs the named main Go package.")
 		fmt.Println("  generate: Generate runs commands described by directives within existing files.")
+
 		return
 	}
 
