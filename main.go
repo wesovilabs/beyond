@@ -40,9 +40,10 @@ func main() {
 	settings := internal.GoaSettingFromCommandLine(os.Args[1:])
 	goArgs := internal.RemoveGoaArguments(os.Args[1:])
 
-	goCmd:=goCommand(settings,goArgs)
-	if goCmd == nil{
+	goCmd := goCommand(settings, goArgs)
+	if goCmd == nil {
 		showBanner()
+
 		fmt.Println("usage: [env_vars] goa [goa_flags] go_command [go_flags]\n\n")
 		fmt.Println("[goa_flags]")
 		flag.PrintDefaults()
@@ -81,7 +82,7 @@ func main() {
 	end := time.Now()
 	logger.Infof("[goa] goa transformation took %v milliseconds", end.Sub(start).Milliseconds())
 	logger.Infof("[workdir] %s", settings.OutputDir)
-	logger.Infof("[command] %s",goCmd.String())
+	logger.Infof("[command] %s", goCmd.String())
 
 	if settings.Verbose {
 		println("---")
@@ -96,12 +97,11 @@ func goCommand(settings *internal.Settings, goArgs []string) *exec.Cmd {
 	if executor == nil {
 		return nil
 	}
-	return executor.Do()
 
+	return executor.Do()
 }
 
 func runGoCommand(goCommand *exec.Cmd, settings *internal.Settings, sigCh chan os.Signal) {
-
 	var execStatus syscall.WaitStatus
 
 	exitStatus := 0

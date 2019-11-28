@@ -40,8 +40,8 @@ func newGoBuild(settings *Settings, args []string) *Executor {
 
 	for i := range args {
 		arg := args[i]
-		if arg == "-o" {
 
+		if arg == "-o" {
 			hasOutputFlag = true
 			args[i+1] = transformPath(args[i+1], settings.Path)
 		}
