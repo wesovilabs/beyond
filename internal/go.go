@@ -1,10 +1,10 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 var goCmds = map[string]func(*Settings, []string) *Executor{
@@ -35,6 +35,8 @@ func transformPath(old string, baseDir string) string {
 }
 
 func newGoBuild(settings *Settings, args []string) *Executor {
+	var hasOutputFlag bool
+
 	for i := range args {
 		arg := args[i]
 
@@ -42,6 +44,10 @@ func newGoBuild(settings *Settings, args []string) *Executor {
 			args[i+1] = transformPath(args[i+1], settings.Path)
 			break
 		}
+	}
+
+	if !hasOutputFlag {
+		args = append(args, "-o", filepath.Join(settings.Path, "app"))
 	}
 
 	return &Executor{"build", args, settings}
@@ -62,17 +68,13 @@ type Executor struct {
 }
 
 func (e *Executor) Do() *exec.Cmd {
-
-	args := append([]string{e.cmd}, e.args...)
+	args := append([]string{e.cmd}, e.args[1:]...)
 	//nolint
-	cmd := exec.Command("go")
-	cmd.Args = args
+	cmd := exec.Command("go", args...)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	fmt.Println("------")
-	fmt.Println(cmd.String())
-	fmt.Println("------")
+
 	return cmd
 }
