@@ -112,7 +112,6 @@ func runGoCommand(goCommand *exec.Cmd, settings *internal.Settings, sigCh chan o
 	}
 
 	go func() {
-
 		if err := goCommand.Wait(); err != nil {
 			fmt.Println(err.Error())
 		}

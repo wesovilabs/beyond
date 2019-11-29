@@ -20,7 +20,6 @@ func hasAnyReturning(definitions map[string]*advice.Advice) bool {
 }
 
 func wrapBeforeStatements(advices map[string]*advice.Advice, params, results []*internal.FieldDef) []ast.Stmt {
-
 	stmts := make([]ast.Stmt, 0)
 	// set values to context
 	stmts = append(stmts, setArgsValues("joinPointResults", "Results", results, true, true)...)
@@ -147,7 +146,8 @@ func applyAdvices(name string, advice *advice.Advice, imports map[string]string,
 	return stmts
 }
 
-func setArgsValues(name string, argsType string, params []*internal.FieldDef, zeroValues bool, declare bool) []ast.Stmt {
+func setArgsValues(name string, argsType string, params []*internal.FieldDef,
+	zeroValues bool, declare bool) []ast.Stmt {
 	stmts := make([]ast.Stmt, len(params)+2)
 	stmts[0] = internal.TakeArgs(name, argsType, declare)
 
@@ -156,9 +156,12 @@ func setArgsValues(name string, argsType string, params []*internal.FieldDef, ze
 			stmts[index+1] = &ast.ExprStmt{
 				X: internal.SetArgValue(name, param, "nil"),
 			}
+
 			continue
 		}
+
 		paramName := param.Name
+
 		if argsType == "Params" {
 			paramName = fmt.Sprintf("param%v", index)
 		}

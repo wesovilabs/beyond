@@ -40,7 +40,6 @@ func ArgsToFunctionArgs(argType string, name string, fields []*FieldDef) []ast.S
 }
 
 func ifArgumentValueIsNotNil(variable string, stmt ast.Stmt) ast.Stmt {
-
 	return &ast.IfStmt{
 		Cond: &ast.BinaryExpr{
 			X: &ast.CallExpr{
@@ -56,65 +55,73 @@ func ifArgumentValueIsNotNil(variable string, stmt ast.Stmt) ast.Stmt {
 	}
 }
 
-func IfAdviceIsCompleted(results []*FieldDef) ast.Stmt {
+func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 	stmts := make([]ast.Stmt, 0)
-	if len(results) == 0 {
-		stmts = append(stmts, &ast.ReturnStmt{})
-	} else {
+	stmts = append(stmts, &ast.AssignStmt{
+		Lhs: []ast.Expr{NewIdentObjVar("beyondResults")},
+		Tok: token.DEFINE,
+		Rhs: []ast.Expr{
+			&ast.CallExpr{
+				Fun: &ast.SelectorExpr{
+					X:   NewIdentObjVar(varBeyondContext),
+					Sel: NewIdent("Results"),
+				},
+			},
+		},
+	})
+	returnExpr := make([]ast.Expr, len(results))
+
+	for i := range results {
+		result := results[i]
+
 		stmts = append(stmts, &ast.AssignStmt{
-			Lhs: []ast.Expr{NewIdentObjVar("beyondResults")},
+			Lhs: []ast.Expr{NewIdentObjVar(fmt.Sprintf("beyondResult%v", i))},
 			Tok: token.DEFINE,
 			Rhs: []ast.Expr{
 				&ast.CallExpr{
 					Fun: &ast.SelectorExpr{
-						X:   NewIdentObjVar(varBeyondContext),
-						Sel: NewIdent("Results"),
+						X:   NewIdentObjVar("beyondResults"),
+						Sel: NewIdent("At"),
+					},
+					Args: []ast.Expr{
+						NewIdent(fmt.Sprintf("%v", i)),
 					},
 				},
 			},
 		})
-		returnExpr := make([]ast.Expr, len(results))
-		for i := range results {
-			result := results[i]
-			stmts = append(stmts, &ast.AssignStmt{
-				Lhs: []ast.Expr{NewIdentObjVar(fmt.Sprintf("beyondResult%v", i))},
-				Tok: token.DEFINE,
-				Rhs: []ast.Expr{
-					&ast.CallExpr{
+
+		stmts = append(stmts, &ast.AssignStmt{
+			Lhs: []ast.Expr{
+				NewIdentObj(fmt.Sprintf("result%v", i)),
+			},
+			Tok: token.DEFINE,
+			Rhs: []ast.Expr{
+				&ast.TypeAssertExpr{
+					X: &ast.CallExpr{
 						Fun: &ast.SelectorExpr{
-							X:   NewIdentObjVar("beyondResults"),
-							Sel: NewIdent("At"),
-						},
-						Args: []ast.Expr{
-							NewIdent(fmt.Sprintf("%v", i)),
+							X:   NewIdentObjVar(fmt.Sprintf("beyondResult%v", i)),
+							Sel: NewIdent("Value"),
 						},
 					},
+					Type: result.Kind,
 				},
-			})
-
-			stmts = append(stmts, &ast.AssignStmt{
-				Lhs: []ast.Expr{
-					NewIdentObj(fmt.Sprintf("result%v", i)),
-				},
-				Tok: token.DEFINE,
-				Rhs: []ast.Expr{
-					&ast.TypeAssertExpr{
-						X: &ast.CallExpr{
-							Fun: &ast.SelectorExpr{
-								X:   NewIdentObjVar(fmt.Sprintf("beyondResult%v", i)),
-								Sel: NewIdent("Value"),
-							},
-						},
-						Type: result.Kind,
-					},
-				},
-			})
-			returnExpr[i] = NewIdent(fmt.Sprintf("result%v", i))
-		}
-		stmts = append(stmts, &ast.ReturnStmt{
-			Results: returnExpr,
+			},
 		})
+		returnExpr[i] = NewIdent(fmt.Sprintf("result%v", i))
+	}
 
+	return append(stmts, &ast.ReturnStmt{
+		Results: returnExpr,
+	})
+}
+
+func IfAdviceIsCompleted(results []*FieldDef) ast.Stmt {
+	stmts := make([]ast.Stmt, 0)
+
+	if len(results) == 0 {
+		stmts = append(stmts, &ast.ReturnStmt{})
+	} else {
+		stmts = append(stmts, appendResultsStatements(results)...)
 	}
 
 	return &ast.IfStmt{
@@ -180,6 +187,7 @@ func TakeArgs(name string, method string, declare bool) ast.Stmt {
 	if !declare {
 		tk = token.ASSIGN
 	}
+
 	return &ast.AssignStmt{
 		Lhs: []ast.Expr{
 			NewIdentObj(name),
