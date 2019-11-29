@@ -19,14 +19,14 @@ func hasAnyReturning(definitions map[string]*advice.Advice) bool {
 	return false
 }
 
-func wrapBeforeStatements(advices map[string]*advice.Advice, params,results []*internal.FieldDef) []ast.Stmt {
+func wrapBeforeStatements(advices map[string]*advice.Advice, params, results []*internal.FieldDef) []ast.Stmt {
 
 	stmts := make([]ast.Stmt, 0)
 	// set values to context
-	stmts = append(stmts, setArgsValues("joinPointResults", "Results", results,true,true)...)
+	stmts = append(stmts, setArgsValues("joinPointResults", "Results", results, true, true)...)
 	argsVariable := "joinPointParams"
 	// set values to context
-	stmts = append(stmts, setArgsValues(argsVariable, "Params", params,false,true)...)
+	stmts = append(stmts, setArgsValues(argsVariable, "Params", params, false, true)...)
 	// call aspects
 	for name, advice := range advices {
 		if advice.HasBefore() {
@@ -46,7 +46,7 @@ func wrapReturningStatements(definitions map[string]*advice.Advice, results []*i
 	stmts := make([]ast.Stmt, 0)
 
 	if len(results) > 0 {
-		stmts = append(stmts, setArgsValues(argsVariable, "Results", results,false,false)...)
+		stmts = append(stmts, setArgsValues(argsVariable, "Results", results, false, false)...)
 	}
 
 	for name, d := range definitions {
@@ -93,7 +93,7 @@ func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.
 	params := internal.Params(joinPoint.ParamsList())
 	results := internal.Results(joinPoint.ResultsList())
 
-	stmts = append(stmts, wrapBeforeStatements(advices, params,results)...)
+	stmts = append(stmts, wrapBeforeStatements(advices, params, results)...)
 
 	if recv != nil {
 		// Call joinPoint
@@ -149,10 +149,10 @@ func applyAdvices(name string, advice *advice.Advice, imports map[string]string,
 
 func setArgsValues(name string, argsType string, params []*internal.FieldDef, zeroValues bool, declare bool) []ast.Stmt {
 	stmts := make([]ast.Stmt, len(params)+2)
-	stmts[0] = internal.TakeArgs(name, argsType,declare)
+	stmts[0] = internal.TakeArgs(name, argsType, declare)
 
 	for index, param := range params {
-		if zeroValues{
+		if zeroValues {
 			stmts[index+1] = &ast.ExprStmt{
 				X: internal.SetArgValue(name, param, "nil"),
 			}

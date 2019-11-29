@@ -38,7 +38,7 @@ func newGoBuild(settings *Settings, args []string) *Executor {
 	for i := range args {
 		arg := args[i]
 
-		if arg == "-o" && len(args)>i+1 {
+		if arg == "-o" && len(args) > i+1 {
 			args[i+1] = transformPath(args[i+1], settings.Path)
 			break
 		}
@@ -63,10 +63,10 @@ type Executor struct {
 
 func (e *Executor) Do() *exec.Cmd {
 
-	args:=append([]string{e.cmd},e.args...)
+	args := append([]string{e.cmd}, e.args...)
 	//nolint
 	cmd := exec.Command("go")
-	cmd.Args=args
+	cmd.Args = args
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout

@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	beyondLog   = logger.Init("BeyondErrorLogger", true, false, ioutil.Discard)
-	debugLog = logger.Init("BeyondDebugLogger", false, false, ioutil.Discard)
+	beyondLog = logger.Init("BeyondErrorLogger", true, false, ioutil.Discard)
+	debugLog  = logger.Init("BeyondDebugLogger", false, false, ioutil.Discard)
 )
 
 // Enable enabling the logger

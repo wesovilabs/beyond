@@ -106,8 +106,8 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 			"main": {
 				path: "main.main()",
 				imports: map[string]string{
-					"fmt":                                        "",
-					"github.com/wesovilabs/beyond/api":              "",
+					"fmt":                              "",
+					"github.com/wesovilabs/beyond/api": "",
 					"github.com/wesovilabs/beyond/api/advice":       "",
 					"github.com/wesovilabs/beyond/api/context":      "",
 					"github.com/wesovilabs/beyond/testdata/advice":  "testAdvice",
@@ -120,8 +120,8 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 			"Beyond": {
 				path: "main.Beyond()*github.com/wesovilabs/beyond/api.Beyond",
 				imports: map[string]string{
-					"fmt":                                        "",
-					"github.com/wesovilabs/beyond/api":              "",
+					"fmt":                              "",
+					"github.com/wesovilabs/beyond/api": "",
 					"github.com/wesovilabs/beyond/api/advice":       "",
 					"github.com/wesovilabs/beyond/api/context":      "",
 					"github.com/wesovilabs/beyond/testdata/advice":  "testAdvice",

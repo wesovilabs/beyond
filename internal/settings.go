@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	defaultTargetDir   = ".beyond"
+	defaultTargetDir      = ".beyond"
 	defaultBeyondSettings = "beyond.toml"
 )
 
@@ -37,7 +37,6 @@ type Settings struct {
 	ExcludeDirs map[string]bool
 	Verbose     bool
 	Work        bool
-
 }
 
 // BeyondSettingFromCommandLine returns the BeyondSettings from the command line args

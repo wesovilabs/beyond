@@ -86,7 +86,7 @@ func IfAdviceIsCompleted(results []*FieldDef) ast.Stmt {
 							Sel: NewIdent("At"),
 						},
 						Args: []ast.Expr{
-							NewIdent(fmt.Sprintf("%v",i)),
+							NewIdent(fmt.Sprintf("%v", i)),
 						},
 					},
 				},
@@ -111,8 +111,8 @@ func IfAdviceIsCompleted(results []*FieldDef) ast.Stmt {
 			})
 			returnExpr[i] = NewIdent(fmt.Sprintf("result%v", i))
 		}
-		stmts=append(stmts,&ast.ReturnStmt{
-			Results:returnExpr,
+		stmts = append(stmts, &ast.ReturnStmt{
+			Results: returnExpr,
 		})
 
 	}
@@ -175,9 +175,9 @@ func ReturnValuesStmt(fields []*FieldDef) ast.Stmt {
 }
 
 // TakeArgs takes the arguments from the method
-func TakeArgs(name string, method string,declare bool) ast.Stmt {
+func TakeArgs(name string, method string, declare bool) ast.Stmt {
 	var tk = token.DEFINE
-	if !declare{
+	if !declare {
 		tk = token.ASSIGN
 	}
 	return &ast.AssignStmt{
@@ -197,7 +197,7 @@ func TakeArgs(name string, method string,declare bool) ast.Stmt {
 }
 
 // SetArgs set arguments
-func SetArgs(method string, name string,) ast.Stmt {
+func SetArgs(method string, name string) ast.Stmt {
 	return &ast.ExprStmt{
 		X: &ast.CallExpr{
 			Fun: &ast.SelectorExpr{
