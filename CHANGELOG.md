@@ -19,10 +19,9 @@ func Beyond() *api.Beyond {
     Exclude("advice.*(...)...")
 }
 ```
--[#5](https://github.com/wesovilabs/beyond/issues/5) `Beyond configuration` can be loaded from a
+- [#5](https://github.com/wesovilabs/beyond/issues/5) `Beyond configuration` can be loaded from a
 file. By default `beyond.toml` will be loaded. It can be overrided 
 **beyond.toml**
-
 ```toml
 project="github.com/wesovilabs/beyond-examples/settings"
 outputDir="generated"
