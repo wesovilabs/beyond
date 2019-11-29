@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_GoaSettingFromCommandLine(t *testing.T) {
+func Test_BeyondSettingFromCommandLine(t *testing.T) {
 	assert := assert.New(t)
 	pwd, _ := os.Getwd()
 	cases := []struct {
@@ -69,7 +69,7 @@ func Test_GoaSettingFromCommandLine(t *testing.T) {
 	}
 }
 
-func Test_RemoveGoaArguments(t *testing.T) {
+func Test_RemoveBeyondArguments(t *testing.T) {
 	args := []string{
 		"--work",
 		"--verbose",
@@ -82,7 +82,7 @@ func Test_RemoveGoaArguments(t *testing.T) {
 		"run",
 		"main.go",
 	}
-	out := RemoveGoaArguments(args)
+	out := RemoveBeyondArguments(args)
 	assert.Equal(t, "run", out[0])
 	assert.Equal(t, "main.go", out[1])
 }

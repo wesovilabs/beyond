@@ -2,7 +2,7 @@ package joinpoint
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/advice"
+	"github.com/wesovilabs/beyond/advice"
 	"go/ast"
 	"go/token"
 	"regexp"
@@ -141,7 +141,7 @@ func (jp *JoinPoint) findMatches(advices *advice.Advices) {
 }
 
 func (jp *JoinPoint) canBeIntercepted(ignoredPaths []*regexp.Regexp) bool {
-	if jp.pkg == "main" && (jp.Name() == "main" || jp.Name() == "Goa") {
+	if jp.pkg == "main" && (jp.Name() == "main" || jp.Name() == "Beyond") {
 		return false
 	}
 

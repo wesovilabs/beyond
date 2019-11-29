@@ -1,12 +1,12 @@
 package internal
 
 import (
-	"github.com/wesovilabs/goa/adapter"
-	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/helper"
-	"github.com/wesovilabs/goa/joinpoint"
-	"github.com/wesovilabs/goa/logger"
-	"github.com/wesovilabs/goa/parser"
+	"github.com/wesovilabs/beyond/adapter"
+	"github.com/wesovilabs/beyond/advice"
+	"github.com/wesovilabs/beyond/helper"
+	"github.com/wesovilabs/beyond/joinpoint"
+	"github.com/wesovilabs/beyond/logger"
+	"github.com/wesovilabs/beyond/parser"
 
 	"os"
 	"path/filepath"

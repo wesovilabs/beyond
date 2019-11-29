@@ -2,8 +2,8 @@ package joinpoint
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/parser"
+	"github.com/wesovilabs/beyond/advice"
+	"github.com/wesovilabs/beyond/parser"
 	"go/ast"
 	"regexp"
 	"strings"

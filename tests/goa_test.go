@@ -2,13 +2,13 @@ package tests
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/internal"
+	"github.com/wesovilabs/beyond/internal"
 	"io/ioutil"
 	"os"
 	"testing"
 )
 
-func Test_Goa(t *testing.T) {
+func Test_Beyond(t *testing.T) {
 	assert := assert.New(t)
 	packages := testPackages()
 	assert.NotNil(packages)

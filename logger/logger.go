@@ -8,19 +8,19 @@ import (
 )
 
 var (
-	goaLog   = logger.Init("GoaErrorLogger", true, false, ioutil.Discard)
-	debugLog = logger.Init("GoaDebugLogger", false, false, ioutil.Discard)
+	beyondLog   = logger.Init("BeyondErrorLogger", true, false, ioutil.Discard)
+	debugLog = logger.Init("BeyondDebugLogger", false, false, ioutil.Discard)
 )
 
 // Enable enabling the logger
 func Enable() {
-	debugLog = logger.Init("GoaLogger", true, false, ioutil.Discard)
+	debugLog = logger.Init("BeyondLogger", true, false, ioutil.Discard)
 }
 
 // Close close loggers
 func Close() {
 	debugLog.Close()
-	goaLog.Close()
+	beyondLog.Close()
 }
 
 // Infof the messages
@@ -35,12 +35,12 @@ func Info(text string) {
 
 // Error log error messages
 func Error(text string) {
-	goaLog.ErrorDepth(1, text)
+	beyondLog.ErrorDepth(1, text)
 }
 
 // Errorf log error messages
 func Errorf(text string, args ...interface{}) {
-	goaLog.ErrorDepth(1, fmt.Sprintf(text, args...))
+	beyondLog.ErrorDepth(1, fmt.Sprintf(text, args...))
 }
 
 // Fatal log fatal messages

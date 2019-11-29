@@ -1,12 +1,12 @@
-title: Goa
+title: Beyond
 remote_theme: pmarsceill/just-the-docs
 search_enabled: true
 search_tokenizer_separator: /[\s/]+/
 aux_links:
-  "Goa on GitHub":
-    - "//github.com/wesovilabs/goa"
+  "Beyond on GitHub":
+    - "//github.com/wesovilabs/beyond"
 heading_anchors: true
-footer_content: "Copyright &copy; 2019 Iván Corrales Solera. Distributed by an <a href=\"https://github.com/wesovilabs/goa/tree/master/LICENSE.md\">MIT license.</a>"
+footer_content: "Copyright &copy; 2019 Iván Corrales Solera. Distributed by an <a href=\"https://github.com/wesovilabs/beyond/tree/master/LICENSE.md\">MIT license.</a>"
 email: ivan.corrales.solera@gmail.com
 
 permalink: pretty

@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 var goCmds = map[string]func(*Settings, []string) *Executor{
@@ -36,19 +35,13 @@ func transformPath(old string, baseDir string) string {
 }
 
 func newGoBuild(settings *Settings, args []string) *Executor {
-	var hasOutputFlag bool
-
 	for i := range args {
 		arg := args[i]
 
-		if arg == "-o" {
-			hasOutputFlag = true
+		if arg == "-o" && len(args)>i+1 {
 			args[i+1] = transformPath(args[i+1], settings.Path)
+			break
 		}
-	}
-
-	if !hasOutputFlag {
-		args = append(args[1:], fmt.Sprintf("-o %s", filepath.Join(settings.Path, "app")), args[1])
 	}
 
 	return &Executor{"build", args, settings}
@@ -69,13 +62,17 @@ type Executor struct {
 }
 
 func (e *Executor) Do() *exec.Cmd {
-	command := strings.Join(e.args[1:], " ")
+
+	args:=append([]string{e.cmd},e.args...)
 	//nolint
-	cmd := exec.Command("go", e.cmd, command)
+	cmd := exec.Command("go")
+	cmd.Args=args
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-
+	fmt.Println("------")
+	fmt.Println(cmd.String())
+	fmt.Println("------")
 	return cmd
 }

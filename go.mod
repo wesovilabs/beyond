@@ -1,4 +1,4 @@
-module github.com/wesovilabs/goa
+module github.com/wesovilabs/beyond
 
 go 1.13
 

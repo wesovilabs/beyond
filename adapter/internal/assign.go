@@ -6,17 +6,17 @@ import (
 )
 
 const (
-	varGoaContext = "goaContext"
+	varBeyondContext = "beyondContext"
 )
 
-// AssignGoaContext create a new assignment
-func AssignGoaContext(imports map[string]string) *ast.AssignStmt {
+// AssignBeyondContext create a new assignment
+func AssignBeyondContext(imports map[string]string) *ast.AssignStmt {
 	return &ast.AssignStmt{
 		Lhs: []ast.Expr{
-			NewIdentObjVar(varGoaContext),
+			NewIdentObjVar(varBeyondContext),
 		},
 		Rhs: []ast.Expr{
-			CallCreateGoaContext(imports),
+			CallCreateBeyondContext(imports),
 		},
 		Tok: token.DEFINE,
 	}

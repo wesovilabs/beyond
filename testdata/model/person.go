@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/testdata/advice"
+	"github.com/wesovilabs/beyond/testdata/advice"
 )
 
 type Person struct {

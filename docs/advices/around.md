@@ -25,10 +25,10 @@ We will go though a real Around advice. This advice prints the taken time by the
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool & clone the goaexamples repository
+- Install beyond tool & clone the beyondexamples repository
 ```bash
->> go get github.com/wesovilabs/goa
->> git clone https://github.com/wesovilabs/goaexamples.git
+>> go get github.com/wesovilabs/beyond
+>> git clone https://github.com/wesovilabs/beyondexamples.git
 >> cd around
 ```
 
@@ -38,15 +38,15 @@ Let's check that our environment is ready to follow the tutorial!
 {: .text-yellow-300}
 ### > Define the advice
 
-Around advices must implement the interface Around (`github.com/wesovilabs/goa/api.Around`).  
+Around advices must implement the interface Around (`github.com/wesovilabs/beyond/api.Around`).  
 ```go
 type Around interface {
-  Before(ctx *context.GoaContext)
-  Returning(ctx *context.GoaContext)
+  Before(ctx *context.BeyondContext)
+  Returning(ctx *context.BeyondContext)
 }
 ```
 
-Open file [advice/timer.go](https://github.com/wesovilabs/goaexamples/blob/master/around/advice/timer.go#L20).
+Open file [advice/timer.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/advice/timer.go#L20).
 
 ```go
 const timeStartKey = "time.start"
@@ -62,11 +62,11 @@ type TimerAdvice struct {
   mode TimerMode
 }
 
-func (a *TimerAdvice) Before(ctx *context.GoaContext) {
+func (a *TimerAdvice) Before(ctx *context.BeyondContext) {
   ctx.Set(timeStartKey, time.Now())
 }
 
-func (a *TimerAdvice) Returning(ctx *context.GoaContext) {
+func (a *TimerAdvice) Returning(ctx *context.BeyondContext) {
   start := ctx.Get(timeStartKey).(time.Time)
   timeDuration:="?"
   switch a.mode {
@@ -107,7 +107,7 @@ The function signature must be:
 func() Around
 ```
 
-Check the following functions, in file [advice/timer.go](https://github.com/wesovilabs/goaexamples/blob/master/around/advice/timer.go#L44),
+Check the following functions, in file [advice/timer.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/advice/timer.go#L44),
 
 ```go
 func NewTimerAdvice(mode TimerMode) func() api.Around {
@@ -117,14 +117,14 @@ func NewTimerAdvice(mode TimerMode) func() api.Around {
 }
 ```
 
-Keep in mind that Goa ignores non-exported functions.
+Keep in mind that Beyond ignores non-exported functions.
 
 - Register the above function
 
-Open file [cmd/main.go](https://github.com/wesovilabs/goaexamples/blob/master/around/cmd/main.go#L9) and have a look at function `Goa()`.
+Open file [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/cmd/main.go#L9) and have a look at function `Beyond()`.
 
 ```go
-func Goa() *api.Goa {
+func Beyond() *api.Beyond {
   return api.New().
     WithAround(advice.NewTimerAdvice(advice.Microseconds), "greeting.Hello(string)...").
     WithAround(advice.NewTimerAdvice(advice.Nanoseconds), "greeting.Bye(string)...")
@@ -137,13 +137,13 @@ func main() {
 ```
 Two functions will be intercepted:
 
-- Taken time by function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/goaexamples/blob/master/around/greeting/greeting.go#L8) will be shown in microseconds.
-- Taken time by function **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/goaexamples/blob/master/around/greeting/greeting.go#L16) will be shown in nanoseconds.
+- Taken time by function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/greeting/greeting.go#L8) will be shown in microseconds.
+- Taken time by function **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/greeting/greeting.go#L16) will be shown in nanoseconds.
 
 *We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 
 {: .text-yellow-300}
-### > Goa in action
+### > Beyond in action
 
 This would be the normal behavior
 
@@ -153,10 +153,10 @@ Hey John
 Bye John
 ```
 
-but when we execute **goa** command ... (time won't be exactly the same)
+but when we execute **beyond** command ... (time won't be exactly the same)
 
 ```bash
->> goa run cmd/main.go
+>> beyond run cmd/main.go
 Hey John
 greeting.Hello(firstName:John) took 37 microseconds
 Bye John
@@ -169,7 +169,7 @@ greeting.Bye(firstName:John) took 4102 nanoseconds
 This time, the challenge must be decided by yourself!!! Extend the TimerAdvice or build a new one that you think it could
 be useful for other developers too.
 
-When you complete this challenge, why dont you post an article sharing your experience with Goa!  I would be very grateful! 
+When you complete this challenge, why dont you post an article sharing your experience with Beyond!  I would be very grateful! 
 
 ---
 

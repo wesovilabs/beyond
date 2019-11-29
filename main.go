@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/wesovilabs/goa/helper"
-	"github.com/wesovilabs/goa/internal"
-	"github.com/wesovilabs/goa/logger"
-	goaParser "github.com/wesovilabs/goa/parser"
+	"github.com/wesovilabs/beyond/helper"
+	"github.com/wesovilabs/beyond/internal"
+	"github.com/wesovilabs/beyond/logger"
+	beyondParser "github.com/wesovilabs/beyond/parser"
 	"log"
 	"os"
 	"os/exec"
@@ -37,15 +37,15 @@ func main() {
 
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	settings := internal.GoaSettingFromCommandLine(os.Args[1:])
-	goArgs := internal.RemoveGoaArguments(os.Args[1:])
+	settings := internal.BeyondSettingFromCommandLine(os.Args[1:])
+	goArgs := internal.RemoveBeyondArguments(os.Args[1:])
 
 	goCmd := goCommand(settings, goArgs)
 	if goCmd == nil {
 		showBanner()
 
-		fmt.Println("usage: [env_vars] goa [goa_flags] go_command [go_flags]")
-		fmt.Println("[goa_flags]")
+		fmt.Println("usage: [env_vars] beyond [beyond_flags] go_command [go_flags]")
+		fmt.Println("[beyond_flags]")
 		flag.PrintDefaults()
 		fmt.Println("\n[go_command]")
 		fmt.Println("  build: Build compiles the packages named by the import paths")
@@ -74,14 +74,14 @@ func main() {
 		fmt.Printf("[ WORKDIR ] %s\n", settings.OutputDir)
 	}
 
-	packages := goaParser.
+	packages := beyondParser.
 		New(settings.Path, settings.Project).
 		Parse(settings.Pkg)
 
 	internal.Run(settings.Project, packages, settings.OutputDir)
 
 	end := time.Now()
-	logger.Infof("[goa] goa transformation took %v milliseconds", end.Sub(start).Milliseconds())
+	logger.Infof("[beyond] beyond transformation took %v milliseconds", end.Sub(start).Milliseconds())
 	logger.Infof("[workdir] %s", settings.OutputDir)
 	logger.Infof("[command] %s", goCmd.String())
 
@@ -112,6 +112,7 @@ func runGoCommand(goCommand *exec.Cmd, settings *internal.Settings, sigCh chan o
 	}
 
 	go func() {
+
 		if err := goCommand.Wait(); err != nil {
 			fmt.Println(err.Error())
 		}

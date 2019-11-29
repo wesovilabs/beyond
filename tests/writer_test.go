@@ -2,7 +2,7 @@ package tests
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/helper"
+	"github.com/wesovilabs/beyond/helper"
 	"io/ioutil"
 	"os"
 	"testing"

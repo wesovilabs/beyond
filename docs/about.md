@@ -6,14 +6,14 @@ nav_order: 8
 ---
 
 {: .text-green-300}
-# About Goa
+# About Beyond
 {: .fs-9 }
 
-Goa (Go Oriented to Aspects) is a Go library whose main goals are:
+Beyond (Go Oriented to Aspects) is a Go library whose main beyondls are:
 - It provides Go developers with a mechanism to **code under AOP paradigm**.
 - You can build useful advices and **share with other developers**. at time you can also take advantages of existing 
 ones.
-- Goa usage is really straightforward.
+- Beyond usage is really straightforward.
  
 ---
 
@@ -33,17 +33,17 @@ or reach me at any of these social networks.
 
 {: .text-green-300}
 ## License
-Goa is distributed by an [MIT license](https://github.com/wesovilabs/goa/tree/master/LICENSE.md).
+Beyond is distributed by an [MIT license](https://github.com/wesovilabs/beyond/tree/master/LICENSE.md).
 
 {: .text-green-300}
 ## Contributing
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other 
 method with the owners of this repository before making a change. 
 
-Read more about becoming a contributor in our [Goa repository](https://github.com/wesovilabs/goa/tree/master/CONTRIBUTING.md).
+Read more about becoming a contributor in our [Beyond repository](https://github.com/wesovilabs/beyond/tree/master/CONTRIBUTING.md).
 
 {: .text-yellow-300}
-### Thank you to the contributors of Goa!
+### Thank you to the contributors of Beyond!
 
 <ul class="list-style-none">
 {% for contributor in site.github.contributors %}
@@ -55,9 +55,9 @@ Read more about becoming a contributor in our [Goa repository](https://github.co
 
 {: .text-green-300}
 ## Code of Conduct
-Goa is committed to fostering a welcoming community.
+Beyond is committed to fostering a welcoming community.
 
-View Goa Code of Conduct on  [Goa repository](https://github.com/wesovilabs/goa/tree/master/CODE_OF_CONDUCT.md).
+View Beyond Code of Conduct on  [Beyond repository](https://github.com/wesovilabs/beyond/tree/master/CODE_OF_CONDUCT.md).
 
 ---
 

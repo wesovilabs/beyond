@@ -1,12 +1,12 @@
 package adapter
 
 import (
-	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/joinpoint"
+	"github.com/wesovilabs/beyond/advice"
+	"github.com/wesovilabs/beyond/joinpoint"
 )
 
 var requiredImports = map[string]string{
-	"github.com/wesovilabs/goa/api/context": "goaContext",
+	"github.com/wesovilabs/beyond/api/context": "beyondContext",
 }
 
 // Adapter function that create the ast for the intercepted function

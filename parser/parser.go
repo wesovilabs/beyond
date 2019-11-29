@@ -2,26 +2,26 @@ package parser
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/logger"
+	"github.com/wesovilabs/beyond/logger"
 	"go/ast"
 	"strings"
 )
 
-// GoaParser struct
-type GoaParser struct {
+// BeyondParser struct
+type BeyondParser struct {
 	project string
 	goPath  goPath
 }
 
-// New instance a new GoaParser
-func New(gopath string, project string) *GoaParser {
-	return &GoaParser{
+// New instance a new BeyondParser
+func New(gopath string, project string) *BeyondParser {
+	return &BeyondParser{
 		project: project,
 		goPath:  goPath(gopath),
 	}
 }
 
-func (pp *GoaParser) goPaths() []goPath {
+func (pp *BeyondParser) goPaths() []goPath {
 	return []goPath{pp.goPath}
 }
 
@@ -42,7 +42,7 @@ func (p *Package) Path() string {
 }
 
 // Parse parse the input
-func (pp *GoaParser) Parse(path string) map[string]*Package {
+func (pp *BeyondParser) Parse(path string) map[string]*Package {
 	pendingPaths := []string{path}
 	excludePaths := map[string]string{}
 	packages := make(map[string]*Package)
@@ -66,7 +66,7 @@ func (pp *GoaParser) Parse(path string) map[string]*Package {
 
 			for _, gp := range pp.goPaths() {
 				absPath := gp.AbsPath(path)
-				pkg, pkgImports := NewGoaPackage(absPath)
+				pkg, pkgImports := NewBeyondPackage(absPath)
 
 				if pkg == nil {
 					continue

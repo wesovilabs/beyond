@@ -3,7 +3,7 @@ package advice
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/advice/internal"
+	"github.com/wesovilabs/beyond/advice/internal"
 	"regexp"
 	"testing"
 )
@@ -170,7 +170,7 @@ func TestMatch(t *testing.T) {
 				"model.obj.set(string)",
 				"model.obj.set(*int32)",
 				"model.obj.set(func(string,int))",
-				"model.obj.set(*github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set(*github.com/wesovilabs/beyond.model.Person)",
 				"model.obj.set(map[string]interface{})",
 			},
 			noMatches: []string{
@@ -186,7 +186,7 @@ func TestMatch(t *testing.T) {
 				"model.obj.set(string)",
 				"model.obj.set(*int32)",
 				"model.obj.set(func(string,int))",
-				"model.obj.set(*github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set(*github.com/wesovilabs/beyond.model.Person)",
 				"model.obj.set(map[string]interface{})",
 				"model.obj.set(string,int)",
 				"model.obj.set(string,map[string]interface{})",
@@ -199,7 +199,7 @@ func TestMatch(t *testing.T) {
 			matches: []string{
 				"model.obj.set(string,*int32)",
 				"model.obj.set(string,func(string,int))",
-				"model.obj.set(string,*github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set(string,*github.com/wesovilabs/beyond.model.Person)",
 				"model.obj.set(string,map[string]interface{})",
 				"model.obj.set(string,int)",
 				"model.obj.set(string,map[string]interface{})",
@@ -211,13 +211,13 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizePointcut("model.obj.set(...,github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set(...,github.com/wesovilabs/beyond.model.Person)"),
 			matches: []string{
-				"model.obj.set(string,*int32,github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(string,func(string,int),github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(string,github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(*string,github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(string,map[string]interface{},github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set(string,*int32,github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(string,func(string,int),github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(string,github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(*string,github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(string,map[string]interface{},github.com/wesovilabs/beyond.model.Person)",
 			},
 			noMatches: []string{
 				"model.obj.set(string)",
@@ -226,18 +226,18 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizePointcut("model.obj.set(int,...,*github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set(int,...,*github.com/wesovilabs/beyond.model.Person)"),
 			matches: []string{
-				"model.obj.set(int,string,*int32,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(int,string,func(string,int),*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(int,string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(int,*string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(int,string,map[string]interface{},*github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set(int,string,*int32,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(int,string,func(string,int),*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(int,string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(int,*string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(int,string,map[string]interface{},*github.com/wesovilabs/beyond.model.Person)",
 			},
 			noMatches: []string{
-				"model.obj.set(int,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(*int,*string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(int,string,map[string]interface{},github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set(int,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(*int,*string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(int,string,map[string]interface{},github.com/wesovilabs/beyond.model.Person)",
 			},
 		},
 
@@ -248,7 +248,7 @@ func TestMatch(t *testing.T) {
 				"model.obj.set()string",
 				"model.obj.set()*int32",
 				"model.obj.set()func(string,int)",
-				"model.obj.set()*github.com/wesovilabs/goa.model.Person",
+				"model.obj.set()*github.com/wesovilabs/beyond.model.Person",
 				"model.obj.set()map[string]interface{}",
 			},
 			noMatches: []string{},
@@ -258,7 +258,7 @@ func TestMatch(t *testing.T) {
 			matches: []string{
 				"model.obj.set()(string,*int32)",
 				"model.obj.set()(string,func(string,int))",
-				"model.obj.set()(string,*github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set()(string,*github.com/wesovilabs/beyond.model.Person)",
 				"model.obj.set()(string,map[string]interface{})",
 				"model.obj.set()(string,int)",
 				"model.obj.set()(string,map[string]interface{})",
@@ -270,13 +270,13 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizePointcut("model.obj.set()(...,github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set()(...,github.com/wesovilabs/beyond.model.Person)"),
 			matches: []string{
-				"model.obj.set()(string,*int32,github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(string,func(string,int),github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(string,github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(*string,github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(string,map[string]interface{},github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set()(string,*int32,github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(string,func(string,int),github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(string,github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(*string,github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(string,map[string]interface{},github.com/wesovilabs/beyond.model.Person)",
 			},
 			noMatches: []string{
 				"model.obj.set()(string)",
@@ -285,36 +285,36 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			regExp: internal.NormalizePointcut("model.obj.set()(int,...,*github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set()(int,...,*github.com/wesovilabs/beyond.model.Person)"),
 			matches: []string{
-				"model.obj.set()(int,string,*int32,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(int,string,func(string,int),*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(int,string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(int,*string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(int,string,map[string]interface{},*github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set()(int,string,*int32,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(int,string,func(string,int),*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(int,string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(int,*string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(int,string,map[string]interface{},*github.com/wesovilabs/beyond.model.Person)",
 			},
 			noMatches: []string{
-				"model.obj.set()(int,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(*int,*string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(int,string,map[string]interface{},github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set()(int,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(*int,*string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(int,string,map[string]interface{},github.com/wesovilabs/beyond.model.Person)",
 			},
 		},
 		{
-			regExp: internal.NormalizePointcut("model.obj.set(func()string)(int,...,*github.com/wesovilabs/goa.model.Person)"),
+			regExp: internal.NormalizePointcut("model.obj.set(func()string)(int,...,*github.com/wesovilabs/beyond.model.Person)"),
 			matches: []string{
-				"model.obj.set(func()string)(int,string,*int32,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(func()string)(int,string,func(string,int),*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(func()string)(int,string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(func()string)(int,*string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(func()string)(int,string,map[string]interface{},*github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set(func()string)(int,string,*int32,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(func()string)(int,string,func(string,int),*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(func()string)(int,string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(func()string)(int,*string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(func()string)(int,string,map[string]interface{},*github.com/wesovilabs/beyond.model.Person)",
 			},
 			noMatches: []string{
-				"model.obj.set()(int,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(*int,*string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set()(int,string,map[string]interface{},github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(func()string)(int,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(func()string)(*int,*string,*github.com/wesovilabs/goa.model.Person)",
-				"model.obj.set(func()string)(int,string,map[string]interface{},github.com/wesovilabs/goa.model.Person)",
+				"model.obj.set()(int,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(*int,*string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set()(int,string,map[string]interface{},github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(func()string)(int,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(func()string)(*int,*string,*github.com/wesovilabs/beyond.model.Person)",
+				"model.obj.set(func()string)(int,string,map[string]interface{},github.com/wesovilabs/beyond.model.Person)",
 			},
 		},
 	}

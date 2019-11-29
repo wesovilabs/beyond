@@ -1,9 +1,9 @@
 package tests
 
-import "github.com/wesovilabs/goa/parser"
+import "github.com/wesovilabs/beyond/parser"
 
 const (
-	pkg    = "github.com/wesovilabs/goa/testdata"
+	pkg    = "github.com/wesovilabs/beyond/testdata"
 	goPath = "../testdata"
 )
 

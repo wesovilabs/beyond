@@ -1,20 +1,20 @@
 ---
 layout: default
 title: Home
-description: "Goa is a Go Library that provides AOP"
+description: "Beyond is a Go Library that provides AOP"
 nav_order: 1
 permalink: /
 ---
 
 {: .text-green-300}
-# Go Oriented to Aspects (Goa)
+# Go Oriented to Aspects (Beyond)
 {: .fs-9 }
 
 {: .text-green-200}
 A Go library that will drive you to the AOP paradigm.
 {: .fs-6 .fw-300 }
 
-[View it on GitHub](https://github.com/wesovilabs/goa){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View it on GitHub](https://github.com/wesovilabs/beyond){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
@@ -25,27 +25,27 @@ A Go library that will drive you to the AOP paradigm.
 ### Installation
 
 {: .text-green-200}
-#### Install goa
+#### Install beyond
 ```bash
-go get -u github.com/wesovilabs/goa
+go get -u github.com/wesovilabs/beyond
 ```
 
 {: .text-green-200}
-#### Add goa to your project 
+#### Add beyond to your project 
 
-Add goa to go.mod. 
+Add beyond to go.mod. 
 
 
 **go.mod**
 
 ```text
-module github.com/wesovilabs/goa-examples/greetings
+module github.com/wesovilabs/beyond-examples/greetings
 ...
-require github.com/wesovilabs/goa v0.0.1
+require github.com/wesovilabs/beyond v0.0.1
 ...
 ```
 
-Available Goa releases can be found [here](https://github.com/wesovilabs/goa/releases)
+Available Beyond releases can be found [here](https://github.com/wesovilabs/beyond/releases)
 
 {: .text-yellow-300}
 ### Usage
@@ -57,14 +57,14 @@ Let's write a function to register the advices.
 ```go
 package main
 
-func Goa()*api.Goa{
+func Beyond()*api.Beyond{
   ...
 }
 ```
 - The function must be declared in **main package**.
-- The function must be **named Goa**.
+- The function must be **named Beyond**.
 - It must **not receive any argument**.
-- It must **return a pointer of type Goa** (`*github.com/wesovilabs/goa/api.Goa`).
+- It must **return a pointer of type Beyond** (`*github.com/wesovilabs/beyond/api.Beyond`).
 
 Have a look at the below example:
 
@@ -72,11 +72,11 @@ Have a look at the below example:
 package main
 
 import (
-   "github.com/wesovilabs/goa/api"
-   "github.com/wesovilabs/goa/api/advice"
+   "github.com/wesovilabs/beyond/api"
+   "github.com/wesovilabs/beyond/api/advice"
 )
 
-func Goa()*api.Goa{
+func Beyond()*api.Beyond{
    return api.New().
       WithBefore(advice.NewTracingAdvice,"*.*(...)...")      		
 }
@@ -91,7 +91,7 @@ We can register as many advices as we need by making use of these methods:
 
 - **withBefore**:
 ```go
-func (g *Goa) WithBefore(func() Before, string) *Goa{
+func (g *Beyond) WithBefore(func() Before, string) *Beyond{
   ...
 }
 ```
@@ -99,7 +99,7 @@ You can learn more about writing Before advices [here](/advices/before)
 
 - **withReturning**:
 ```go
-func (g *Goa) WithReturning(func() Returning, string) *Goa {
+func (g *Beyond) WithReturning(func() Returning, string) *Beyond {
   ...
 }
 ```
@@ -107,7 +107,7 @@ You can learn more about writing Returning advices [here](/advices/returning)
 
 - **withAround**:
 ```go
-func (g *Goa) WithAround(func() Around, string) *Goa {
+func (g *Beyond) WithAround(func() Around, string) *Beyond {
   ....	
 }
 ```

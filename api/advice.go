@@ -1,6 +1,6 @@
 package api
 
-import "github.com/wesovilabs/goa/api/context"
+import "github.com/wesovilabs/beyond/api/context"
 
 // Advice definition
 type Advice interface {
@@ -8,12 +8,12 @@ type Advice interface {
 
 // Before definition
 type Before interface {
-	Before(ctx *context.GoaContext)
+	Before(ctx *context.BeyondContext)
 }
 
 // Returning definition
 type Returning interface {
-	Returning(ctx *context.GoaContext)
+	Returning(ctx *context.BeyondContext)
 }
 
 // Around definition

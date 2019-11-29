@@ -1,5 +1,5 @@
 package internal
 
 const (
-	goaCtx = "github.com/wesovilabs/goa/api/context"
+	beyondCtx = "github.com/wesovilabs/beyond/api/context"
 )

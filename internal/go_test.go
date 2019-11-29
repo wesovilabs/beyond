@@ -37,7 +37,7 @@ func Test_GoCommand(t *testing.T) {
 			settings: setting,
 			executor: &Executor{
 				cmd:      "build",
-				args:     []string{"build", "main.go", "-o", "current/app"},
+				args:     []string{"-o", "current/app", "main.go"},
 				settings: setting,
 			},
 		},

@@ -1,14 +1,14 @@
-//go:generate go run github.com/wesovilabs/goa --goPath ../ --project github.com/wesovilabs/goa/testdata --verbose
+//go:generate go run github.com/wesovilabs/beyond --goPath ../ --project github.com/wesovilabs/beyond/testdata --verbose
 package main
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/api"
-	"github.com/wesovilabs/goa/api/advice"
-	"github.com/wesovilabs/goa/api/context"
-	testAdvice "github.com/wesovilabs/goa/testdata/advice"
-	"github.com/wesovilabs/goa/testdata/model"
-	"github.com/wesovilabs/goa/testdata/storage"
+	"github.com/wesovilabs/beyond/api"
+	"github.com/wesovilabs/beyond/api/advice"
+	"github.com/wesovilabs/beyond/api/context"
+	testAdvice "github.com/wesovilabs/beyond/testdata/advice"
+	"github.com/wesovilabs/beyond/testdata/model"
+	"github.com/wesovilabs/beyond/testdata/storage"
 )
 
 func main() {
@@ -43,7 +43,7 @@ func main() {
 	fmt.Println("-----------------------------------------------")
 }
 
-func Goa() *api.Goa {
+func Beyond() *api.Beyond {
 	return api.New().
 		WithBefore(testAdvice.NewComplexBefore(&testAdvice.Attribute{}), `*.*Person(...)...`).
 		WithBefore(advice.NewTracingAdvice, `*.*Person(...)...`).
@@ -58,7 +58,7 @@ type EmptyReturning struct{
 
 }
 
-func (r *EmptyReturning) Returning(ctx *context.GoaContext){
+func (r *EmptyReturning) Returning(ctx *context.BeyondContext){
 
 }
 

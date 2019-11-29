@@ -17,8 +17,8 @@ deploy:
   api_key:
     secure: $GITHUB_OAUTH_TOKEN
   file:
-    - build/goa.linux
-    - build/goa.darwin
+    - build/beyond.linux
+    - build/beyond.darwin
   skip_cleanup: true
   on:
     tags: true

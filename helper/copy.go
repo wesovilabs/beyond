@@ -2,7 +2,7 @@ package helper
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/logger"
+	"github.com/wesovilabs/beyond/logger"
 	"io"
 	"io/ioutil"
 	"os"

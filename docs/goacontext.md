@@ -1,11 +1,11 @@
 ---
 layout: post
-title: GoaContext
+title: BeyondContext
 nav_order: 4
 ---
 
 {: .text-green-300}
-# GoaContext
+# BeyondContext
 {: .fs-9 }
 
 {: .text-green-200}
@@ -17,13 +17,13 @@ The cornerstone that will help you to build handy and useful advices.
 {: .text-green-300}
 ## API
 
-GoaContext provides us with methods to obtain all the information from the intercepted functions.
+BeyondContext provides us with methods to obtain all the information from the intercepted functions.
 
-We can also make use of GoaContext to share data between Before and Returning methods (It's so useful when coding 
+We can also make use of BeyondContext to share data between Before and Returning methods (It's so useful when coding 
  Around advices).
 
 {: .text-yellow-300}
-### GoaContext
+### BeyondContext
 
 | Method                     | Description               |
 |:---------------------------|:-------------------------|:
@@ -33,7 +33,7 @@ We can also make use of GoaContext to share data between Before and Returning me
 | Params():*Args             | It returns a pointer of [Args](#args)|
 | Results():*Args            | It returns a pointer of [Args](#args)|
 | Set(string,interface{})    | It saves a value that is shareable along the advice cycle|
-| Get(string):interface{}    | It obtains a value from the GoaContext|
+| Get(string):interface{}    | It obtains a value from the BeyondContext|
 
 {: .text-yellow-300}
 ### Args

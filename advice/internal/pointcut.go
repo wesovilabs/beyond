@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/logger"
+	"github.com/wesovilabs/beyond/logger"
 	"regexp"
 	"strings"
 )

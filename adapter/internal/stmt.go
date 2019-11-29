@@ -40,6 +40,7 @@ func ArgsToFunctionArgs(argType string, name string, fields []*FieldDef) []ast.S
 }
 
 func ifArgumentValueIsNotNil(variable string, stmt ast.Stmt) ast.Stmt {
+
 	return &ast.IfStmt{
 		Cond: &ast.BinaryExpr{
 			X: &ast.CallExpr{
@@ -52,6 +53,82 @@ func ifArgumentValueIsNotNil(variable string, stmt ast.Stmt) ast.Stmt {
 			Y:  NewIdent("nil"),
 		},
 		Body: &ast.BlockStmt{List: []ast.Stmt{stmt}},
+	}
+}
+
+func IfAdviceIsCompleted(results []*FieldDef) ast.Stmt {
+	stmts := make([]ast.Stmt, 0)
+	if len(results) == 0 {
+		stmts = append(stmts, &ast.ReturnStmt{})
+	} else {
+		stmts = append(stmts, &ast.AssignStmt{
+			Lhs: []ast.Expr{NewIdentObjVar("beyondResults")},
+			Tok: token.DEFINE,
+			Rhs: []ast.Expr{
+				&ast.CallExpr{
+					Fun: &ast.SelectorExpr{
+						X:   NewIdentObjVar(varBeyondContext),
+						Sel: NewIdent("Results"),
+					},
+				},
+			},
+		})
+		returnExpr := make([]ast.Expr, len(results))
+		for i := range results {
+			result := results[i]
+			stmts = append(stmts, &ast.AssignStmt{
+				Lhs: []ast.Expr{NewIdentObjVar(fmt.Sprintf("beyondResult%v", i))},
+				Tok: token.DEFINE,
+				Rhs: []ast.Expr{
+					&ast.CallExpr{
+						Fun: &ast.SelectorExpr{
+							X:   NewIdentObjVar("beyondResults"),
+							Sel: NewIdent("At"),
+						},
+						Args: []ast.Expr{
+							NewIdent(fmt.Sprintf("%v",i)),
+						},
+					},
+				},
+			})
+
+			stmts = append(stmts, &ast.AssignStmt{
+				Lhs: []ast.Expr{
+					NewIdentObj(fmt.Sprintf("result%v", i)),
+				},
+				Tok: token.DEFINE,
+				Rhs: []ast.Expr{
+					&ast.TypeAssertExpr{
+						X: &ast.CallExpr{
+							Fun: &ast.SelectorExpr{
+								X:   NewIdentObjVar(fmt.Sprintf("beyondResult%v", i)),
+								Sel: NewIdent("Value"),
+							},
+						},
+						Type: result.Kind,
+					},
+				},
+			})
+			returnExpr[i] = NewIdent(fmt.Sprintf("result%v", i))
+		}
+		stmts=append(stmts,&ast.ReturnStmt{
+			Results:returnExpr,
+		})
+
+	}
+
+	return &ast.IfStmt{
+		Cond: &ast.BinaryExpr{
+			X: &ast.CallExpr{
+				Fun: &ast.SelectorExpr{
+					X:   NewIdentObjVar(varBeyondContext),
+					Sel: NewIdent("IsCompleted"),
+				},
+			},
+			Op: token.EQL,
+			Y:  NewIdent("true"),
+		},
+		Body: &ast.BlockStmt{List: stmts},
 	}
 }
 
@@ -98,7 +175,11 @@ func ReturnValuesStmt(fields []*FieldDef) ast.Stmt {
 }
 
 // TakeArgs takes the arguments from the method
-func TakeArgs(name string, method string) ast.Stmt {
+func TakeArgs(name string, method string,declare bool) ast.Stmt {
+	var tk = token.DEFINE
+	if !declare{
+		tk = token.ASSIGN
+	}
 	return &ast.AssignStmt{
 		Lhs: []ast.Expr{
 			NewIdentObj(name),
@@ -106,21 +187,21 @@ func TakeArgs(name string, method string) ast.Stmt {
 		Rhs: []ast.Expr{
 			&ast.CallExpr{
 				Fun: &ast.SelectorExpr{
-					X:   NewIdentObjVar(varGoaContext),
+					X:   NewIdentObjVar(varBeyondContext),
 					Sel: NewIdentObj(method),
 				},
 			},
 		},
-		Tok: token.DEFINE,
+		Tok: tk,
 	}
 }
 
 // SetArgs set arguments
-func SetArgs(method string, name string) ast.Stmt {
+func SetArgs(method string, name string,) ast.Stmt {
 	return &ast.ExprStmt{
 		X: &ast.CallExpr{
 			Fun: &ast.SelectorExpr{
-				X:   NewIdentObjVar(varGoaContext),
+				X:   NewIdentObjVar(varBeyondContext),
 				Sel: NewIdentObj(method),
 			},
 			Args: []ast.Expr{

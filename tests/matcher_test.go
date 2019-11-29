@@ -3,9 +3,9 @@ package tests
 /**
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/joinpoint"
-	"github.com/wesovilabs/goa/match"
+	"github.com/wesovilabs/beyond/advice"
+	"github.com/wesovilabs/beyond/joinpoint"
+	"github.com/wesovilabs/beyond/match"
 	"testing"
 )
 

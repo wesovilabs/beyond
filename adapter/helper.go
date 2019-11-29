@@ -2,7 +2,7 @@ package adapter
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/joinpoint"
+	"github.com/wesovilabs/beyond/joinpoint"
 	"go/ast"
 	"go/token"
 	"strings"

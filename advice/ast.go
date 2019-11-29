@@ -2,9 +2,9 @@ package advice
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/advice/internal"
-	"github.com/wesovilabs/goa/logger"
-	"github.com/wesovilabs/goa/parser"
+	"github.com/wesovilabs/beyond/advice/internal"
+	"github.com/wesovilabs/beyond/logger"
+	"github.com/wesovilabs/beyond/parser"
 	"go/ast"
 	"go/token"
 	"reflect"
@@ -19,7 +19,7 @@ const (
 	before
 	returning
 	pkgSeparator = "/"
-	apiPath      = "github.com/wesovilabs/goa/api"
+	apiPath      = "github.com/wesovilabs/beyond/api"
 )
 
 func GetExcludePaths(packages map[string]*parser.Package) []*regexp.Regexp {
@@ -101,12 +101,12 @@ func containsAdvices(file *ast.File) *ast.FuncDecl {
 		value := importSpec.Path.Value[1 : len(importSpec.Path.Value)-1]
 		if apiPath == value {
 			if importSpec.Name != nil {
-				return findGoaFunction(file, importSpec.Name.Name)
+				return findBeyondFunction(file, importSpec.Name.Name)
 			}
 
 			lastIndex := strings.LastIndex(value, pkgSeparator)
 
-			return findGoaFunction(file, value[lastIndex+1:])
+			return findBeyondFunction(file, value[lastIndex+1:])
 		}
 	}
 
@@ -296,7 +296,7 @@ func addAdvice(expr *ast.CallExpr, advices *Advices,
 	}
 }
 
-func findGoaFunction(file *ast.File, instanceName string) *ast.FuncDecl {
+func findBeyondFunction(file *ast.File, instanceName string) *ast.FuncDecl {
 	for _, obj := range file.Scope.Objects {
 		if obj.Kind != ast.Fun {
 			continue
@@ -321,7 +321,7 @@ func findGoaFunction(file *ast.File, instanceName string) *ast.FuncDecl {
 					continue
 				}
 
-				if exprX.Name == instanceName && expr.Sel.Name == "Goa" {
+				if exprX.Name == instanceName && expr.Sel.Name == "Beyond" {
 					return funcDecl
 				}
 			}

@@ -2,7 +2,7 @@ package tests
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/advice"
+	"github.com/wesovilabs/beyond/advice"
 	"testing"
 )
 
@@ -14,10 +14,10 @@ func Test_Advice(t *testing.T) {
 	assert.NotNil(advices)
 	assert.NotNil(advices.List())
 	assert.Len(advices.List(), 4)
-	assertAdvice(assert, advices.List()[0], `NewComplexAround`, "github.com/wesovilabs/goa/testdata/advice", true, true)
-	assertAdvice(assert, advices.List()[1], "NewEmptyAround", "github.com/wesovilabs/goa/testdata/advice", true, true)
-	assertAdvice(assert, advices.List()[2], "NewTracingAdvice", "github.com/wesovilabs/goa/api/advice", true, false)
-	assertAdvice(assert, advices.List()[3], "NewComplexBefore", "github.com/wesovilabs/goa/testdata/advice", true, false)
+	assertAdvice(assert, advices.List()[0], `NewComplexAround`, "github.com/wesovilabs/beyond/testdata/advice", true, true)
+	assertAdvice(assert, advices.List()[1], "NewEmptyAround", "github.com/wesovilabs/beyond/testdata/advice", true, true)
+	assertAdvice(assert, advices.List()[2], "NewTracingAdvice", "github.com/wesovilabs/beyond/api/advice", true, false)
+	assertAdvice(assert, advices.List()[3], "NewComplexBefore", "github.com/wesovilabs/beyond/testdata/advice", true, false)
 
 }
 

@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-// NewGoaPackage return the package and the list of imports
-func NewGoaPackage(path string) (*ast.Package, []string) {
+// NewBeyondPackage return the package and the list of imports
+func NewBeyondPackage(path string) (*ast.Package, []string) {
 	if _, err := os.Stat(path); err != nil {
 		return nil, nil
 	}

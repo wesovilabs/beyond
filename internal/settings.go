@@ -3,16 +3,16 @@ package internal
 import (
 	"flag"
 	"github.com/BurntSushi/toml"
-	"github.com/wesovilabs/goa/helper"
-	"github.com/wesovilabs/goa/logger"
+	"github.com/wesovilabs/beyond/helper"
+	"github.com/wesovilabs/beyond/logger"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 )
 
 const (
-	defaultTargetDir   = ".goa"
-	defaultGoaSettings = "goa.toml"
+	defaultTargetDir   = ".beyond"
+	defaultBeyondSettings = "beyond.toml"
 )
 
 func load(settingsPath string) *Settings {
@@ -27,7 +27,7 @@ func load(settingsPath string) *Settings {
 	return &settings
 }
 
-// Settings Goa settings
+// Settings Beyond settings
 type Settings struct {
 	Path        string
 	Project     string
@@ -37,10 +37,11 @@ type Settings struct {
 	ExcludeDirs map[string]bool
 	Verbose     bool
 	Work        bool
+
 }
 
-// GoaSettingFromCommandLine returns the GoaSettings from the command line args
-func GoaSettingFromCommandLine(args []string) *Settings {
+// BeyondSettingFromCommandLine returns the BeyondSettings from the command line args
+func BeyondSettingFromCommandLine(args []string) *Settings {
 	var path, project, outputDir, pkg, settingsPath string
 
 	pwd, err := os.Getwd()
@@ -53,7 +54,7 @@ func GoaSettingFromCommandLine(args []string) *Settings {
 
 	flag.StringVar(&project, "project", "", "project name")
 	flag.StringVar(&path, "path", pwd, "path")
-	flag.StringVar(&settingsPath, "config", filepath.Join(path, defaultGoaSettings), "goa.tml path")
+	flag.StringVar(&settingsPath, "config", filepath.Join(path, defaultBeyondSettings), "beyond.tml path")
 	flag.StringVar(&outputDir, "output", "", "output directory")
 	flag.StringVar(&pkg, "package", "", "relative path to the main package")
 	flag.BoolVar(&verbose, "verbose", false, "print info level logs to stdout")
@@ -103,7 +104,7 @@ func (settings *Settings) withOutputDir(path, outputDir string) {
 			settings.OutputDir = outputDir
 		}
 	} else {
-		if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
+		if targetDir, err := ioutil.TempDir("", "beyond"); err == nil {
 			settings.OutputDir = targetDir
 		} else {
 			settings.OutputDir = filepath.Join(path, defaultTargetDir)
@@ -161,8 +162,8 @@ func (settings *Settings) updateWithFlags(args []string, project, path, outputDi
 	settings.withExcludes()
 }
 
-// RemoveGoaArguments removes goa arguments from the list of arguments
-func RemoveGoaArguments(input []string) []string {
+// RemoveBeyondArguments removes beyond arguments from the list of arguments
+func RemoveBeyondArguments(input []string) []string {
 	out := make([]string, 0)
 	argsIndex := make(map[int]bool)
 

@@ -3,10 +3,10 @@ COMMIT = $(shell git log --pretty=format:'%H' -n 1)
 VERSION    = $(shell git describe --tags --always)
 BUILD_DATE = $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 LDFLAGS   = -ldflags "\
- -X github.com/wesovilabs/goa/goa.Commit=$(COMMIT) \
- -X github.com/wesovilabs/goa/goa.Version=$(VERSION) \
- -X github.com/wesovilabs/goa/goa.BuildDate=$(BUILD_DATE) \
- -X github.com/wesovilabs/goa/goa.Compiler=$(GOLANG_VERSION)"
+ -X github.com/wesovilabs/beyond/beyond.Commit=$(COMMIT) \
+ -X github.com/wesovilabs/beyond/beyond.Version=$(VERSION) \
+ -X github.com/wesovilabs/beyond/beyond.BuildDate=$(BUILD_DATE) \
+ -X github.com/wesovilabs/beyond/beyond.Compiler=$(GOLANG_VERSION)"
 
 # Go
 GO  = GOFLAGS=-mod=vendor go
@@ -40,14 +40,14 @@ benchmark: ; @ ## Run benchmark tests
 
 .PHONY: build
 build: ; @ ## build exeutable for your current osm
-	$(GOBUILD) -o build/goa
+	$(GOBUILD) -o build/beyond
 
 
 .PHONY: build-all
 build-all: ; @ ## Build binary files
-	GOARCH=amd64 GOOS=linux  $(GOBUILD) -o build/goa.linux main.go
-	GOARCH=amd64 GOOS=darwin $(GOBUILD) -o build/goa.darwin main.go
-	#GOARCH=amd64 GOOS=windows $(GOBUILD) -o build/goa.exe main.go
+	GOARCH=amd64 GOOS=linux  $(GOBUILD) -o build/beyond.linux main.go
+	GOARCH=amd64 GOOS=darwin $(GOBUILD) -o build/beyond.darwin main.go
+	#GOARCH=amd64 GOOS=windows $(GOBUILD) -o build/beyond.exe main.go
 
 .PHONY: init
 init: ; @ ## Setup the git hooks
@@ -60,17 +60,17 @@ docker-%: ; @ ## Run commands inside a docker container
 
 run:
 	go run main.go \
-		--project github.com/wesovilabs/goa/testdata/basic \
-		--goPath /Users/ivan/Workspace/Wesovilabs/goa/testdata/basic \
-		--output /Users/ivan/Workspace/Wesovilabs/goa/testdata/generated \
+		--project github.com/wesovilabs/beyond/testdata/basic \
+		--goPath /Users/ivan/Workspace/Wesovilabs/beyond/testdata/basic \
+		--output /Users/ivan/Workspace/Wesovilabs/beyond/testdata/generated \
 		--verbose
 
 TMPDIR := $(shell mktemp -d)
 dist:
-	cp build/goa.linux $(TMPDIR)/;
+	cp build/beyond.linux $(TMPDIR)/;
 	cp scripts/docker/1.13.4/Dockerfile $(TMPDIR)/;
 	cd $(TMPDIR); \
-	docker build -t=wesovilabs/goa:${VERSION}-golang1.13.4 .
+	docker build -t=wesovilabs/beyond:${VERSION}-golang1.13.4 .
 
 
 

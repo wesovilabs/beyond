@@ -2,8 +2,8 @@ package advice
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/api"
-	"github.com/wesovilabs/goa/api/context"
+	"github.com/wesovilabs/beyond/api"
+	"github.com/wesovilabs/beyond/api/context"
 	"strings"
 )
 
@@ -11,7 +11,7 @@ import (
 type TracingAdvice struct{}
 
 // Before required by Before interface
-func (c *TracingAdvice) Before(ctx *context.GoaContext) {
+func (c *TracingAdvice) Before(ctx *context.BeyondContext) {
 	params := make([]string, ctx.Params().Count())
 	ctx.Params().ForEach(func(index int, arg *context.Arg) {
 		params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())

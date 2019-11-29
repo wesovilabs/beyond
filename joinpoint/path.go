@@ -2,7 +2,7 @@ package joinpoint
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/logger"
+	"github.com/wesovilabs/beyond/logger"
 	"go/ast"
 	"reflect"
 	"strings"

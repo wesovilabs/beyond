@@ -2,9 +2,9 @@ package adapter
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/adapter/internal"
-	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/joinpoint"
+	"github.com/wesovilabs/beyond/adapter/internal"
+	"github.com/wesovilabs/beyond/advice"
+	"github.com/wesovilabs/beyond/joinpoint"
 	"go/ast"
 	"strings"
 )
@@ -19,17 +19,21 @@ func hasAnyReturning(definitions map[string]*advice.Advice) bool {
 	return false
 }
 
-func wrapBeforeStatements(definitions map[string]*advice.Advice, params []*internal.FieldDef) []ast.Stmt {
-	argsVariable := "joinPointParams"
+func wrapBeforeStatements(advices map[string]*advice.Advice, params,results []*internal.FieldDef) []ast.Stmt {
+
 	stmts := make([]ast.Stmt, 0)
 	// set values to context
-	stmts = append(stmts, setArgsValues(argsVariable, "Params", params)...)
+	stmts = append(stmts, setArgsValues("joinPointResults", "Results", results,true,true)...)
+	argsVariable := "joinPointParams"
+	// set values to context
+	stmts = append(stmts, setArgsValues(argsVariable, "Params", params,false,true)...)
 	// call aspects
-	for name, d := range definitions {
-		if d.HasBefore() {
+	for name, advice := range advices {
+		if advice.HasBefore() {
 			stmts = append(stmts, &ast.ExprStmt{
 				X: internal.CallAspectBefore(name),
 			})
+			stmts = append(stmts, internal.IfAdviceIsCompleted(results))
 		}
 	}
 
@@ -42,7 +46,7 @@ func wrapReturningStatements(definitions map[string]*advice.Advice, results []*i
 	stmts := make([]ast.Stmt, 0)
 
 	if len(results) > 0 {
-		stmts = append(stmts, setArgsValues(argsVariable, "Results", results)...)
+		stmts = append(stmts, setArgsValues(argsVariable, "Results", results,false,false)...)
 	}
 
 	for name, d := range definitions {
@@ -79,8 +83,8 @@ func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.
 	recv := joinPoint.GetRecv()
 	imports[joinPoint.Pkg()] = ""
 	stmts := make([]ast.Stmt, 0)
-	stmts = append(stmts, internal.AssignGoaContext(imports))
-	stmts = append(stmts, internal.SetUpGoaContext(joinPoint)...)
+	stmts = append(stmts, internal.AssignBeyondContext(imports))
+	stmts = append(stmts, internal.SetUpBeyondContext(joinPoint)...)
 
 	for name, advice := range advices {
 		stmts = append(stmts, applyAdvices(name, advice, imports, joinPoint)...)
@@ -89,7 +93,7 @@ func adapterFuncDecl(joinPoint *joinpoint.JoinPoint, advices map[string]*advice.
 	params := internal.Params(joinPoint.ParamsList())
 	results := internal.Results(joinPoint.ResultsList())
 
-	stmts = append(stmts, wrapBeforeStatements(advices, params)...)
+	stmts = append(stmts, wrapBeforeStatements(advices, params,results)...)
 
 	if recv != nil {
 		// Call joinPoint
@@ -143,11 +147,17 @@ func applyAdvices(name string, advice *advice.Advice, imports map[string]string,
 	return stmts
 }
 
-func setArgsValues(name string, argsType string, params []*internal.FieldDef) []ast.Stmt {
+func setArgsValues(name string, argsType string, params []*internal.FieldDef, zeroValues bool, declare bool) []ast.Stmt {
 	stmts := make([]ast.Stmt, len(params)+2)
-	stmts[0] = internal.TakeArgs(name, argsType)
+	stmts[0] = internal.TakeArgs(name, argsType,declare)
 
 	for index, param := range params {
+		if zeroValues{
+			stmts[index+1] = &ast.ExprStmt{
+				X: internal.SetArgValue(name, param, "nil"),
+			}
+			continue
+		}
 		paramName := param.Name
 		if argsType == "Params" {
 			paramName = fmt.Sprintf("param%v", index)

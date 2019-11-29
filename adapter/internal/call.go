@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/joinpoint"
+	"github.com/wesovilabs/beyond/joinpoint"
 	"go/ast"
 	"go/token"
 )
@@ -15,33 +15,33 @@ const (
 
 // CallAspectBefore reutrn the call expression
 func CallAspectBefore(name string) *ast.CallExpr {
-	return goaInterceptor(name, opBefore)
+	return beyondInterceptor(name, opBefore)
 }
 
 // CallAspectReturning reutrn the call expression
 func CallAspectReturning(name string) *ast.CallExpr {
-	return goaInterceptor(name, opReturning)
+	return beyondInterceptor(name, opReturning)
 }
 
-// CallCreateGoaContext reutrn the call expression
-func CallCreateGoaContext(imports map[string]string) *ast.CallExpr {
+// CallCreateBeyondContext reutrn the call expression
+func CallCreateBeyondContext(imports map[string]string) *ast.CallExpr {
 	return &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
-			X:   NewIdent(imports[goaCtx]),
+			X:   NewIdent(imports[beyondCtx]),
 			Sel: NewIdent(opNewContext),
 		},
 		Args: []ast.Expr{},
 	}
 }
 
-func goaInterceptor(name string, operation string) *ast.CallExpr {
+func beyondInterceptor(name string, operation string) *ast.CallExpr {
 	return &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
 			X:   NewIdentObjVar(name),
 			Sel: NewIdent(operation),
 		},
 		Args: []ast.Expr{
-			NewIdentObj(varGoaContext),
+			NewIdentObj(varBeyondContext),
 		},
 	}
 }
@@ -58,6 +58,7 @@ func CallCreateAspect(pkg, name string) ast.Expr {
 // SetArgValue set value to context
 func SetArgValue(name string, field *FieldDef, paramName string) ast.Expr {
 	kind := astToExpression(field.Kind, true)
+
 	callExpr := &ast.CallExpr{
 		Fun: &ast.SelectorExpr{
 			X:   NewIdentObjVar(name),
@@ -100,7 +101,7 @@ func prepareArgs(fields []*FieldDef, withName bool) []ast.Expr {
 
 // CallFunction return the call expression
 func CallFunction(currentPkg, pkg, name string, fields []*FieldDef) *ast.CallExpr {
-	argsWithName := pkg == "goaContext" && (name == "WithPkg" || name == "WithName" || name == "WithType")
+	argsWithName := pkg == "beyondContext" && (name == "WithPkg" || name == "WithName" || name == "WithType")
 	args := prepareArgs(fields, argsWithName)
 
 	if currentPkg == pkg || pkg == "" {
@@ -132,11 +133,11 @@ func CallMethod(objName string, currentPkg, pkg, name string, fields []*FieldDef
 	}
 }
 
-// SetUpGoaContext return the list of required statements
-func SetUpGoaContext(f *joinpoint.JoinPoint) []ast.Stmt {
+// SetUpBeyondContext return the list of required statements
+func SetUpBeyondContext(f *joinpoint.JoinPoint) []ast.Stmt {
 	stmts := make([]ast.Stmt, 2)
 	stmts[0] = &ast.ExprStmt{
-		X: CallFunction("", varGoaContext, "WithPkg", []*FieldDef{
+		X: CallFunction("", varBeyondContext, "WithPkg", []*FieldDef{
 			{
 				Name: fmt.Sprintf(`"%s"`, f.Pkg()),
 				Kind: NewIdent(f.Pkg()),
@@ -144,7 +145,7 @@ func SetUpGoaContext(f *joinpoint.JoinPoint) []ast.Stmt {
 		}),
 	}
 	stmts[1] = &ast.ExprStmt{
-		X: CallFunction("", varGoaContext, "WithName", []*FieldDef{
+		X: CallFunction("", varBeyondContext, "WithName", []*FieldDef{
 			{
 				Name: fmt.Sprintf(`"%s"`, f.Name()),
 				Kind: NewIdent(f.Name()),
@@ -156,7 +157,7 @@ func SetUpGoaContext(f *joinpoint.JoinPoint) []ast.Stmt {
 		objName := f.GetRecv().List[0].Names[0].String()
 		// objType:=f.GetRecv().List[0].Type
 		stmts = append(stmts, &ast.ExprStmt{
-			X: CallFunction("", varGoaContext, "WithType", []*FieldDef{
+			X: CallFunction("", varBeyondContext, "WithType", []*FieldDef{
 				{
 					Name: objName,
 					Kind: NewIdent(f.Name()),

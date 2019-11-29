@@ -6,7 +6,7 @@ nav_order: 7
 ---
 
 {: .text-green-300}
-# Want to be part of Goa?
+# Want to be part of Beyond?
 {: .fs-9 }
 
 {: .text-green-200}
@@ -16,10 +16,10 @@ Open source would die if there're were no contributors...
 ---
 
 {: .text-green-300}
-## Let's make other people know about Goa
+## Let's make other people know about Beyond
 
 {: .text-yellow-300}
-### Sharing Goa via Social networks
+### Sharing Beyond via Social networks
 
 It's really appreciated retrieving feedback from other people. And much more if they like what you
 do and they share it with other people so 
@@ -48,9 +48,9 @@ do and they share it with other people so
 
 
 {: .text-yellow-300}
-### Post articles about Goa
+### Post articles about Beyond
 
-Write technical guides or tutorials, and let others know how to use Goa. I will be so happy to link your posts from
+Write technical guides or tutorials, and let others know how to use Beyond. I will be so happy to link your posts from
 this site.
  
 <div class="socialme">
@@ -64,7 +64,7 @@ this site.
 </div>
 
 {: .text-yellow-300}
-### Star Goa on Github
+### Star Beyond on Github
 
 It's awesome to find out that people recognize your work. If you like this project I ask you to star it.
 
@@ -72,31 +72,31 @@ It's awesome to find out that people recognize your work. If you like this proje
 <!-- Place this tag where you want the button to render. -->
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<a class="github-button" href="https://github.com/wesovilabs/goa" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star wesovilabs/goa on GitHub">Star</a>
+<a class="github-button" href="https://github.com/wesovilabs/beyond" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star wesovilabs/beyond on GitHub">Star</a>
 
 {: .text-green-300}
 ## Do you want to contribute with your code?
 
 Great projects are built when great developers work together. That's
-the reason I encourage you to take part of Goa!
+the reason I encourage you to take part of Beyond!
 
 Have a look at open issues and contribute with your code:
 
-- [Fixing bugs](https://github.com/wesovilabs/goa/projects/1)
-- [Features on roadmap](https://github.com/wesovilabs/goa/projects/2)
-- [Implementing new features](https://github.com/wesovilabs/goa/projects/4)]
+- [Fixing bugs](https://github.com/wesovilabs/beyond/projects/1)
+- [Features on roadmap](https://github.com/wesovilabs/beyond/projects/2)
+- [Implementing new features](https://github.com/wesovilabs/beyond/projects/4)]
 
 
 {: .text-yellow-300}
-### Working with Goa code
+### Working with Beyond code
 
 #### Checkout the code
 
-Fork the [Goa repository](https://github.com/wesovilabs/goa) and clone it locally 
+Fork the [Beyond repository](https://github.com/wesovilabs/beyond) and clone it locally 
 
 ```bash
-git clone https://github.com/<user>/goa.git
-cd goa
+git clone https://github.com/<user>/beyond.git
+cd beyond
 ```
 
 #### Setup Git hooks
@@ -112,7 +112,7 @@ make init
 
 #### Running the tests
 
-Run tests to verify Goa works
+Run tests to verify Beyond works
 
 ```bash
 make test
@@ -126,7 +126,7 @@ make test-coverage
 
 #### Check the source code and find potential optimizations
 
-Goa makes use of [golangci-lint](https://github.com/golangci/golangci-lint).
+Beyond makes use of [golangci-lint](https://github.com/golangci/golangci-lint).
 
 ```bash
 make lint
@@ -140,7 +140,7 @@ To build an executable for your current os, just run:
 make run
 ```
 
-Alternatively you could  easily generate Goa executables for linux, darwin and 
+Alternatively you could  easily generate Beyond executables for linux, darwin and 
 windows at time by running.
 
 ```bash

@@ -9,7 +9,7 @@ import (
 )
 
 func Test_Copy(t *testing.T) {
-	dir, err := ioutil.TempDir("", "goa")
+	dir, err := ioutil.TempDir("", "beyond")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -38,7 +38,7 @@ func Test_Copy(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	if targetDir, err := ioutil.TempDir("", "goa"); err == nil {
+	if targetDir, err := ioutil.TempDir("", "beyond"); err == nil {
 		defer os.RemoveAll(targetDir)
 		child2AbsPath, _ := filepath.Abs("child2")
 		if err := CopyDirectory(dir, targetDir, map[string]bool{child2AbsPath: true}); err != nil {

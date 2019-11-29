@@ -1,18 +1,18 @@
 package advice
 
 import (
-	"github.com/wesovilabs/goa/api"
-	"github.com/wesovilabs/goa/api/context"
+	"github.com/wesovilabs/beyond/api"
+	"github.com/wesovilabs/beyond/api/context"
 )
 
 type EmptyAround struct {
 }
 
-func (c *EmptyAround) Before(ctx *context.GoaContext) {
+func (c *EmptyAround) Before(ctx *context.BeyondContext) {
 
 }
 
-func (c *EmptyAround) Returning(ctx *context.GoaContext) {
+func (c *EmptyAround) Returning(ctx *context.BeyondContext) {
 
 }
 
@@ -24,11 +24,11 @@ type ComplexAround struct {
 	att string
 }
 
-func (c *ComplexAround) Before(ctx *context.GoaContext) {
+func (c *ComplexAround) Before(ctx *context.BeyondContext) {
 
 }
 
-func (c *ComplexAround) Returning(ctx *context.GoaContext) {
+func (c *ComplexAround) Returning(ctx *context.BeyondContext) {
 
 }
 

@@ -8,8 +8,8 @@ import (
 )
 
 func Test_Context(t *testing.T) {
-	goaCtx := NewContext()
-	goaCtx.WithPkg("parent/child").
+	beyondCtx := NewContext()
+	beyondCtx.WithPkg("parent/child").
 		WithName("function").
 		SetParams(&Args{items: []*Arg{
 			NewArg("firstname", "John"),
@@ -19,37 +19,37 @@ func Test_Context(t *testing.T) {
 			NewArg("retired", false),
 		}})
 	assert := assert.New(t)
-	assert.Equal("parent/child", goaCtx.Pkg())
-	assert.Equal("function", goaCtx.Function())
-	assert.Equal("John", goaCtx.Params().Get("firstname").value)
-	assert.Equal(1200.23, goaCtx.Results().Get("salary").value)
-	assert.Equal(false, goaCtx.Results().Get("retired").value)
+	assert.Equal("parent/child", beyondCtx.Pkg())
+	assert.Equal("function", beyondCtx.Function())
+	assert.Equal("John", beyondCtx.Params().Get("firstname").value)
+	assert.Equal(1200.23, beyondCtx.Results().Get("salary").value)
+	assert.Equal(false, beyondCtx.Results().Get("retired").value)
 	now := time.Now()
-	goaCtx.Set("start.time", now)
-	assert.Equal(now, goaCtx.Get("start.time"))
-	goaCtx.Set("married", true)
-	assert.Equal(true, goaCtx.Get("married"))
+	beyondCtx.Set("start.time", now)
+	assert.Equal(now, beyondCtx.Get("start.time"))
+	beyondCtx.Set("married", true)
+	assert.Equal(true, beyondCtx.Get("married"))
 
-	goaCtx.Set("age", 34)
-	assert.Equal(34, goaCtx.Get("age"))
+	beyondCtx.Set("age", 34)
+	assert.Equal(34, beyondCtx.Get("age"))
 
-	goaCtx.Set("firstname", "Wenceslao")
-	assert.Equal("Wenceslao", goaCtx.Get("firstname"))
+	beyondCtx.Set("firstname", "Wenceslao")
+	assert.Equal("Wenceslao", beyondCtx.Get("firstname"))
 
-	goaCtx = NewContext()
-	assert.Empty(goaCtx.Function())
-	assert.Empty(goaCtx.Pkg())
-	assert.Empty(goaCtx.Params().items)
-	assert.Empty(goaCtx.Results().items)
+	beyondCtx = NewContext()
+	assert.Empty(beyondCtx.Function())
+	assert.Empty(beyondCtx.Pkg())
+	assert.Empty(beyondCtx.Params().items)
+	assert.Empty(beyondCtx.Results().items)
 }
 
 type Data struct {
 }
 
 func TestContext_ParamsGet(t *testing.T) {
-	goaCtx := NewContext()
+	beyondCtx := NewContext()
 	d := Data{}
-	goaCtx.WithPkg("parent/child").
+	beyondCtx.WithPkg("parent/child").
 		WithName("function").
 		WithType(d).
 		SetParams(&Args{[]*Arg{
@@ -60,33 +60,33 @@ func TestContext_ParamsGet(t *testing.T) {
 			NewArg("retired", false),
 		}})
 	assert := assert.New(t)
-	assert.Equal("John", goaCtx.Params().Get("firstname").value)
-	assert.Nil(nil, goaCtx.Params().Get("unknown"))
+	assert.Equal("John", beyondCtx.Params().Get("firstname").value)
+	assert.Nil(nil, beyondCtx.Params().Get("unknown"))
 
-	assert.Equal("John", goaCtx.Params().At(0).value)
-	assert.Nil(nil, goaCtx.Params().At(20))
+	assert.Equal("John", beyondCtx.Params().At(0).value)
+	assert.Nil(nil, beyondCtx.Params().At(20))
 
-	assert.Equal(1200.23, goaCtx.Results().At(0).value)
-	assert.Nil(nil, goaCtx.Results().At(10))
+	assert.Equal(1200.23, beyondCtx.Results().At(0).value)
+	assert.Nil(nil, beyondCtx.Results().At(10))
 
-	assert.Equal(d, goaCtx.Type())
+	assert.Equal(d, beyondCtx.Type())
 
-	goaCtx.Params().Set("name", "tom")
-	assert.Equal("tom", goaCtx.Params().Get("name").value)
-	goaCtx.Params().Set("name", "Tim")
-	assert.Equal("Tim", goaCtx.Params().Get("name").value)
+	beyondCtx.Params().Set("name", "tom")
+	assert.Equal("tom", beyondCtx.Params().Get("name").value)
+	beyondCtx.Params().Set("name", "Tim")
+	assert.Equal("Tim", beyondCtx.Params().Get("name").value)
 
-	goaCtx.Results().Set("name", "tom")
-	assert.Equal("tom", goaCtx.Results().Get("name").value)
-	goaCtx.Results().Set("name", "Tim")
-	assert.Equal("Tim", goaCtx.Results().Get("name").value)
+	beyondCtx.Results().Set("name", "tom")
+	assert.Equal("tom", beyondCtx.Results().Get("name").value)
+	beyondCtx.Results().Set("name", "Tim")
+	assert.Equal("Tim", beyondCtx.Results().Get("name").value)
 
-	goaCtx.Params().SetAt(0, "tom")
-	assert.Equal("tom", goaCtx.Params().Get("firstname").value)
-	goaCtx.Params().SetAt(20, "Tim")
+	beyondCtx.Params().SetAt(0, "tom")
+	assert.Equal("tom", beyondCtx.Params().Get("firstname").value)
+	beyondCtx.Params().SetAt(20, "Tim")
 
-	goaCtx.Results().SetAt(0, "tom")
-	assert.Equal("tom", goaCtx.Results().Get("salary").value)
-	assert.Equal(reflect.TypeOf("tom").String(), goaCtx.Results().Get("salary").kind)
+	beyondCtx.Results().SetAt(0, "tom")
+	assert.Equal("tom", beyondCtx.Results().Get("salary").value)
+	assert.Equal(reflect.TypeOf("tom").String(), beyondCtx.Results().Get("salary").kind)
 
 }

@@ -2,8 +2,8 @@ package advice
 
 import (
 	"fmt"
-	"github.com/wesovilabs/goa/api"
-	"github.com/wesovilabs/goa/api/context"
+	"github.com/wesovilabs/beyond/api"
+	"github.com/wesovilabs/beyond/api/context"
 	"strings"
 	"time"
 )
@@ -26,12 +26,12 @@ type TimerAdvice struct {
 }
 
 // Before required by Around interface
-func (a *TimerAdvice) Before(ctx *context.GoaContext) {
+func (a *TimerAdvice) Before(ctx *context.BeyondContext) {
 	ctx.Set(timeStartKey, time.Now())
 }
 
 // Returning required by Around interface
-func (a *TimerAdvice) Returning(ctx *context.GoaContext) {
+func (a *TimerAdvice) Returning(ctx *context.BeyondContext) {
 	start := ctx.Get(timeStartKey).(time.Time)
 	timeDuration := "?"
 
@@ -46,7 +46,7 @@ func (a *TimerAdvice) Returning(ctx *context.GoaContext) {
 	ctx.Params().ForEach(func(index int, arg *context.Arg) {
 		params[index] = fmt.Sprintf("%s:%v", arg.Name(), arg.Value())
 	})
-	fmt.Printf("[goa.timer] %s.%s(%s) took %s", ctx.Pkg(), ctx.Function(), strings.Join(params, ","), timeDuration)
+	fmt.Printf("[beyond.timer] %s.%s(%s) took %s", ctx.Pkg(), ctx.Function(), strings.Join(params, ","), timeDuration)
 }
 
 // NewTimerAdvice returns an instance of Timer advice

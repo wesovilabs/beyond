@@ -1,5 +1,5 @@
 FROM golang:1.13.4
-ADD goa.linux /user/local/bin/goa
+ADD beyond.linux /user/local/bin/beyond
 VOLUME /app
 WORKDIR /app
-ENTRYPOINT ["/user/local/bin/goa"]
+ENTRYPOINT ["/user/local/bin/beyond"]

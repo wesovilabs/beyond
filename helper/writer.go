@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"github.com/wesovilabs/goa/logger"
+	"github.com/wesovilabs/beyond/logger"
 	"go/ast"
 	"go/printer"
 	"go/token"

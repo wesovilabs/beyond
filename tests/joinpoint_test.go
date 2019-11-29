@@ -3,8 +3,8 @@ package tests
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/wesovilabs/goa/advice"
-	"github.com/wesovilabs/goa/joinpoint"
+	"github.com/wesovilabs/beyond/advice"
+	"github.com/wesovilabs/beyond/joinpoint"
 	"testing"
 )
 
@@ -24,8 +24,8 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				path:     "storage.SetUpDatabase()",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/testdata/model":          "",
-					"github.com/wesovilabs/goa/testdata/storage/helper": "",
+					"github.com/wesovilabs/beyond/testdata/model":          "",
+					"github.com/wesovilabs/beyond/testdata/storage/helper": "",
 				},
 				paramsLen:  0,
 				resultsLen: 0,
@@ -33,41 +33,41 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 
 			"InsertPerson": {
 				fileName: "storage",
-				path:     "storage.InsertPerson(*github.com/wesovilabs/goa/testdata/model.Person,*github.com/wesovilabs/goa/testdata/storage/helper.Test)error",
+				path:     "storage.InsertPerson(*github.com/wesovilabs/beyond/testdata/model.Person,*github.com/wesovilabs/beyond/testdata/storage/helper.Test)error",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/testdata/model":          "",
-					"github.com/wesovilabs/goa/testdata/storage/helper": "",
+					"github.com/wesovilabs/beyond/testdata/model":          "",
+					"github.com/wesovilabs/beyond/testdata/storage/helper": "",
 				},
 				paramsLen:  2,
 				resultsLen: 1,
 			},
 			"FindPerson": {
-				path: "storage.FindPerson(string)(*github.com/wesovilabs/goa/testdata/model.Person,error)",
+				path: "storage.FindPerson(string)(*github.com/wesovilabs/beyond/testdata/model.Person,error)",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/testdata/model":          "",
-					"github.com/wesovilabs/goa/testdata/storage/helper": "",
+					"github.com/wesovilabs/beyond/testdata/model":          "",
+					"github.com/wesovilabs/beyond/testdata/storage/helper": "",
 				},
 				paramsLen:  1,
 				resultsLen: 2,
 			},
 			"DeletePerson": {
-				path: "storage.DeletePerson(string)([]*github.com/wesovilabs/goa/testdata/model.Person,error)",
+				path: "storage.DeletePerson(string)([]*github.com/wesovilabs/beyond/testdata/model.Person,error)",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/testdata/model":          "",
-					"github.com/wesovilabs/goa/testdata/storage/helper": "",
+					"github.com/wesovilabs/beyond/testdata/model":          "",
+					"github.com/wesovilabs/beyond/testdata/storage/helper": "",
 				},
 				paramsLen:  1,
 				resultsLen: 2,
 			},
 			"ListPeople": {
-				path: "storage.ListPeople()([]*github.com/wesovilabs/goa/testdata/model.Person,error)",
+				path: "storage.ListPeople()([]*github.com/wesovilabs/beyond/testdata/model.Person,error)",
 				imports: map[string]string{
 					"errors": "",
-					"github.com/wesovilabs/goa/testdata/model":          "",
-					"github.com/wesovilabs/goa/testdata/storage/helper": "",
+					"github.com/wesovilabs/beyond/testdata/model":          "",
+					"github.com/wesovilabs/beyond/testdata/storage/helper": "",
 				},
 				paramsLen:  0,
 				resultsLen: 2,
@@ -107,26 +107,26 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				path: "main.main()",
 				imports: map[string]string{
 					"fmt":                                        "",
-					"github.com/wesovilabs/goa/api":              "",
-					"github.com/wesovilabs/goa/api/advice":       "",
-					"github.com/wesovilabs/goa/api/context":      "",
-					"github.com/wesovilabs/goa/testdata/advice":  "testAdvice",
-					"github.com/wesovilabs/goa/testdata/model":   "",
-					"github.com/wesovilabs/goa/testdata/storage": "",
+					"github.com/wesovilabs/beyond/api":              "",
+					"github.com/wesovilabs/beyond/api/advice":       "",
+					"github.com/wesovilabs/beyond/api/context":      "",
+					"github.com/wesovilabs/beyond/testdata/advice":  "testAdvice",
+					"github.com/wesovilabs/beyond/testdata/model":   "",
+					"github.com/wesovilabs/beyond/testdata/storage": "",
 				},
 				paramsLen:  0,
 				resultsLen: 0,
 			},
-			"Goa": {
-				path: "main.Goa()*github.com/wesovilabs/goa/api.Goa",
+			"Beyond": {
+				path: "main.Beyond()*github.com/wesovilabs/beyond/api.Beyond",
 				imports: map[string]string{
 					"fmt":                                        "",
-					"github.com/wesovilabs/goa/api":              "",
-					"github.com/wesovilabs/goa/api/advice":       "",
-					"github.com/wesovilabs/goa/api/context":      "",
-					"github.com/wesovilabs/goa/testdata/advice":  "testAdvice",
-					"github.com/wesovilabs/goa/testdata/model":   "",
-					"github.com/wesovilabs/goa/testdata/storage": "",
+					"github.com/wesovilabs/beyond/api":              "",
+					"github.com/wesovilabs/beyond/api/advice":       "",
+					"github.com/wesovilabs/beyond/api/context":      "",
+					"github.com/wesovilabs/beyond/testdata/advice":  "testAdvice",
+					"github.com/wesovilabs/beyond/testdata/model":   "",
+					"github.com/wesovilabs/beyond/testdata/storage": "",
 				},
 				paramsLen:  0,
 				resultsLen: 1,
@@ -136,19 +136,19 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 	"advice": {
 		"": {
 			"NewComplexAround": {
-				path: "advice.NewComplexAround(string,github.com/wesovilabs/goa/testdata/advice.Attribute,interface{})func()github.com/wesovilabs/goa/api.Around",
+				path: "advice.NewComplexAround(string,github.com/wesovilabs/beyond/testdata/advice.Attribute,interface{})func()github.com/wesovilabs/beyond/api.Around",
 				imports: map[string]string{
-					"github.com/wesovilabs/goa/api":         "",
-					"github.com/wesovilabs/goa/api/context": "",
+					"github.com/wesovilabs/beyond/api":         "",
+					"github.com/wesovilabs/beyond/api/context": "",
 				},
 				paramsLen:  3,
 				resultsLen: 1,
 			},
 			"NewComplexBefore": {
-				path: "advice.NewComplexBefore(*github.com/wesovilabs/goa/testdata/advice.Attribute)func()github.com/wesovilabs/goa/api.Before",
+				path: "advice.NewComplexBefore(*github.com/wesovilabs/beyond/testdata/advice.Attribute)func()github.com/wesovilabs/beyond/api.Before",
 				imports: map[string]string{
-					"github.com/wesovilabs/goa/api":         "",
-					"github.com/wesovilabs/goa/api/context": "",
+					"github.com/wesovilabs/beyond/api":         "",
+					"github.com/wesovilabs/beyond/api/context": "",
 				},
 				paramsLen:  1,
 				resultsLen: 1,
@@ -161,16 +161,16 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				path: "model.*Person.FullName()string",
 				imports: map[string]string{
 					"fmt": "",
-					"github.com/wesovilabs/goa/testdata/advice": "",
+					"github.com/wesovilabs/beyond/testdata/advice": "",
 				},
 				paramsLen:  0,
 				resultsLen: 1,
 			},
 			"Apply": {
-				path: "model.*Person.Apply([]github.com/wesovilabs/goa/testdata/advice.Attribute)func(string,int)",
+				path: "model.*Person.Apply([]github.com/wesovilabs/beyond/testdata/advice.Attribute)func(string,int)",
 				imports: map[string]string{
 					"fmt": "",
-					"github.com/wesovilabs/goa/testdata/advice": "",
+					"github.com/wesovilabs/beyond/testdata/advice": "",
 				},
 				paramsLen:  1,
 				resultsLen: 1,

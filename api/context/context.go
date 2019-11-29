@@ -3,20 +3,21 @@ package context
 type contextKey string
 
 const (
-	funcType contextKey = "_goaFunctionType"
-	name     contextKey = "_goaFunction"
-	pkg      contextKey = "_goaPkg"
-	in       contextKey = "_goaIn"
-	out      contextKey = "_goaOut"
+	funcType contextKey = "_beyondFunctionType"
+	name     contextKey = "_beyondFunction"
+	pkg      contextKey = "_beyondPkg"
+	in       contextKey = "_beyondIn"
+	out      contextKey = "_beyondOut"
 )
 
-// GoaContext Goa context
-type GoaContext struct {
+// BeyondContext Beyond context
+type BeyondContext struct {
 	ctx map[contextKey]interface{}
+	completed bool
 }
 
 // Pkg returns the package
-func (c *GoaContext) Pkg() string {
+func (c *BeyondContext) Pkg() string {
 	if v := c.ctx[pkg]; v != nil {
 		return v.(string)
 	}
@@ -25,7 +26,7 @@ func (c *GoaContext) Pkg() string {
 }
 
 // Function returns the name of the function
-func (c *GoaContext) Function() string {
+func (c *BeyondContext) Function() string {
 	if v := c.ctx[name]; v != nil {
 		return v.(string)
 	}
@@ -34,7 +35,7 @@ func (c *GoaContext) Function() string {
 }
 
 // Type returns the type
-func (c *GoaContext) Type() interface{} {
+func (c *BeyondContext) Type() interface{} {
 	if v := c.ctx[funcType]; v != nil {
 		return v
 	}
@@ -43,7 +44,7 @@ func (c *GoaContext) Type() interface{} {
 }
 
 // Params returns the input arguments
-func (c *GoaContext) Params() *Args {
+func (c *BeyondContext) Params() *Args {
 	if v := c.ctx[in]; v != nil {
 		return v.(*Args)
 	}
@@ -52,7 +53,7 @@ func (c *GoaContext) Params() *Args {
 }
 
 // Results returns the output arguments
-func (c *GoaContext) Results() *Args {
+func (c *BeyondContext) Results() *Args {
 	if v := c.ctx[out]; v != nil {
 		return v.(*Args)
 	}
@@ -60,47 +61,57 @@ func (c *GoaContext) Results() *Args {
 	return &Args{}
 }
 
-// NewContext constructor for goa context
-func NewContext() *GoaContext {
-	return &GoaContext{make(map[contextKey]interface{})}
+// NewContext constructor for beyond context
+func NewContext() *BeyondContext {
+	return &BeyondContext{make(map[contextKey]interface{}),false}
 }
 
 // WithPkg set the package
-func (c *GoaContext) WithPkg(v string) *GoaContext {
+func (c *BeyondContext) WithPkg(v string) *BeyondContext {
 	c.ctx[pkg] = v
 	return c
 }
 
 // WithName set the function name
-func (c *GoaContext) WithName(v string) *GoaContext {
+func (c *BeyondContext) WithName(v string) *BeyondContext {
 	c.ctx[name] = v
 	return c
 }
 
 // WithType set the function type
-func (c *GoaContext) WithType(v interface{}) *GoaContext {
+func (c *BeyondContext) WithType(v interface{}) *BeyondContext {
 	c.ctx[funcType] = v
 	return c
 }
 
 // SetParams set the input arguments
-func (c *GoaContext) SetParams(args *Args) *GoaContext {
+func (c *BeyondContext) SetParams(args *Args) *BeyondContext {
 	c.ctx[in] = args
 	return c
 }
 
 // SetResults set the output arguments
-func (c *GoaContext) SetResults(args *Args) *GoaContext {
+func (c *BeyondContext) SetResults(args *Args) *BeyondContext {
 	c.ctx[out] = args
 	return c
 }
 
 // Set set context value
-func (c *GoaContext) Set(key string, value interface{}) {
+func (c *BeyondContext) Set(key string, value interface{}) {
 	c.ctx[contextKey(key)] = value
 }
 
 // Get return the argument value
-func (c *GoaContext) Get(key string) interface{} {
+func (c *BeyondContext) Get(key string) interface{} {
 	return c.ctx[contextKey(key)]
+}
+
+// Exit won't call joinpoint
+func (c *BeyondContext) Exit() {
+	c.completed=true
+}
+
+// IsCompleted returns true if flow must stop
+func (c *BeyondContext) IsCompleted() bool {
+	return c.completed
 }

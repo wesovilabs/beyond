@@ -1,14 +1,14 @@
-[![Build Status](https://travis-ci.org/wesovilabs/goa.svg?branch=master)](https://travis-ci.org/wesovilabs/goa)
-[![Go Report Card](https://goreportcard.com/badge/github.com/wesovilabs/goa)](https://goreportcard.com/report/github.com/wesovilabs/goa)
-[![GoDoc](https://godoc.org/github.com/wesovilabs/goa?status.svg)](https://godoc.org/github.com/wesovilabs/goa)
-[![codecov](https://codecov.io/gh/wesovilabs/goa/branch/master/graph/badge.svg)](https://codecov.io/gh/wesovilabs/goa)
+[![Build Status](https://travis-ci.org/wesovilabs/beyond.svg?branch=master)](https://travis-ci.org/wesovilabs/beyond)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wesovilabs/beyond)](https://goreportcard.com/report/github.com/wesovilabs/beyond)
+[![GoDoc](https://godoc.org/github.com/wesovilabs/beyond?status.svg)](https://godoc.org/github.com/wesovilabs/beyond)
+[![codecov](https://codecov.io/gh/wesovilabs/beyond/branch/master/graph/badge.svg)](https://codecov.io/gh/wesovilabs/beyond)
 
 
-# Goa
+# Beyond
 
 The Golang library that will drive you to the AOP paradigm world!
 
-Check [Goa Documentation](http://wesovilabs.github.io/goa)
+Check [Beyond Documentation](http://wesovilabs.github.io/beyond)
 
 ## What's AOP?
 
@@ -18,37 +18,37 @@ Check [Goa Documentation](http://wesovilabs.github.io/goa)
 
 # Getting Started
 
-## Install goa
+## Install beyond
 ```bash
-go get -u github.com/wesovilabs/goa
+go get -u github.com/wesovilabs/beyond
 ```
 
-## Add goa to your project 
+## Add beyond to your project 
 
-Add goa to go.mod. 
+Add beyond to go.mod. 
 
 **go.mod**
 
 ```text
-module github.com/wesovilabs/goa-examples/greetings
+module github.com/wesovilabs/beyond-examples/greetings
 ...
-require github.com/wesovilabs/goa v0.0.1
+require github.com/wesovilabs/beyond v0.0.1
 ...
 ```
 
 # Documentation
 
-Goa Documentation is published at [http://wesovilabs.github.io/goa](http://wesovilabs.github.io/goa)
+Beyond Documentation is published at [http://wesovilabs.github.io/beyond](http://wesovilabs.github.io/beyond)
 
 ## Versioning
     
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/wesovilabs/goa/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/wesovilabs/beyond/tags).
 
 # Authors
 
 - **Iván Corrales Solera <ivan.corrales.solera@gmail.com>** 
 
-See also the list of [contributors](https://github.com/wesovilabs/goa/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/wesovilabs/beyond/contributors) who participated in this project.
 
 
 # License

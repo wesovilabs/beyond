@@ -26,10 +26,10 @@ We will go though a real Returning advice. This advice enriches returned errors 
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install goa tool & clone the goaexamples repository
+- Install beyond tool & clone the beyondexamples repository
 ```bash
->> go get github.com/wesovilabs/goa
->> git clone https://github.com/wesovilabs/goaexamples.git
+>> go get github.com/wesovilabs/beyond
+>> git clone https://github.com/wesovilabs/beyondexamples.git
 >> cd returning
 ```
 
@@ -39,20 +39,20 @@ Let's check that our environment is ready to follow the tutorial!
 {: .text-yellow-300}
 ### > Define the advice
 
-Returning advices must implement the interface Returning (`github.com/wesovilabs/goa/api.Returning`). 
+Returning advices must implement the interface Returning (`github.com/wesovilabs/beyond/api.Returning`). 
 ```go
 type Returning interface {
-  Returning(ctx *context.GoaContext)
+  Returning(ctx *context.BeyondContext)
 }
 ```
 
-Open file [advice/error.go](https://github.com/wesovilabs/goaexamples/blob/master/returning/advice/error.go#L10) and have a look at type `ErrorsEnrichAdvice`.
+Open file [advice/error.go](https://github.com/wesovilabs/beyondexamples/blob/master/returning/advice/error.go#L10) and have a look at type `ErrorsEnrichAdvice`.
 
 ```go
 type ErrorsEnrichAdvice struct {
 }
 
-func (a *ErrorsEnrichAdvice) Returning(ctx *context.GoaContext) {
+func (a *ErrorsEnrichAdvice) Returning(ctx *context.BeyondContext) {
   if index, result := ctx.Results().Find(isError);index>=0{
     ctx.Results().SetAt(index, &CustomError{
       err:      result.Value().(error),
@@ -109,7 +109,7 @@ The function signature must be:
 func() Returning
 ```
 
-Check the following functions, in file [advice/error.go](https://github.com/wesovilabs/goaexamples/blob/master/returning/advice/error.go#L50),
+Check the following functions, in file [advice/error.go](https://github.com/wesovilabs/beyondexamples/blob/master/returning/advice/error.go#L50),
 
 ```go
 func NewErrorsEnrichAdviceAdvice() api.Returning {
@@ -117,14 +117,14 @@ func NewErrorsEnrichAdviceAdvice() api.Returning {
 }
 ```
 
-Keep in mind that Goa ignores non-exported functions.
+Keep in mind that Beyond ignores non-exported functions.
 
 - Register the above function
 
-Open file [cmd/returning/main.go](https://github.com/wesovilabs/goaexamples/blob/master/returning/cmd/main.go) and have a look at function `Goa()`.
+Open file [cmd/returning/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/returning/cmd/main.go) and have a look at function `Beyond()`.
 
 ```go
-func Goa() *api.Goa {
+func Beyond() *api.Beyond {
   return api.New().
     WithReturning(advice.NewErrorsEnrichAdviceAdvice, "*.*(...)error")
 }
@@ -147,7 +147,7 @@ func checkError(err error){
 
 
 {: .text-yellow-300}
-### > Goa in action
+### > Beyond in action
 
 This would be the normal behavior
 
@@ -158,10 +158,10 @@ This would be the normal behavior
 [ERR] unexpected greeting
 ```
 
-but when we execute **goa** command ...
+but when we execute **beyond** command ...
 
 ```bash
->> goa run cmd/main.go
+>> beyond run cmd/main.go
 [greeting.Greetings(mode:Hello,firstName:)] => [greeting.Hello(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:Bye,firstName:)] => [greeting.Bye(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:--,firstName:John)] => [ERR] unexpected greeting
@@ -181,12 +181,12 @@ func main() {
 }
 ```
 
-when running `goa run cmd/main.go` a panic will be thrown... 
+when running `beyond run cmd/main.go` a panic will be thrown... 
 
 How could you fix it?  The output should be the below
 
 ```bash
->> goa run main.go
+>> beyond run main.go
 [greeting.Greetings(mode:Hello,firstName:)] => [greeting.Hello(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:Bye,firstName:)] => [greeting.Bye(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:--,firstName:John)] => [ERR] unexpected greeting

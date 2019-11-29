@@ -2,8 +2,8 @@ package storage
 
 import (
 	"errors"
-	"github.com/wesovilabs/goa/testdata/model"
-	"github.com/wesovilabs/goa/testdata/storage/helper"
+	"github.com/wesovilabs/beyond/testdata/model"
+	"github.com/wesovilabs/beyond/testdata/storage/helper"
 )
 
 var database map[string]*model.Person
