@@ -4,7 +4,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 var goCmds = map[string]func(*Settings, []string) *Executor{
@@ -67,9 +66,9 @@ type Executor struct {
 }
 
 func (e *Executor) Do() *exec.Cmd {
-	command := strings.Join(e.args[1:], " ")
+	args := append([]string{e.cmd}, e.args[1:]...)
 	//nolint
-	cmd := exec.Command("go", e.cmd, command)
+	cmd := exec.Command("go", args...)
 	cmd.Env = os.Environ()
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
