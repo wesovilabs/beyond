@@ -4,7 +4,7 @@
 
 🎉 first release!
 
-## [v1.0.0] - 
+## [v1.0.0] - ??/12/2019
 
 ### Added
 - [#22](https://github.com/wesovilabs/beyond/issues/22) `Beyond usage` is
