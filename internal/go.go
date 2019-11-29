@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -36,12 +35,14 @@ func transformPath(old string, baseDir string) string {
 
 func newGoBuild(settings *Settings, args []string) *Executor {
 	hasOutput := false
+
 	for i := range args {
 		arg := args[i]
 
 		if arg == "-o" && len(args) > i+1 {
 			args[i+1] = transformPath(args[i+1], settings.Path)
 			hasOutput = true
+
 			break
 		}
 	}
@@ -69,7 +70,6 @@ type Executor struct {
 }
 
 func (e *Executor) Do() *exec.Cmd {
-
 	args := append([]string{e.cmd}, e.args...)
 	//nolint
 	cmd := exec.Command("go")
@@ -78,8 +78,6 @@ func (e *Executor) Do() *exec.Cmd {
 	cmd.Dir = e.settings.OutputDir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	fmt.Println("------")
-	fmt.Println(cmd.String())
-	fmt.Println("------")
+
 	return cmd
 }
