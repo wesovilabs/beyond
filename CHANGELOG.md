@@ -17,7 +17,7 @@ toml file.
 Dokcer image `wesovilabs/beyond:1.0.0` is provided.
 
 ### Changed
-- [#26](https://github.com/wesovilabs/beyond/issues/26) Library has been renamed from `goa` to `beyondd`. 
+- [#26](https://github.com/wesovilabs/beyond/issues/26) Library has been renamed from `goa` to `beyond`. 
 It's due an existing and known library already had that name.
 - [#10](https://github.com/wesovilabs/beyond/issues/10) This change improves the `Beyond performance` since
 the list of functions to be evaluated is less than It used to be required in older versions.
