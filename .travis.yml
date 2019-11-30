@@ -4,10 +4,9 @@ go:
   - 1.13.x
 
 install:
-  - make build
+  - make deps
 
 script:
-  - make deps
   - make test-coverage
   - make lint
   - make build-all
