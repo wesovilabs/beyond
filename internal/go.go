@@ -69,6 +69,7 @@ type Executor struct {
 	settings *Settings
 }
 
+// Do  execute go command
 func (e *Executor) Do() *exec.Cmd {
 	args := append([]string{e.cmd}, e.args...)
 	//nolint
