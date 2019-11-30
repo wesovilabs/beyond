@@ -1,10 +1,12 @@
 #!/bin/bash
 
-make lint
-if ! [[ "$?" =~ 0 ]]; then
-    exit 1
-fi
-make test
-if ! [[ "$?" =~ 0 ]]; then
-    exit 1
+if [ "master" == "$branch" ]; then
+    make lint
+    if ! [[ "$?" =~ 0 ]]; then
+        exit 1
+    fi
+    make test
+    if ! [[ "$?" =~ 0 ]]; then
+        exit 1
+    fi
 fi
