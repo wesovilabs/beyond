@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	beyondCtx    = "github.com/wesovilabs/beyond/api/context"
 	opBefore     = "Before"
 	opReturning  = "Returning"
 	opNewContext = "NewContext"
@@ -155,7 +156,7 @@ func SetUpBeyondContext(f *joinpoint.JoinPoint) []ast.Stmt {
 
 	if f.GetRecv() != nil {
 		objName := f.GetRecv().List[0].Names[0].String()
-		// objType:=f.GetRecv().List[0].Type
+
 		stmts = append(stmts, &ast.ExprStmt{
 			X: CallFunction("", varBeyondContext, "WithType", []*FieldDef{
 				{

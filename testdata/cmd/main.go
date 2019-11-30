@@ -1,4 +1,3 @@
-//go:generate go run github.com/wesovilabs/beyond --goPath ../ --project github.com/wesovilabs/beyond/testdata --verbose
 package main
 
 import (
@@ -48,10 +47,11 @@ func Beyond() *api.Beyond {
 		WithBefore(testAdvice.NewComplexBefore(&testAdvice.Attribute{}), `*.*Person(...)...`).
 		WithBefore(advice.NewTracingAdvice, `*.*Person(...)...`).
 		WithAround(testAdvice.NewEmptyAround, `*.*(...)...`).
-		// since it's a non public function, they won't be used
 		WithReturning(newEmptyReturning,`*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*(...)...`).
-		WithAround(testAdvice.NewComplexAround("test",testAdvice.Attribute{},nil),`*.*(...)...`)
+		WithAround(testAdvice.NewComplexAround("test",testAdvice.Attribute{},nil),`*.*(...)...`).
+		WithReturning(newEmptyReturning,`*.*.(...)...`)
+
 }
 
 type EmptyReturning struct{

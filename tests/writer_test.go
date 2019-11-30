@@ -25,6 +25,5 @@ func Test_Writer(t *testing.T) {
 		}
 
 	}
-	//os.RemoveAll(path)
 
 }

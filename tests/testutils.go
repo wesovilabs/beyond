@@ -1,6 +1,8 @@
 package tests
 
-import "github.com/wesovilabs/beyond/parser"
+import (
+	"github.com/wesovilabs/beyond/parser"
+)
 
 const (
 	pkg    = "github.com/wesovilabs/beyond/testdata"
