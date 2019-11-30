@@ -30,7 +30,7 @@ Add beyond to go.mod.
 **go.mod**
 
 ```text
-module github.com/wesovilabs/beyond-examples/greetings
+module github.com/myrepository/myapp
 ...
 require github.com/wesovilabs/beyond v0.0.1
 ...

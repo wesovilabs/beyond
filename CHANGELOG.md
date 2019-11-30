@@ -14,7 +14,7 @@ which can be used to ignore methods to be intercepted.
 - [#5](https://github.com/wesovilabs/beyond/issues/5) `Beyond configuration` can be loaded from a
 toml file.  
 - [#3](https://github.com/wesovilabs/beyond/issues?q=is%3Aissue+is%3Aclosed+milestone%3Av0.0.2+label%3Aenhancement)
-Dokcer image `wesovilabs/beyond:1.0.0` is provided.
+Docker image `wesovilabs/beyond:1.0.0` is provided.
 
 ### Changed
 - [#26](https://github.com/wesovilabs/beyond/issues/26) Library has been renamed from `goa` to `beyond`. 
