@@ -18,6 +18,7 @@ func astToExpression(expr ast.Expr, root bool) string {
 	return kind
 }
 
+//nolint: gocyclo
 func astToExpressionEval(expr ast.Expr) string {
 	switch t := expr.(type) {
 	case *ast.MapType:
@@ -37,24 +38,31 @@ func astToExpressionEval(expr ast.Expr) string {
 	case *ast.SelectorExpr:
 		return fmt.Sprintf("%s.%s", astToExpression(t.X, false), t.Sel.String())
 	case *ast.FuncType:
-		params := make([]string, len(t.Params.List))
-		if len(t.Params.List) > 0 {
-			for i, _ := range t.Params.List {
-				field := t.Results.List[i]
-				params[i] = astToExpression(field.Type, false)
-			}
-		}
-		results := make([]string, len(t.Results.List))
-		if len(t.Results.List) > 0 {
-			for i, _ := range t.Results.List {
-				field := t.Results.List[i]
-				results[i] = astToExpression(field.Type, false)
-			}
-		}
-
-		return fmt.Sprintf("func(%s)%s", strings.Join(params, ","), strings.Join(results, ","))
+		return astFuncToExpressionPath(t)
 	default:
 		logger.Errorf("Unexpected type %s", reflect.TypeOf(t))
 		return ""
 	}
+}
+
+func astFuncToExpressionPath(t *ast.FuncType) string {
+	params := make([]string, len(t.Params.List))
+
+	if len(t.Params.List) > 0 {
+		for i := range t.Params.List {
+			field := t.Results.List[i]
+			params[i] = astToExpression(field.Type, false)
+		}
+	}
+
+	results := make([]string, len(t.Results.List))
+
+	if len(t.Results.List) > 0 {
+		for i := range t.Results.List {
+			field := t.Results.List[i]
+			results[i] = astToExpression(field.Type, false)
+		}
+	}
+
+	return fmt.Sprintf("func(%s)%s", strings.Join(params, ","), strings.Join(results, ","))
 }

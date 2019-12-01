@@ -19,7 +19,6 @@ func CopyDirectory(scrDir, dest string, excludes map[string]bool) {
 		entry := entries[index]
 		copyEntry(scrDir, dest, excludes, entry)
 	}
-
 }
 
 func copyEntry(scrDir, dest string, excludes map[string]bool, entry os.FileInfo) {
