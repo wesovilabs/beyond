@@ -1,0 +1,10 @@
+project="github.com/wesovilabs/beyond-examples/settings"
+outputDir="generated"
+verbose=true
+work=true
+
+excludes=[
+    "go.sum",
+    "vendor",
+    ".git"
+]

@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go/ast"
 	"go/token"
+	"reflect"
 	"testing"
 )
 
@@ -119,4 +120,35 @@ func Test_CallMethodAndAssignNoResults(t *testing.T) {
 		}
 	}
 	t.Fatal("Unexpected statement type")
+}
+
+func Test_AssignBeyondContext(t *testing.T){
+	assert := assert.New(t)
+	stmt:=AssignBeyondContext(map[string]string{
+		"a":"b",
+		"c":"d",
+		"e":"f",
+	})
+	assert.Len(stmt.Lhs,1)
+	assert.Len(stmt.Rhs,1)
+	fmt.Println(reflect.TypeOf(stmt.Lhs[0]))
+	left,ok:=stmt.Lhs[0].(*ast.Ident)
+	assert.True(ok)
+	assert.NotNil(left)
+	assert.Equal("beyondContext",left.Name)
+	fmt.Println(reflect.TypeOf(stmt.Rhs[0]))
+	right,ok:=stmt.Rhs[0].(*ast.CallExpr)
+	assert.True(ok)
+	assert.NotNil(right)
+	fmt.Println(reflect.TypeOf(right.Fun))
+	fun,ok:=right.Fun.(*ast.SelectorExpr)
+	assert.True(ok)
+	assert.Len(right.Args,0)
+	fmt.Println(fun)
+	id,ok:=fun.X.(*ast.Ident)
+	assert.True(ok)
+	fmt.Println(id.Name)
+	assert.Equal("NewContext",fun.Sel.Name)
+	assert.Equal("",id.Name)
+
 }

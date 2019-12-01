@@ -12,7 +12,7 @@ import (
 func Save(node *ast.File, path string) error {
 	f, err := os.Create(path)
 	if err != nil {
-		logger.Errorf("Errorf while creating file: '%v'", err)
+		logger.Errorf("Error while creating file: '%v'", err)
 		return err
 	}
 
