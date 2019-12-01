@@ -22,6 +22,7 @@ const (
 	apiPath      = "github.com/wesovilabs/beyond/api"
 )
 
+// GetExcludePaths returns the paths to be excluded
 func GetExcludePaths(packages map[string]*parser.Package) []*regexp.Regexp {
 	paths := make([]*regexp.Regexp, 0)
 

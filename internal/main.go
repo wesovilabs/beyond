@@ -27,6 +27,7 @@ func setUp(sourceDir, rootDir string, excludeDirs map[string]bool) {
 	logger.Infof("directory %s contains a copy of your path", rootDir)
 }
 
+// ExecuteMain main function
 func ExecuteMain(goCmd *exec.Cmd, settings *Settings) int {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)

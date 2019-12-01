@@ -115,6 +115,7 @@ func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 	})
 }
 
+// IfAdviceIsCompleted add statements if advice is completed
 func IfAdviceIsCompleted(results []*FieldDef) ast.Stmt {
 	stmts := make([]ast.Stmt, 0)
 
