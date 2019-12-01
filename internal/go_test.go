@@ -2,6 +2,7 @@ package internal
 
 import (
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
@@ -76,4 +77,11 @@ func Test_GoCommand(t *testing.T) {
 		}
 	}
 
+}
+
+func Test_transformPath(t *testing.T) {
+	pwd, _ := os.Getwd()
+	if res := transformPath(pwd, "/tmp"); res != pwd {
+		t.Fatalf("unexpected path")
+	}
 }

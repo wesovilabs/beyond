@@ -8,5 +8,6 @@ func Test_Api(t *testing.T) {
 	before := func() Before { return nil }
 	New().WithReturning(returning, "*.*").
 		WithAround(around, "").
-		WithBefore(before, "")
+		WithBefore(before, "").
+		Exclude(".")
 }

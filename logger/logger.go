@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/google/logger"
 	"io/ioutil"
-	"log"
 )
 
 var (
@@ -41,9 +40,4 @@ func Error(text string) {
 // Errorf log error messages
 func Errorf(text string, args ...interface{}) {
 	beyondLog.ErrorDepth(1, fmt.Sprintf(text, args...))
-}
-
-// Fatal log fatal messages
-func Fatal(text string, args ...interface{}) {
-	log.Fatalf(text, args...)
 }

@@ -345,3 +345,32 @@ func TestMatch(t *testing.T) {
 	}
 	fmt.Println()
 }
+
+func Test_addImport(t *testing.T) {
+	assert := assert.New(t)
+	inv := adviceInvocation{
+		imports: []string{"import1", "import2"},
+	}
+	inv.addImport("import2")
+	assert.Len(inv.imports, 2)
+}
+
+func Test_Advice_Imports(t *testing.T) {
+	assert := assert.New(t)
+	advice := &Advice{
+		call: &adviceInvocation{
+			pkg:     "mypkg",
+			imports: nil,
+		},
+	}
+	res := advice.Imports()
+	assert.Len(res, 1)
+	assert.Equal("mypkg", res[0])
+}
+
+func Test_Advice_Match(t *testing.T) {
+	assert := assert.New(t)
+	advice := &Advice{}
+	res := advice.Match("test")
+	assert.False(res)
+}

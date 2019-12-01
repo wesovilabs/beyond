@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"fmt"
 	"github.com/wesovilabs/beyond/helper"
 	"github.com/wesovilabs/beyond/logger"
 	"github.com/wesovilabs/beyond/parser"
-	"log"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -59,14 +57,10 @@ func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal)
 
 	exitStatus := 0
 
-	if err := goCommand.Start(); err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
-	}
+	helper.CheckError(goCommand.Start())
 
 	go func() {
-		if err := goCommand.Wait(); err != nil {
-			fmt.Println(err.Error())
-		}
+		helper.CheckError(goCommand.Wait())
 		execStatus = goCommand.ProcessState.Sys().(syscall.WaitStatus)
 		exitStatus = execStatus.ExitStatus()
 		if exitStatus >= 0 {

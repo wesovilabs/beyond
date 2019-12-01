@@ -18,4 +18,5 @@ func Test_Arg(t *testing.T) {
 	assert.EqualValues("err", arg.Name())
 	assert.EqualValues("error", arg.Value().(error).Error())
 	assert.True(arg.IsError())
+	assert.Equal("*errors.fundamental", arg.Kind())
 }

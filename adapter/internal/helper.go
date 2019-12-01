@@ -46,18 +46,20 @@ func astToExpressionEval(expr ast.Expr) string {
 }
 
 func astFuncToExpressionPath(t *ast.FuncType) string {
-	params := make([]string, len(t.Params.List))
+	var params, results []string
 
-	if len(t.Params.List) > 0 {
+	if t.Params != nil && t.Params.List != nil {
+		params = make([]string, len(t.Params.List))
+
 		for i := range t.Params.List {
-			field := t.Results.List[i]
+			field := t.Params.List[i]
 			params[i] = astToExpression(field.Type, false)
 		}
 	}
 
-	results := make([]string, len(t.Results.List))
+	if t.Results != nil && t.Results.List != nil {
+		results = make([]string, len(t.Results.List))
 
-	if len(t.Results.List) > 0 {
 		for i := range t.Results.List {
 			field := t.Results.List[i]
 			results[i] = astToExpression(field.Type, false)

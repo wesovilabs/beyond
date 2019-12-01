@@ -2,7 +2,6 @@ package helper
 
 import (
 	"fmt"
-	"github.com/wesovilabs/beyond/logger"
 	"io"
 	"io/ioutil"
 	"os"
@@ -71,21 +70,13 @@ func copy(fileInfo os.FileInfo, sourcePath, destPath string, excludes map[string
 func Copy(srcFile, dstFile string) {
 	out, err := os.Create(dstFile)
 
-	defer func() {
-		if closeErr := out.Close(); closeErr != nil {
-			logger.Error(closeErr.Error())
-		}
-	}()
+	defer closeFile(out)
 
 	CheckError(err)
 
 	in, err := os.Open(srcFile)
 
-	defer func() {
-		if closeErr := in.Close(); closeErr != nil {
-			logger.Errorf(closeErr.Error())
-		}
-	}()
+	defer closeFile(in)
 	CheckError(err)
 
 	_, err = io.Copy(out, in)

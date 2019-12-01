@@ -113,3 +113,26 @@ func Test_takePackage(t *testing.T) {
 func Test_BeyondSettingFromCommandLineFlags(t *testing.T) {
 	BeyondSettingFromCommandLine([]string{"buil"})
 }
+
+func Test_WithExcludes(t *testing.T) {
+	assert := assert.New(t)
+	settings := &Settings{
+		Excludes: []string{"vendor"},
+	}
+	settings.withExcludes()
+	assert.Len(settings.ExcludeDirs, 3)
+}
+
+func Test_withVerbose(t *testing.T) {
+	assert := assert.New(t)
+	settings := &Settings{}
+	settings.withVerbose(true)
+	assert.True(settings.Verbose)
+}
+
+func Test_withWork(t *testing.T) {
+	assert := assert.New(t)
+	settings := &Settings{}
+	settings.withWork(true)
+	assert.True(settings.Work)
+}

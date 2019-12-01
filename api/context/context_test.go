@@ -90,3 +90,12 @@ func TestContext_ParamsGet(t *testing.T) {
 	assert.Equal(reflect.TypeOf("tom").String(), beyondCtx.Results().Get("salary").kind)
 
 }
+
+func Test_Exit(t *testing.T) {
+	assert := assert.New(t)
+	beyondCtx := NewContext()
+	assert.False(beyondCtx.IsCompleted())
+	beyondCtx.Exit()
+	assert.True(beyondCtx.IsCompleted())
+	assert.Nil(beyondCtx.Type())
+}

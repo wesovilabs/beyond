@@ -13,11 +13,7 @@ func Save(node *ast.File, path string) {
 	f, err := os.Create(path)
 	CheckError(err)
 
-	defer func() {
-		if err := f.Close(); err != nil {
-			logger.Errorf("error while closing file: '%v'", err)
-		}
-	}()
+	defer closeFile(f)
 
 	fileSet := token.NewFileSet()
 	cfg := printer.Config{

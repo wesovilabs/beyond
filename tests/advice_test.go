@@ -13,11 +13,13 @@ func Test_Advice(t *testing.T) {
 	advices := advice.GetAdvices(packages)
 	assert.NotNil(advices)
 	assert.NotNil(advices.List())
-	assert.Len(advices.List(), 4)
-	assertAdvice(assert, advices.List()[0], `NewComplexAround`, "github.com/wesovilabs/beyond/testdata/advice", true, true)
-	assertAdvice(assert, advices.List()[1], "NewEmptyAround", "github.com/wesovilabs/beyond/testdata/advice", true, true)
-	assertAdvice(assert, advices.List()[2], "NewTracingAdvice", "github.com/wesovilabs/beyond/testdata/advice", true, false)
-	assertAdvice(assert, advices.List()[3], "NewComplexBefore", "github.com/wesovilabs/beyond/testdata/advice", true, false)
+	assert.Len(advices.List(), 6)
+	assertAdvice(assert, advices.List()[1], `NewEmptyAround`, "github.com/wesovilabs/beyond/testdata/advice", true, true)
+	assertAdvice(assert, advices.List()[1], `NewEmptyAround`, "github.com/wesovilabs/beyond/testdata/advice", true, true)
+	assertAdvice(assert, advices.List()[2], `NewComplexAround`, "github.com/wesovilabs/beyond/testdata/advice", true, true)
+	assertAdvice(assert, advices.List()[3], "NewEmptyAround", "github.com/wesovilabs/beyond/testdata/advice", true, true)
+	assertAdvice(assert, advices.List()[4], "NewTracingAdvice", "github.com/wesovilabs/beyond/testdata/advice", true, false)
+	assertAdvice(assert, advices.List()[5], "NewComplexBefore", "github.com/wesovilabs/beyond/testdata/advice", true, false)
 
 }
 

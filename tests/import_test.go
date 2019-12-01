@@ -40,7 +40,7 @@ var expectedImports = map[string]map[string]map[string]string{
 	"model": {
 		"../testdata/model/person.go": {
 			"fmt": "fmt",
-			"github.com/wesovilabs/beyond/testdata/advice": "advice",
+			"github.com/wesovilabs/beyond/testdata/advice": "testAdvice",
 		},
 	},
 	"storage": {

@@ -173,7 +173,7 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				path: "model.*Person.FullName()string",
 				imports: map[string]string{
 					"fmt": "",
-					"github.com/wesovilabs/beyond/testdata/advice": "",
+					"github.com/wesovilabs/beyond/testdata/advice": "testAdvice",
 				},
 				paramsLen:  0,
 				resultsLen: 1,
@@ -182,9 +182,18 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				path: "model.*Person.Apply([]github.com/wesovilabs/beyond/testdata/advice.Attribute)func(string,int)",
 				imports: map[string]string{
 					"fmt": "",
-					"github.com/wesovilabs/beyond/testdata/advice": "",
+					"github.com/wesovilabs/beyond/testdata/advice": "testAdvice",
 				},
 				paramsLen:  1,
+				resultsLen: 1,
+			},
+			"Other": {
+				path: "model.*Person.Other()string",
+				imports: map[string]string{
+					"fmt": "",
+					"github.com/wesovilabs/beyond/testdata/advice": "testAdvice",
+				},
+				paramsLen:  0,
 				resultsLen: 1,
 			},
 		},

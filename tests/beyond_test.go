@@ -3,6 +3,7 @@ package tests
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/wesovilabs/beyond/internal"
+	"github.com/wesovilabs/beyond/logger"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -22,7 +23,7 @@ func Test_Beyond(t *testing.T) {
 }
 
 func Test_BeyondApp(t *testing.T) {
-
+	logger.Enable()
 	settings := &internal.Settings{
 		Work:      true,
 		Verbose:   true,

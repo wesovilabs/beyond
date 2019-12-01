@@ -104,3 +104,17 @@ func TestForEach(t *testing.T) {
 	})
 	assert.Equal(3, counter)
 }
+
+func Test_SetWithType(t *testing.T) {
+	assert := assert.New(t)
+	arg1 := NewArg("name", "John")
+	arg2 := NewArg("male", true)
+	arg3 := NewArg("age", 20)
+	args := &Args{
+		items: []*Arg{arg1, arg2, arg3},
+	}
+	args.SetWithType("male", 10, "int")
+	assert.Equal(10, args.Get("male").value)
+	assert.Equal("int", args.Get("male").kind)
+
+}

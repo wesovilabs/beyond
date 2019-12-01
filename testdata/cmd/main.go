@@ -50,7 +50,9 @@ func Beyond() *api.Beyond {
 		WithReturning(newEmptyReturning,`*.*(...)...`).
 		WithAround(advice.NewComplexAround("test",advice.Attribute{},nil),`*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*.(...)...`).
-		WithReturning(newEmptyReturning,`*.Person.*(...)...`)
+		WithAround(advice.NewEmptyAround,`*.*Person.*(...)...`).
+		WithAround(advice.NewEmptyAround,`*.*Person.*(struct{},...string)...`).
+		Exclude("*.*Person.Other(...)...")
 
 
 }

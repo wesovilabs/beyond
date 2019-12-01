@@ -20,7 +20,7 @@ func GetModuleName(rootDir string) (string, error) {
 	f, err := os.Open(goModPath)
 	CheckError(err)
 
-	defer f.Close()
+	defer closeFile(f)
 	scanner := bufio.NewScanner(f)
 
 	for scanner.Scan() {

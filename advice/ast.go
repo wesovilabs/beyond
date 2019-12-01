@@ -22,6 +22,11 @@ const (
 	apiPath      = "github.com/wesovilabs/beyond/api"
 )
 
+func unsupportedType(name string) string {
+	logger.Errorf("unsupported type %s", name)
+	return ""
+}
+
 // GetExcludePaths returns the paths to be excluded
 func GetExcludePaths(packages map[string]*parser.Package) []*regexp.Regexp {
 	paths := make([]*regexp.Regexp, 0)
@@ -81,7 +86,7 @@ func searchExcludePaths(node *ast.File) []*regexp.Regexp {
 								arg := callExpr.Args[i]
 								if basic, ok := arg.(*ast.BasicLit); ok {
 									val := basic.Value
-									regExp := regexp.MustCompile(val[1 : len(val)-1])
+									regExp := regexp.MustCompile(val[2 : len(val)-2])
 									paths = append(paths, regExp)
 								}
 							}
@@ -125,9 +130,7 @@ func selectorToString(sel *ast.SelectorExpr) string {
 	case *ast.Ident:
 		return fmt.Sprintf("%s.%s", x, sel.Sel.Name)
 	default:
-		logger.Error("unsupported type")
-
-		return fmt.Sprintf("%s.%s", "?", sel.Sel.Name)
+		return unsupportedType(reflect.TypeOf(x).String())
 	}
 }
 func compositeToString(c *ast.CompositeLit) string {
@@ -135,8 +138,7 @@ func compositeToString(c *ast.CompositeLit) string {
 	case *ast.SelectorExpr:
 		return fmt.Sprintf("%s{}", selectorToString(x))
 	default:
-		logger.Error("unsupported type")
-		return ""
+		return unsupportedType(reflect.TypeOf(x).String())
 	}
 }
 
@@ -150,8 +152,7 @@ func unaryToString(c *ast.UnaryExpr) string {
 	case *ast.CompositeLit:
 		return fmt.Sprintf("%s%s", prefix, compositeToString(x))
 	default:
-		logger.Error("unsupported type")
-		return ""
+		return unsupportedType(reflect.TypeOf(x).String())
 	}
 }
 func adviceCallText(ar ast.Expr) string {
@@ -175,7 +176,7 @@ func adviceCallText(ar ast.Expr) string {
 
 		argText = fmt.Sprintf("%s(%s)", adviceCallText(a.Fun), strings.Join(args, ","))
 	default:
-		argText = "unknown"
+		argText = unsupportedType(reflect.TypeOf(a).String())
 	}
 
 	return argText
@@ -238,7 +239,7 @@ func addAdviceCallExpr(arg *ast.CallExpr, importSpecs []*ast.ImportSpec, invocat
 			invocation.pkg = pkgPathForType(x.Name, importSpecs)
 		}
 	default:
-		logger.Errorf("Unexpected type %s", reflect.TypeOf(f))
+		unsupportedType(reflect.TypeOf(f).String())
 	}
 
 	invocation.args = invocationArgs
@@ -261,7 +262,7 @@ func takeAdvice(expr ast.Expr, advice *Advice, importSpecs []*ast.ImportSpec) {
 		addAdviceCallExpr(arg, importSpecs, invocation)
 		invocation.isCall = true
 	default:
-		logger.Errorf("Unexpected type %s", reflect.TypeOf(arg))
+		unsupportedType(reflect.TypeOf(arg).String())
 	}
 
 	advice.call = invocation
