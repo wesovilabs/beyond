@@ -33,7 +33,6 @@ func goCommand(settings *internal.Settings, goArgs []string) *exec.Cmd {
 }
 
 func main() {
-
 	settings := internal.BeyondSettingFromCommandLine(os.Args[1:])
 	goArgs := internal.RemoveBeyondArguments(os.Args[1:])
 
@@ -41,6 +40,7 @@ func main() {
 	if goCmd == nil {
 		showBanner()
 		usage()
+
 		return
 	}
 
@@ -60,6 +60,7 @@ func main() {
 	} else {
 		fmt.Printf("[ WORKDIR ] %s\n", settings.OutputDir)
 	}
-	exitStatus:=internal.ExecuteMain(goCmd, settings)
+
+	exitStatus := internal.ExecuteMain(goCmd, settings)
 	os.Exit(exitStatus)
 }

@@ -39,7 +39,7 @@ func Test_BeyondApp(t *testing.T) {
 
 	internal.ExecuteMain(goCmd, settings)
 	assert.True(t, true)
-	if err:=os.RemoveAll("generated");err!=nil{
+	if err := os.RemoveAll("generated"); err != nil {
 		panic(err.Error())
 	}
 

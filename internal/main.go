@@ -29,10 +29,12 @@ func setUp(sourceDir, rootDir string, excludeDirs map[string]bool) {
 	logger.Infof("directory %s contains a copy of your path", rootDir)
 }
 
-func ExecuteMain(goCmd *exec.Cmd, settings *Settings) int{
+func ExecuteMain(goCmd *exec.Cmd, settings *Settings) int {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
 	start := time.Now()
+
 	setUp(settings.Path, settings.OutputDir, settings.ExcludeDirs)
 	packages := parser.
 		New(settings.Path, settings.Project).
@@ -53,7 +55,7 @@ func ExecuteMain(goCmd *exec.Cmd, settings *Settings) int{
 	return runGoCommand(goCmd, settings, sigCh)
 }
 
-func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal) int{
+func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal) int {
 	var execStatus syscall.WaitStatus
 
 	exitStatus := 0
@@ -80,5 +82,6 @@ func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal)
 	}
 
 	logger.Close()
+
 	return exitStatus
 }
