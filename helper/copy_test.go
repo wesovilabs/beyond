@@ -77,3 +77,6 @@ func Test_copySymLink(t *testing.T) {
 	copySymLink("file2", "file3")
 
 }
+func Test_createIfNotExists(t *testing.T) {
+	createIfNotExists(".", os.ModeDir)
+}

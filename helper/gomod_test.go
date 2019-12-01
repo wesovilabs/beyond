@@ -10,4 +10,9 @@ func Test_GoMod(t *testing.T) {
 			t.Fatal("unexpected module name")
 		}
 	}
+	if module, err := GetModuleName("."); err == nil {
+		t.Fatalf("unexpected module name")
+	} else if module != "" {
+		t.Fatalf("unexpected module name")
+	}
 }
