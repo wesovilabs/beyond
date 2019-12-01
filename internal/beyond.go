@@ -39,9 +39,7 @@ func save(packages map[string]*parser.Package, outputDir string) {
 			fileName := filepath.Base(filePath)
 			outputPath := filepath.Join(outputDir, pkgPath)
 
-			if err := os.MkdirAll(outputPath, os.ModePerm); err != nil {
-				logger.Errorf("error creating output directory %s", err.Error())
-			}
+			helper.CheckError(os.MkdirAll(outputPath, os.ModePerm))
 
 			helper.Save(file, filepath.Join(outputPath, fileName))
 		}

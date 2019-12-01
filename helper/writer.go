@@ -11,7 +11,7 @@ import (
 // Save persists a node into a file in the provided path
 func Save(node *ast.File, path string) {
 	f, err := os.Create(path)
-	checkError(err)
+	CheckError(err)
 
 	defer func() {
 		if err := f.Close(); err != nil {
@@ -28,6 +28,6 @@ func Save(node *ast.File, path string) {
 
 	logger.Infof("[generated] %s", path)
 
-	errPrint:=cfg.Fprint(f, fileSet, node)
-	checkError(errPrint)
+	errPrint := cfg.Fprint(f, fileSet, node)
+	CheckError(errPrint)
 }

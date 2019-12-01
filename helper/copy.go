@@ -11,9 +11,9 @@ import (
 )
 
 // CopyDirectory function that copies directories
-func CopyDirectory(scrDir, dest string, excludes map[string]bool)  {
+func CopyDirectory(scrDir, dest string, excludes map[string]bool) {
 	entries, err := ioutil.ReadDir(scrDir)
-	checkError(err)
+	CheckError(err)
 
 	for index := range entries {
 		entry := entries[index]
@@ -37,7 +37,7 @@ func copyEntry(scrDir, dest string, excludes map[string]bool, entry os.FileInfo)
 	}
 
 	fileInfo, err := os.Stat(sourcePath)
-	checkError(err)
+	CheckError(err)
 
 	stat, ok := fileInfo.Sys().(*syscall.Stat_t)
 	if !ok {
@@ -47,12 +47,12 @@ func copyEntry(scrDir, dest string, excludes map[string]bool, entry os.FileInfo)
 	copy(fileInfo, sourcePath, destPath, excludes)
 
 	err = os.Lchown(destPath, int(stat.Uid), int(stat.Gid))
-	checkError(err)
+	CheckError(err)
 
 	isSymlink := entry.Mode()&os.ModeSymlink != 0
 	if !isSymlink {
 		err := os.Chmod(destPath, entry.Mode())
-		checkError(err)
+		CheckError(err)
 	}
 }
 
@@ -78,7 +78,7 @@ func Copy(srcFile, dstFile string) {
 		}
 	}()
 
-	checkError(err)
+	CheckError(err)
 
 	in, err := os.Open(srcFile)
 
@@ -87,10 +87,10 @@ func Copy(srcFile, dstFile string) {
 			logger.Errorf(closeErr.Error())
 		}
 	}()
-	checkError(err)
+	CheckError(err)
 
 	_, err = io.Copy(out, in)
-	checkError(err)
+	CheckError(err)
 }
 
 func exists(filePath string) bool {
@@ -107,11 +107,11 @@ func createIfNotExists(dir string, perm os.FileMode) {
 	}
 
 	err := os.MkdirAll(dir, perm)
-	checkError(err)
+	CheckError(err)
 }
 
 func copySymLink(source, dest string) {
 	link, err := os.Readlink(source)
-	checkError(err)
-	checkError(os.Symlink(link, dest))
+	CheckError(err)
+	CheckError(os.Symlink(link, dest))
 }

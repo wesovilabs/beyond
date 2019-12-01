@@ -31,10 +31,9 @@ func Test_BeyondSettingFromCommandLine(t *testing.T) {
 				Path:      "",
 				Project:   "myproject",
 				ExcludeDirs: map[string]bool{
-					".git":true,
+					".git": true,
 				},
 			},
-
 		},
 		{
 			project:   "myproject",
@@ -111,7 +110,6 @@ func Test_takePackage(t *testing.T) {
 
 }
 
-
-func Test_BeyondSettingFromCommandLineFlags(t *testing.T){
+func Test_BeyondSettingFromCommandLineFlags(t *testing.T) {
 	BeyondSettingFromCommandLine([]string{"buil"})
 }

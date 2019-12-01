@@ -13,12 +13,12 @@ const goModFileName = "go.mod"
 // GetModuleName returns the module name from a go.mod
 func GetModuleName(rootDir string) (string, error) {
 	goModPath := filepath.Join(rootDir, goModFileName)
-	if _, err := os.Stat(goModPath);err!=nil{
+	if _, err := os.Stat(goModPath); err != nil {
 		return "", errors.New("module name cannot be found")
 	}
 
 	f, err := os.Open(goModPath)
-	checkError(err)
+	CheckError(err)
 
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
