@@ -24,4 +24,9 @@ func Test_findImportName(t *testing.T) {
 	if res != "myname" {
 		t.Fatal("expcted myname")
 	}
+
+	res = findImportName(nil, "", "pkg/myname")
+	if res != "myname" {
+		t.Fatal("expcted myname")
+	}
 }

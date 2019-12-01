@@ -36,7 +36,7 @@ type Attribute struct{
 
 }
 
-func NewComplexAround(att string, com Attribute,_ interface{}) func() api.Around {
+func NewComplexAround(att string, com Attribute,_ interface{}, _ struct{},_ ...string) func() api.Around {
 	return func() api.Around {
 		return &ComplexAround{att}
 	}
