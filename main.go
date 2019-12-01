@@ -9,7 +9,7 @@ import (
 	"os/exec"
 )
 
-func usage(){
+func usage() {
 	fmt.Println("usage: [env_vars] beyond [beyond_flags] go_command [go_flags]")
 	fmt.Println("[beyond_flags]")
 	flag.PrintDefaults()
@@ -32,8 +32,7 @@ func goCommand(settings *internal.Settings, goArgs []string) *exec.Cmd {
 	return executor.Do()
 }
 
-
-func main(){
+func main() {
 
 	settings := internal.BeyondSettingFromCommandLine(os.Args[1:])
 	goArgs := internal.RemoveBeyondArguments(os.Args[1:])
@@ -61,5 +60,5 @@ func main(){
 	} else {
 		fmt.Printf("[ WORKDIR ] %s\n", settings.OutputDir)
 	}
-	internal.ExecuteMain(goCmd,settings)
+	internal.ExecuteMain(goCmd, settings)
 }

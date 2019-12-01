@@ -87,24 +87,22 @@ func Test_RemoveBeyondArguments(t *testing.T) {
 	assert.Equal(t, "main.go", out[1])
 }
 
-
-func Test_load(t *testing.T){
-	assert:=assert.New(t)
-	config:=load("testdata/beyond.toml")
+func Test_load(t *testing.T) {
+	assert := assert.New(t)
+	config := load("testdata/beyond.toml")
 	assert.NotNil(config)
-	assert.Equal("github.com/wesovilabs/beyond-examples/settings",config.Project)
-	assert.Equal("generated",config.OutputDir)
+	assert.Equal("github.com/wesovilabs/beyond-examples/settings", config.Project)
+	assert.Equal("generated", config.OutputDir)
 	assert.True(config.Verbose)
 	assert.True(config.Work)
-	assert.Len(config.Excludes,3)
+	assert.Len(config.Excludes, 3)
 }
 
-
-func Test_takePackage(t *testing.T){
-	assert:=assert.New(t)
-	pkg:=takePackage([]string{"build","main.go"})
-	assert.Equal(".",pkg)
-	pkg=takePackage([]string{"build","cmd/main.go"})
-	assert.Equal("cmd",pkg)
+func Test_takePackage(t *testing.T) {
+	assert := assert.New(t)
+	pkg := takePackage([]string{"build", "main.go"})
+	assert.Equal(".", pkg)
+	pkg = takePackage([]string{"build", "cmd/main.go"})
+	assert.Equal("cmd", pkg)
 
 }
