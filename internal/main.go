@@ -21,9 +21,7 @@ func setUp(sourceDir, rootDir string, excludeDirs map[string]bool) {
 			logger.Error(err.Error())
 		}
 	}
-	fmt.Println(sourceDir)
-	fmt.Println(rootDir)
-	fmt.Println(excludeDirs)
+
 	if err := helper.CopyDirectory(sourceDir, rootDir, excludeDirs); err != nil {
 		panic(err.Error())
 	}
@@ -31,7 +29,7 @@ func setUp(sourceDir, rootDir string, excludeDirs map[string]bool) {
 	logger.Infof("directory %s contains a copy of your path", rootDir)
 }
 
-func ExecuteMain(goCmd *exec.Cmd, settings *Settings) {
+func ExecuteMain(goCmd *exec.Cmd, settings *Settings) int{
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 	start := time.Now()
@@ -52,10 +50,10 @@ func ExecuteMain(goCmd *exec.Cmd, settings *Settings) {
 		println()
 	}
 
-	runGoCommand(goCmd, settings, sigCh)
+	return runGoCommand(goCmd, settings, sigCh)
 }
 
-func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal) {
+func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal) int{
 	var execStatus syscall.WaitStatus
 
 	exitStatus := 0
@@ -82,5 +80,5 @@ func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal)
 	}
 
 	logger.Close()
-	os.Exit(exitStatus)
+	return exitStatus
 }

@@ -60,5 +60,6 @@ func main() {
 	} else {
 		fmt.Printf("[ WORKDIR ] %s\n", settings.OutputDir)
 	}
-	internal.ExecuteMain(goCmd, settings)
+	exitStatus:=internal.ExecuteMain(goCmd, settings)
+	os.Exit(exitStatus)
 }
