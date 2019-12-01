@@ -22,9 +22,7 @@ func setUp(sourceDir, rootDir string, excludeDirs map[string]bool) {
 		}
 	}
 
-	if err := helper.CopyDirectory(sourceDir, rootDir, excludeDirs); err != nil {
-		panic(err.Error())
-	}
+	helper.CopyDirectory(sourceDir, rootDir, excludeDirs)
 
 	logger.Infof("directory %s contains a copy of your path", rootDir)
 }

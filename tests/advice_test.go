@@ -16,7 +16,7 @@ func Test_Advice(t *testing.T) {
 	assert.Len(advices.List(), 4)
 	assertAdvice(assert, advices.List()[0], `NewComplexAround`, "github.com/wesovilabs/beyond/testdata/advice", true, true)
 	assertAdvice(assert, advices.List()[1], "NewEmptyAround", "github.com/wesovilabs/beyond/testdata/advice", true, true)
-	assertAdvice(assert, advices.List()[2], "NewTracingAdvice", "github.com/wesovilabs/beyond/api/advice", true, false)
+	assertAdvice(assert, advices.List()[2], "NewTracingAdvice", "github.com/wesovilabs/beyond/testdata/advice", true, false)
 	assertAdvice(assert, advices.List()[3], "NewComplexBefore", "github.com/wesovilabs/beyond/testdata/advice", true, false)
 
 }

@@ -30,7 +30,11 @@ func Test_BeyondSettingFromCommandLine(t *testing.T) {
 				OutputDir: filepath.Join(pwd, "out"),
 				Path:      "",
 				Project:   "myproject",
+				ExcludeDirs: map[string]bool{
+					".git":true,
+				},
 			},
+
 		},
 		{
 			project:   "myproject",
@@ -105,4 +109,9 @@ func Test_takePackage(t *testing.T) {
 	pkg = takePackage([]string{"build", "cmd/main.go"})
 	assert.Equal("cmd", pkg)
 
+}
+
+
+func Test_BeyondSettingFromCommandLineFlags(t *testing.T){
+	BeyondSettingFromCommandLine([]string{"buil"})
 }

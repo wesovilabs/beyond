@@ -37,7 +37,8 @@ func Test_BeyondApp(t *testing.T) {
 	}
 	goCmd := internal.GoCommand(settings, []string{"run", "cmd/main.go"}).Do()
 
-	internal.ExecuteMain(goCmd, settings)
+	exitStatus:=internal.ExecuteMain(goCmd, settings)
+	assert.Equal(t,0,exitStatus)
 	assert.True(t, true)
 	if err := os.RemoveAll("generated"); err != nil {
 		panic(err.Error())

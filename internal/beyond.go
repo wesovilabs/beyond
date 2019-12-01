@@ -43,9 +43,7 @@ func save(packages map[string]*parser.Package, outputDir string) {
 				logger.Errorf("error creating output directory %s", err.Error())
 			}
 
-			if err := helper.Save(file, filepath.Join(outputPath, fileName)); err != nil {
-				logger.Error(err.Error())
-			}
+			helper.Save(file, filepath.Join(outputPath, fileName))
 		}
 	}
 }

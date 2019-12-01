@@ -21,7 +21,7 @@ func Test_Writer(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer os.RemoveAll(path.Name())
-			assert.Nil(helper.Save(file, path.Name()))
+			helper.Save(file, path.Name())
 		}
 
 	}

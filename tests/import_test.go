@@ -10,19 +10,31 @@ import (
 var expectedImports = map[string]map[string]map[string]string{
 	"cmd": {
 		"../testdata/cmd/main.go": {
+			"fmt": "fmt",
 			"github.com/wesovilabs/beyond/api/context":      "context",
-			"github.com/wesovilabs/beyond/testdata/advice":  "testAdvice",
 			"github.com/wesovilabs/beyond/testdata/model":   "model",
 			"github.com/wesovilabs/beyond/testdata/storage": "storage",
-			"fmt":                              "fmt",
-			"github.com/wesovilabs/beyond/api": "api",
-			"github.com/wesovilabs/beyond/api/advice": "advice",
+			"github.com/wesovilabs/beyond/testdata/advice":  "advice",
+			"github.com/wesovilabs/beyond/api":              "api",
 		},
 	},
 	"advice": {
 		"../testdata/advice/custom.go": {
 			"github.com/wesovilabs/beyond/api":         "api",
 			"github.com/wesovilabs/beyond/api/context": "context",
+		},
+		"../testdata/advice/timer.go": {
+			"fmt":                              "fmt",
+			"github.com/wesovilabs/beyond/api": "api",
+			"github.com/wesovilabs/beyond/api/context": "context",
+			"strings": "strings",
+			"time":    "time",
+		},
+		"../testdata/advice/tracing.go": {
+			"fmt":                              "fmt",
+			"github.com/wesovilabs/beyond/api": "api",
+			"github.com/wesovilabs/beyond/api/context": "context",
+			"strings": "strings",
 		},
 	},
 	"model": {

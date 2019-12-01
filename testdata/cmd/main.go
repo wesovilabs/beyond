@@ -3,9 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/wesovilabs/beyond/api"
-	"github.com/wesovilabs/beyond/api/advice"
 	"github.com/wesovilabs/beyond/api/context"
-	testAdvice "github.com/wesovilabs/beyond/testdata/advice"
+	"github.com/wesovilabs/beyond/testdata/advice"
 	"github.com/wesovilabs/beyond/testdata/model"
 	"github.com/wesovilabs/beyond/testdata/storage"
 )
@@ -44,13 +43,14 @@ func main() {
 
 func Beyond() *api.Beyond {
 	return api.New().
-		WithBefore(testAdvice.NewComplexBefore(&testAdvice.Attribute{}), `*.*Person(...)...`).
+		WithBefore(advice.NewComplexBefore(&advice.Attribute{}), `*.*Person(...)...`).
 		WithBefore(advice.NewTracingAdvice, `*.*Person(...)...`).
-		WithAround(testAdvice.NewEmptyAround, `*.*(...)...`).
+		WithAround(advice.NewEmptyAround, `*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*(...)...`).
-		WithAround(testAdvice.NewComplexAround("test",testAdvice.Attribute{},nil),`*.*(...)...`).
+		WithAround(advice.NewComplexAround("test",advice.Attribute{},nil),`*.*(...)...`).
 		WithReturning(newEmptyReturning,`*.*.(...)...`)
+
 
 }
 

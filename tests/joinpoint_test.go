@@ -153,6 +153,18 @@ var joinpoints = map[string]map[string]map[string]*jpTest{
 				paramsLen:  1,
 				resultsLen: 1,
 			},
+			"NewTimerAdvice": {
+				path: "advice.NewTimerAdvice(github.com/wesovilabs/beyond/testdata/advice.TimerMode)func()github.com/wesovilabs/beyond/api.Around",
+				imports: map[string]string{
+					"github.com/wesovilabs/beyond/api":         "",
+					"github.com/wesovilabs/beyond/api/context": "",
+					"strings": "",
+					"time": "",
+					"fmt": "",
+				},
+				paramsLen:  1,
+				resultsLen: 1,
+			},
 		},
 	},
 	"model": {
@@ -191,6 +203,9 @@ func Test_JoinPoint(t *testing.T) {
 		if jp.GetRecv() != nil {
 			jpType = jp.GetRecv().List[0].Names[0].String()
 		}
+		fmt.Println(jp.Pkg())
+		fmt.Println(jpType)
+		fmt.Println(jp.Name())
 		expected := joinpoints[jp.Pkg()][jpType][jp.Name()]
 		if expected == nil {
 			fmt.Println(jp.Pkg())
