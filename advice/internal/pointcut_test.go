@@ -7,7 +7,7 @@ import (
 )
 
 func Test_NormalizePointcut(t *testing.T) {
-	assert:=assert.New(t)
+	assert := assert.New(t)
 	expr := NormalizePointcut("pkg.Person?.fn(...)...")
 	fmt.Println(expr.String())
 	assert.True(expr.Match([]byte("pkg.Person.fn(string,*int)")))

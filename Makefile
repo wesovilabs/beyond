@@ -52,6 +52,7 @@ build-all: ; @ ## Build binary files
 .PHONY: init
 init: ; @ ## Setup the git hooks
 	chmod +x scripts/.githooks/*
+	cp scripts/.githooks/* .git/hooks/
 	git config core.hooksPath scripts/.githooks
 
 docker-%: ; @ ## Run commands inside a docker container

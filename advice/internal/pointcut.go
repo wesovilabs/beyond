@@ -36,10 +36,10 @@ func NormalizePointcut(text string) *regexp.Regexp {
 	}
 
 	if items[2] != "" {
-		if strings.HasSuffix(items[2],"?."){
-			value:=items[2][:len(items[2])-1]
-			regExpStr += fmt.Sprintf(`(%s\.)?`,processObj(value))
-		}else{
+		if strings.HasSuffix(items[2], "?.") {
+			value := items[2][:len(items[2])-1]
+			regExpStr += fmt.Sprintf(`(%s\.)?`, processObj(value))
+		} else {
 			regExpStr += fmt.Sprintf(`%s\.`, processObj(items[2]))
 		}
 	}
