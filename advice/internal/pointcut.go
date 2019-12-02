@@ -8,7 +8,7 @@ import (
 )
 
 const exprPkg = `[a-zA-Z0-9_*\/]+\.`
-const exprObj = `[a-zA-Z0-9_*]+\.`
+const exprObj = `[a-zA-Z0-9_*]+\?*\.`
 const exprFunc = "[a-zA-Z0-9_*]+"
 const exprArgs = `[a-zA-Z0-9_*,.{}()[\]/]+`
 
@@ -19,6 +19,7 @@ var regExp = func() *regexp.Regexp {
 	expr += fmt.Sprintf(`(?P<func>%s)`, exprFunc)
 	expr += fmt.Sprintf(`(?P<args>\(%s)`, exprArgs)
 	expr += `$`
+	fmt.Println(expr)
 	return regexp.MustCompile(expr)
 }()
 
@@ -35,7 +36,12 @@ func NormalizePointcut(text string) *regexp.Regexp {
 	}
 
 	if items[2] != "" {
-		regExpStr += fmt.Sprintf(`%s\.`, processObj(items[2]))
+		if strings.HasSuffix(items[2],"?."){
+			value:=items[2][:len(items[2])-1]
+			regExpStr += fmt.Sprintf(`(%s\.)?`,processObj(value))
+		}else{
+			regExpStr += fmt.Sprintf(`%s\.`, processObj(items[2]))
+		}
 	}
 
 	regExpStr += processFunc(items[3])
