@@ -76,7 +76,7 @@ func (e *Executor) Do() *exec.Cmd {
 	cmd := exec.Command("go")
 	cmd.Args = args
 	cmd.Env = os.Environ()
-	cmd.Dir = e.settings.OutputDir
+	cmd.Dir = e.settings.Output
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 

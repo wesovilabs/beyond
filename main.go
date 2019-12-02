@@ -52,13 +52,13 @@ func main() {
 
 	if !settings.Work {
 		defer func() {
-			logger.Infof("wipe out directory %s", settings.OutputDir)
-			if err := os.RemoveAll(settings.OutputDir); err != nil {
+			logger.Infof("wipe out directory %s", settings.Output)
+			if err := os.RemoveAll(settings.Output); err != nil {
 				logger.Error(err.Error())
 			}
 		}()
 	} else {
-		fmt.Printf("[ WORKDIR ] %s\n", settings.OutputDir)
+		fmt.Printf("[ WORKDIR ] %s\n", settings.Output)
 	}
 
 	exitStatus := internal.ExecuteMain(goCmd, settings)

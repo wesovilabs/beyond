@@ -9,12 +9,12 @@ import (
 func Test_GoCommand(t *testing.T) {
 	assert := assert.New(t)
 	setting := &Settings{
-		Verbose:   false,
-		Work:      true,
-		Pkg:       "cmd/app",
-		OutputDir: "out",
-		Path:      "current",
-		Project:   "myproject",
+		Verbose: false,
+		Work:    true,
+		Pkg:     "cmd/app",
+		Output:  "out",
+		Path:    "current",
+		Project: "myproject",
 	}
 	cases := []struct {
 		settings *Settings

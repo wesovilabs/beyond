@@ -25,10 +25,10 @@ We will go though a real Around advice. This advice prints the taken time by the
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install beyond tool & clone the beyondexamples repository
+- Install beyond tool & clone the beyond-examples repository
 ```bash
 >> go get github.com/wesovilabs/beyond
->> git clone https://github.com/wesovilabs/beyondexamples.git
+>> git clone https://github.com/wesovilabs/beyond-examples.git
 >> cd around
 ```
 
@@ -46,7 +46,7 @@ type Around interface {
 }
 ```
 
-Open file [advice/timer.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/advice/timer.go#L20).
+Open file [advice/timer.go](https://github.com/wesovilabs/beyond-examples/blob/master/around/advice/timer.go#L20).
 
 ```go
 const timeStartKey = "time.start"
@@ -107,7 +107,7 @@ The function signature must be:
 func() Around
 ```
 
-Check the following functions, in file [advice/timer.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/advice/timer.go#L44),
+Check the following functions, in file [advice/timer.go](https://github.com/wesovilabs/beyond-examples/blob/master/around/advice/timer.go#L44),
 
 ```go
 func NewTimerAdvice(mode TimerMode) func() api.Around {
@@ -121,7 +121,7 @@ Keep in mind that Beyond ignores non-exported functions.
 
 - Register the above function
 
-Open file [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/cmd/main.go#L9) and have a look at function `Beyond()`.
+Open file [cmd/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/around/cmd/main.go#L9) and have a look at function `Beyond()`.
 
 ```go
 func Beyond() *api.Beyond {
@@ -137,8 +137,8 @@ func main() {
 ```
 Two functions will be intercepted:
 
-- Taken time by function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/greeting/greeting.go#L8) will be shown in microseconds.
-- Taken time by function **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/beyondexamples/blob/master/around/greeting/greeting.go#L16) will be shown in nanoseconds.
+- Taken time by function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/beyond-examples/blob/master/around/greeting/greeting.go#L8) will be shown in microseconds.
+- Taken time by function **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/beyond-examples/blob/master/around/greeting/greeting.go#L16) will be shown in nanoseconds.
 
 *We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 

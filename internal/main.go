@@ -32,16 +32,16 @@ func ExecuteMain(goCmd *exec.Cmd, settings *Settings) int {
 
 	start := time.Now()
 
-	setUp(settings.Path, settings.OutputDir, settings.ExcludeDirs)
+	setUp(settings.Path, settings.Output, settings.ExcludeDirs)
 	packages := parser.
 		New(settings.Path, settings.Project).
 		Parse(settings.Pkg)
 
-	Run(settings.Project, packages, settings.OutputDir)
+	Run(settings.Project, packages, settings.Output)
 
 	end := time.Now()
 	logger.Infof("[beyond] beyond transformation took %v milliseconds", end.Sub(start).Milliseconds())
-	logger.Infof("[workdir] %s", settings.OutputDir)
+	logger.Infof("[workdir] %s", settings.Output)
 	logger.Infof("[command] %s", goCmd.String())
 
 	if settings.Verbose {
@@ -70,8 +70,8 @@ func runGoCommand(goCommand *exec.Cmd, settings *Settings, sigCh chan os.Signal)
 	<-sigCh
 
 	if !settings.Work {
-		logger.Infof("Removing directory %s", settings.OutputDir)
-		os.RemoveAll(settings.OutputDir)
+		logger.Infof("Removing directory %s", settings.Output)
+		os.RemoveAll(settings.Output)
 	}
 
 	logger.Close()

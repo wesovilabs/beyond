@@ -24,12 +24,12 @@ func Test_BeyondSettingFromCommandLine(t *testing.T) {
 			verbose:   false,
 			work:      true,
 			setting: &Settings{
-				Verbose:   false,
-				Work:      true,
-				Pkg:       "cmd/app",
-				OutputDir: filepath.Join(pwd, "out"),
-				Path:      "",
-				Project:   "myproject",
+				Verbose: false,
+				Work:    true,
+				Pkg:     "cmd/app",
+				Output:  filepath.Join(pwd, "out"),
+				Path:    "",
+				Project: "myproject",
 				ExcludeDirs: map[string]bool{
 					".git": true,
 				},
@@ -41,12 +41,12 @@ func Test_BeyondSettingFromCommandLine(t *testing.T) {
 			outputDir: "",
 			pkg:       "",
 			setting: &Settings{
-				Verbose:   false,
-				Work:      false,
-				Pkg:       "",
-				OutputDir: filepath.Join(pwd, "out"),
-				Path:      "",
-				Project:   "myproject",
+				Verbose: false,
+				Work:    false,
+				Pkg:     "",
+				Output:  filepath.Join(pwd, "out"),
+				Path:    "",
+				Project: "myproject",
 			},
 		},
 	}
@@ -61,9 +61,9 @@ func Test_BeyondSettingFromCommandLine(t *testing.T) {
 		assert.Equal(c.setting.Pkg, setting.Pkg)
 
 		if c.outputDir != "" {
-			assert.Equal(c.setting.OutputDir, setting.OutputDir)
+			assert.Equal(c.setting.Output, setting.Output)
 		} else {
-			assert.NotEmpty(setting.OutputDir)
+			assert.NotEmpty(setting.Output)
 		}
 		assert.Equal(c.setting.Work, setting.Work)
 		assert.Equal(c.setting.Verbose, setting.Verbose)
@@ -95,7 +95,7 @@ func Test_load(t *testing.T) {
 	config := load("testdata/beyond.toml")
 	assert.NotNil(config)
 	assert.Equal("github.com/wesovilabs/beyond-examples/settings", config.Project)
-	assert.Equal("generated", config.OutputDir)
+	assert.Equal("generated", config.Output)
 	assert.True(config.Verbose)
 	assert.True(config.Work)
 	assert.Len(config.Excludes, 3)

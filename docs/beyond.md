@@ -50,6 +50,7 @@ Beyond provides some flags that we can use to customize default behavior
 |`--path <directory>`           | current directory        | path to your project                                           |
 |`--verbose`                    | false                    | enable verbose mode                                       |
 |`--work`                       | false                    | print the name of the temporary work directory and do not delete it when exiting |
+|`--config`                     | beyond.toml              | It loads the beyond configuration from the given toml file |
 
 
 {: .text-yellow-300}
@@ -95,4 +96,61 @@ However when we work with go modules command we con ignore th flag `--project`.
 
 ```bash
 >> CGO_ENABLED=0 beyond build -ldflags "-X constants.Version=0.0.1" cmd/app/main.go
+```
+
+##  beyond.toml
+
+As it was mentioned above, we can provide a configuration file to avoid pass arguments to the beyond command.
+
+This file must have the below structure
+
+```toml
+project="github.com/wesovilabs/beyond-examples/settings"
+output="generated"
+verbose=true
+work=true
+excludes=[
+    "go.sum",
+    "vendor",
+    ".git"
+]
+```
+
+- project: The project name
+- output: The directory in which our code will be generated.
+- verbose: If true, we run beyond with verbose mode, false in other case
+- work: If true,  print the name of the temporary work directory and do not delete it when exiting
+- excludes: We can list files or directories which don't need to be taken in account by beyond.
+
+To understand how the beyond.toml works, let's clone the beyond-examples repository
+```bash
+>> git clone https://github.com/wesovilabs/beyond-examples.git
+>> cd settings
+```
+To run beyond with verbosity and leave the generated files in directory `generated` we should do the following
+
+```bash
+beyond --verbose --work --output generated run cmd/main.go
+```
+
+We can avoid passing always the flags if we create the following file to the root.
+
+**beyond.toml**
+```toml
+project="github.com/wesovilabs/beyond-examples/settings"
+output="generated"
+verbose=true
+work=true
+excludes=[
+    "go.sum",
+    "vendor",
+    ".git"
+]
+```
+
+In case of we want to use a configuration file with a different name we can rename
+beyond.toml to beyond-dev.toml and execute the below command
+
+```bash
+beyond --config beyond-dev.toml run cmd/main.go
 ```

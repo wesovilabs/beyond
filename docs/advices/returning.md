@@ -26,10 +26,10 @@ We will go though a real Returning advice. This advice enriches returned errors 
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install beyond tool & clone the beyondexamples repository
+- Install beyond tool & clone the beyond-examples repository
 ```bash
 >> go get github.com/wesovilabs/beyond
->> git clone https://github.com/wesovilabs/beyondexamples.git
+>> git clone https://github.com/wesovilabs/beyond-examples.git
 >> cd returning
 ```
 
@@ -46,7 +46,7 @@ type Returning interface {
 }
 ```
 
-Open file [advice/error.go](https://github.com/wesovilabs/beyondexamples/blob/master/returning/advice/error.go#L10) and have a look at type `ErrorsEnrichAdvice`.
+Open file [advice/error.go](https://github.com/wesovilabs/beyond-examples/blob/master/returning/advice/error.go#L10) and have a look at type `ErrorsEnrichAdvice`.
 
 ```go
 type ErrorsEnrichAdvice struct {
@@ -109,7 +109,7 @@ The function signature must be:
 func() Returning
 ```
 
-Check the following functions, in file [advice/error.go](https://github.com/wesovilabs/beyondexamples/blob/master/returning/advice/error.go#L50),
+Check the following functions, in file [advice/error.go](https://github.com/wesovilabs/beyond-examples/blob/master/returning/advice/error.go#L50),
 
 ```go
 func NewErrorsEnrichAdviceAdvice() api.Returning {
@@ -121,7 +121,7 @@ Keep in mind that Beyond ignores non-exported functions.
 
 - Register the above function
 
-Open file [cmd/returning/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/returning/cmd/main.go) and have a look at function `Beyond()`.
+Open file [cmd/returning/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/returning/cmd/main.go) and have a look at function `Beyond()`.
 
 ```go
 func Beyond() *api.Beyond {
@@ -132,6 +132,7 @@ func main() {
   checkError(greeting.Greetings("Hello", ""))
   checkError(greeting.Greetings("Bye", ""))
   checkError(greeting.Greetings("--", "John"))
+  checkError(greeting.Greetings("Hello", "Sally"))
 }
 
 func checkError(err error){
@@ -181,12 +182,12 @@ func main() {
 }
 ```
 
-when running `beyond run cmd/main.go` a panic will be thrown... 
+when running `beyond run cmd/main.go` a panic error will be thrown... 
 
 How could you fix it?  The output should be the below
 
 ```bash
->> beyond run main.go
+>> beyond run cmd/main.go
 [greeting.Greetings(mode:Hello,firstName:)] => [greeting.Hello(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:Bye,firstName:)] => [greeting.Bye(firstName:)] => [ERR] invalid firstName
 [greeting.Greetings(mode:--,firstName:John)] => [ERR] unexpected greeting

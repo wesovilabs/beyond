@@ -36,9 +36,11 @@ The table contains some examples, that could help us to get a better understandi
 |:-----------------------------------------|:--------------------------|:
 | `*.*(...)...`                            | Any function invocation with 0 or N params and 0 or N results |
 | `*.*.*(...)...`                          | Any method invocation with 0 or N params and 0 or N results |
-| `model.*(...)...`                      | Any function invocation, in package `model`,  with 0 or N params and 0 or N results |
-| `handlers/employee.*(...)...`          | Any function invocation, in package `handlers/employee`,  with 0 or N params and 0 or N results |
-| `model.*.*(...)...`                      | Any method invocation, in package `model`,  with 0 or N params and 0 or N results |
+| `*.*?.*(...)...`                         | Any function or method invocation with 0 or N params and 0 or N results |
+| `model.*(...)...`                        | Any function invocation, in package `model`,  with 0 or N params and 0 or N results |
+| `handlers/employee.*(...)...`            | Any function invocation, in package `handlers/employee`,  with 0 or N params and 0 or N results |
+| `model.*.*(...)...`                      | Any method invocation for object `Person` (or any function invocation for non-object), in package `model`,  with 0 or N params and 0 or N results |
+| `model.Person?.*(...)...`                | Any method invocation, in package `model`,  with 0 or N params and 0 or N results |
 | `model.person.*(...)...`                 | Any method invocation, for type `person` in package `model`,  with 0 or N params and 0 or N results |
 | `database.*(string)...`                  | Any function in package `database`, with 1 param of type string and 0 or N results |
 | `database.*(string,*int32)...`           | Any function in package `database`, with 2 params of types string and *int32, and 0 or N results |
@@ -54,34 +56,34 @@ The table contains some examples, that could help us to get a better understandi
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install beyond tool & clone the beyondexamples repository
+- Install beyond tool & clone the beyond-examples repository
 ```bash
 >> go get github.com/wesovilabs/beyond
->> git clone https://github.com/wesovilabs/beyondexamples.git
+>> git clone https://github.com/wesovilabs/beyond-examples.git
 >> cd joinpoints
 ```
 
 -  The application provides a Rest API to interact with employee resources. A test purposed advice is 
-registered in file [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/cmd/joinpoints/main.go#L14).
+registered in file [cmd/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/cmd/joinpoints/main.go#L14).
 
 To test the joinpoints expreessions we need to launch the server with command `beyond run cmd/main.go` and then, 
 run `go test/main.go` to make some requests to the server. 
 
-Server main is found in file [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/cmd/main.go#L19) 
-and client main in [test/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/test/main.go)
+Server main is found in file [cmd/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/cmd/main.go#L19) 
+and client main in [test/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/test/main.go)
 
 
 {: .text-green-300}
-**Intercepting function [CreateEmployee](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/handler/employee.go#L12)**
+**Intercepting function [CreateEmployee](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/handler/employee.go#L12)**
 
 Any of these expressions would be valid to intercept the above function.
 - `handler.CreateEmployee(...)...`
 - `*.CreateEmployee(...)...`
-- `handler.CreateEmployee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/beyondexamples/joinpoints/storage.Database)`
+- `handler.CreateEmployee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/beyond-examples/joinpoints/storage.Database)`
 - `handler.CreateEmployee(...,*net/http.Request,...)`
 - `handler.Create*(...,*net/http.Request,...)`
 
-To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/cmd/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Beyond() *api.Beyond {
   return api.New().
@@ -99,14 +101,14 @@ handler.CreateEmployee
 ```
 
 {: .text-green-300}
-**Intercepting any function in package [handler](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/handler/employee.go)**
+**Intercepting any function in package [handler](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/handler/employee.go)**
 
 Any of these expressions would be valid to intercept the above function.
 - `handler.*(...)...`
 - `handler.*(...,*net/http.Request,...)`
 - `*.*(net/http.ResponseWriter,*net/http.Request,...)`
 
-To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/cmd/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Beyond() *api.Beyond {
   return api.New().
@@ -128,20 +130,20 @@ handler.DeleteEmployee
 
 Why don't these other expressions print the same output?
 - `*.*Employee(...)...`
-- `handler.*Employee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/beyondexamples/joinpoints/storage.Database)`
+- `handler.*Employee(net/http.ResponseWriter,*net/http.Request,github.com/wesovilabs/beyond-examples/joinpoints/storage.Database)`
   
 
 {: .text-green-300}
-**Intercepting method SaveEmployee of type [memDBClient](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/storage/mem.go#L20)**
+**Intercepting method SaveEmployee of type [memDBClient](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/storage/mem.go#L20)**
 
 Any of these expressions would be valid to intercept the above function.
-- `storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/beyondexamples/joinpoints/model.Employee)error`
-- `storage.*memDBClient.Save*(*github.com/wesovilabs/beyondexamples/joinpoints/model.Employee)error`
+- `storage.*memDBClient.SaveEmployee(*github.com/wesovilabs/beyond-examples/joinpoints/model.Employee)error`
+- `storage.*memDBClient.Save*(*github.com/wesovilabs/beyond-examples/joinpoints/model.Employee)error`
 - `storage.*memDBClient.Save*(...)...`
 - `*.*.SaveEmployee(...)...`
 - `*.*memDBClient.Save*(...)...`
   
-To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/cmd/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/joinpoints/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Beyond() *api.Beyond {
   return api.New().
@@ -159,7 +161,7 @@ storage.*storage.memDBClient.SaveEmployee
 ```
 
 {: .text-green-300}
-**Intercepting function RespondWithJSON in package [handler/internal](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/handler/internal/helper.go#L14)**
+**Intercepting function RespondWithJSON in package [handler/internal](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/handler/internal/helper.go#L14)**
 
 Any of these expressions would be valid to intercept the above function.
 - `handler/internal.RespondWithJSON(net/http.ResponseWriter,int,interface{})`
@@ -168,7 +170,7 @@ Any of these expressions would be valid to intercept the above function.
 - `*.RespondWithJSON(net/http.ResponseWriter,...)`
 - `*.RespondWithJSON(...,int,...)`
 
-To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/cmd/main.go#L19)
+To check the expressions we just need to modify the registered expression in [cmd/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/cmd/main.go#L19)
 ```go
 func Beyond() *api.Beyond {
   return api.New().
@@ -195,7 +197,7 @@ Find valid expressions that intercept the following:
 
 - All the invocations to memDBClient methods
 - Function `RandomString` in package helper
-- Function `RespondWithError`. To check it, you will need to force an error. You can do it in file [test/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/joinpoints/test/main.go#L22) by making the below change. 
+- Function `RespondWithError`. To check it, you will need to force an error. You can do it in file [test/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/joinpoints/test/main.go#L22) by making the below change. 
 ```go
 res,_ := api.CreateEmployee(&model.Employee{
    Email:    "",

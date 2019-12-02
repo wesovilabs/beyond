@@ -5,11 +5,11 @@
 ### Added
 - [#22](https://github.com/wesovilabs/beyond/issues/22) `Beyond usage` is
 shown when the entered command is not valid. 
-- [#7](https://github.com/wesovilabs/beyond/issues/7) This new version provide a method named `Exclude`
+- [#7](https://github.com/wesovilabs/beyond/issues/7) This new version provide a method named `Ignore`
 which can be used to ignore methods to be intercepted.
 - [#5](https://github.com/wesovilabs/beyond/issues/5) `Beyond configuration` can be loaded from a
 toml file.
-- [#6](https://github.com/wesovilabs/beyond/issues/6). It wllows to skip joinpoint invocation from the
+- [#6](https://github.com/wesovilabs/beyond/issues/6). It's possible to skip joinpoint invocation from the
 Before method.  
 - [#3](https://github.com/wesovilabs/beyond/issues?q=is%3Aissue+is%3Aclosed+milestone%3Av0.0.2+label%3Aenhancement)
 Docker image `wesovilabs/beyond:1.0.0` is provided.

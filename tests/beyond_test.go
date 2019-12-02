@@ -25,11 +25,11 @@ func Test_Beyond(t *testing.T) {
 func Test_BeyondApp(t *testing.T) {
 	logger.Enable()
 	settings := &internal.Settings{
-		Work:      true,
-		Verbose:   true,
-		OutputDir: filepath.Join("generated"),
-		Path:      filepath.Join("../testdata"),
-		Project:   "github.com/wesovilabs/beyond/testdata",
+		Work:    true,
+		Verbose: true,
+		Output:  filepath.Join("generated"),
+		Path:    filepath.Join("../testdata"),
+		Project: "github.com/wesovilabs/beyond/testdata",
 		ExcludeDirs: map[string]bool{
 			"generated": true,
 			".git":      true,

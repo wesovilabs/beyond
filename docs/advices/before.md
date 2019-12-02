@@ -27,10 +27,10 @@ invocations.
 
 Let's check that our environment is ready to follow the tutorial!
  
-- Install beyond tool & clone the beyondexamples repository
+- Install beyond tool & clone the beyond-examples repository
 ```bash
 >> go get github.com/wesovilabs/beyond
->> git clone https://github.com/wesovilabs/beyondexamples.git
+>> git clone https://github.com/wesovilabs/beyond-examples.git
 >> cd before
 ```
 
@@ -47,7 +47,7 @@ type Before interface {
 }
 ```
 
-Open file [advice/tracing.go](https://github.com/wesovilabs/beyondexamples/blob/master/before/advice/tracing.go#L10) and have a look at type `TracingAdvice`.
+Open file [advice/tracing.go](https://github.com/wesovilabs/beyond-examples/blob/master/before/advice/tracing.go#L10) and have a look at type `TracingAdvice`.
 
 ```go
 type TracingAdvice struct {
@@ -81,7 +81,7 @@ The functions signature must be:
 func() Before
 ```
 
-Check the following functions, in file [advice/tracing.go](https://github.com/wesovilabs/beyondexamples/blob/master/before/advice/tracing.go#L22),
+Check the following functions, in file [advice/tracing.go](https://github.com/wesovilabs/beyond-examples/blob/master/before/advice/tracing.go#L22),
 
 
 ```go
@@ -102,7 +102,7 @@ Keep in mind that Beyond ignores non-exported functions.
 
 - Register the above functions
 
-Open file [cmd/main.go](https://github.com/wesovilabs/beyondexamples/blob/master/before/cmd/main.go#L9) and have a look at function `Beyond()`.
+Open file [cmd/main.go](https://github.com/wesovilabs/beyond-examples/blob/master/before/cmd/main.go#L9) and have a look at function `Beyond()`.
 
 ```go
 func Beyond() *api.Beyond {
@@ -118,8 +118,8 @@ func main() {
 ```
 Two functions will be intercepted:
 
-- Function `NewTracingAdvice` will be executed before function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/beyondexamples/blob/master/before/greeting/greeting.go#L8) is invoked
-- Function `NewTracingAdviceWithPrefix` will be executed before **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/beyondexamples/blob/master/before/greeting/greeting.go#L16) is invoked.
+- Function `NewTracingAdvice` will be executed before function **Hello** in file [greeting/greeting.go](https://github.com/wesovilabs/beyond-examples/blob/master/before/greeting/greeting.go#L8) is invoked
+- Function `NewTracingAdviceWithPrefix` will be executed before **Bye** in file [greeting/greeting.go](https://github.com/wesovilabs/beyond-examples/blob/master/before/greeting/greeting.go#L16) is invoked.
 
 *We will learn more about how to register advices in section [JoinPoint Expressions](/joinpoints)*
 
@@ -136,10 +136,10 @@ Bye John
 but when we execute **beyond** command ... 
 
 ```bash
->> beyond run main.go
+>> beyond run cmd/main.go
 greeting.Hello(firstName:John)
 Hey John
-[beyond] greeting.Bye(firstName:John)
+[Beyond] greeting.Bye(firstName:John)
 Bye John
 ```
 

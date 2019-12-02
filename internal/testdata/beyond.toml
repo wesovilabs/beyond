@@ -1,5 +1,5 @@
 project="github.com/wesovilabs/beyond-examples/settings"
-outputDir="generated"
+output="generated"
 verbose=true
 work=true
 

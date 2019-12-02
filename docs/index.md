@@ -7,7 +7,7 @@ permalink: /
 ---
 
 {: .text-green-300}
-# Go Oriented to Aspects (Beyond)
+# Beyond
 {: .fs-9 }
 
 {: .text-green-200}
@@ -41,7 +41,7 @@ Add beyond to go.mod.
 ```text
 module github.com/wesovilabs/beyond-examples/greetings
 ...
-require github.com/wesovilabs/beyond v0.0.1
+require github.com/wesovilabs/beyond v1.0.0
 ...
 ```
 
@@ -113,7 +113,6 @@ func (g *Beyond) WithAround(func() Around, string) *Beyond {
 ```
 You can learn more about writing Around advices [here](/advices/around)
 
-
 As you could realize, the above methods retrieve two params:
 
 -  The first param must be **a function that returns** an
@@ -121,6 +120,24 @@ object of type **Before, Returning or Advice**.
 - The second argument must be an expression that will
 be used to find the **joinpoints**. In other words, the expressions will be used to define 
 which functions or methods must be intercepted by the advices. 
+
+**Ignore**
+
+Alternatively, we can use method `Ignore` to omit some functions to be intercepted by advices.
+ ```go
+ package main
+ 
+ import (
+    "github.com/wesovilabs/beyond/api"
+    "github.com/wesovilabs/beyond/api/advice"
+ )
+ 
+ func Beyond()*api.Beyond{
+    return api.New().
+       WithBefore(advice.NewTracingAdvice,"*.*(...)...").
+       Ignore("pkg.*(...)...")
+ }
+ ```
 
 [Write your own advices is very straightforward!](/advices)  
  

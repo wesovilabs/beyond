@@ -31,7 +31,7 @@ func load(settingsPath string) *Settings {
 type Settings struct {
 	Path        string
 	Project     string
-	OutputDir   string
+	Output      string
 	Pkg         string
 	Excludes    []string
 	ExcludeDirs map[string]bool
@@ -93,20 +93,20 @@ func (settings *Settings) withProject(path, project string) {
 
 func (settings *Settings) withOutputDir(path, outputDir string) {
 	if outputDir != "" {
-		settings.OutputDir = outputDir
+		settings.Output = outputDir
 	}
 
-	if settings.OutputDir != "" {
-		if outputDir, outErr := filepath.Abs(settings.OutputDir); outErr != nil {
-			settings.OutputDir = filepath.Join(path, defaultTargetDir)
+	if settings.Output != "" {
+		if outputDir, outErr := filepath.Abs(settings.Output); outErr != nil {
+			settings.Output = filepath.Join(path, defaultTargetDir)
 		} else {
-			settings.OutputDir = outputDir
+			settings.Output = outputDir
 		}
 	} else {
 		if targetDir, err := ioutil.TempDir("", "beyond"); err == nil {
-			settings.OutputDir = targetDir
+			settings.Output = targetDir
 		} else {
-			settings.OutputDir = filepath.Join(path, defaultTargetDir)
+			settings.Output = filepath.Join(path, defaultTargetDir)
 		}
 	}
 }
@@ -146,7 +146,7 @@ func (settings *Settings) withExcludes() {
 		}
 	}
 
-	if outPath, err := filepath.Abs(settings.OutputDir); err == nil {
+	if outPath, err := filepath.Abs(settings.Output); err == nil {
 		settings.ExcludeDirs[outPath] = true
 	}
 }
