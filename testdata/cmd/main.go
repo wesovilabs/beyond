@@ -52,7 +52,7 @@ func Beyond() *api.Beyond {
 		WithReturning(newEmptyReturning,`*.*.(...)...`).
 		WithAround(advice.NewEmptyAround,`*.*Person.*(...)...`).
 		WithAround(advice.NewEmptyAround,`*.*Person.*(struct{},...string)...`).
-		Exclude("*.*Person.Other(...)...")
+		Ignore("*.*Person.Other(...)...")
 
 
 }

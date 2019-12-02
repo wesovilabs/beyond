@@ -9,5 +9,5 @@ func Test_Api(t *testing.T) {
 	New().WithReturning(returning, "*.*").
 		WithAround(around, "").
 		WithBefore(before, "").
-		Exclude(".")
+		Ignore(".")
 }

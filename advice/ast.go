@@ -81,7 +81,7 @@ func searchExcludePaths(node *ast.File) []*regexp.Regexp {
 			if expr, ok := stmt.(*ast.ReturnStmt); ok {
 				if callExpr, ok := expr.Results[0].(*ast.CallExpr); ok {
 					if selExpr, ok := callExpr.Fun.(*ast.SelectorExpr); ok {
-						if selExpr.Sel.Name == "Exclude" {
+						if selExpr.Sel.Name == "Ignore" {
 							for i := range callExpr.Args {
 								arg := callExpr.Args[i]
 								if basic, ok := arg.(*ast.BasicLit); ok {

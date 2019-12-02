@@ -23,7 +23,7 @@ func (g *Beyond) WithReturning(func() Returning, string) *Beyond {
 	return g
 }
 
-// Exclude add path to be ignored by beyond advices
-func (g *Beyond) Exclude(...string) *Beyond {
+// Ignore add path to be ignored by beyond advices
+func (g *Beyond) Ignore(...string) *Beyond {
 	return g
 }
