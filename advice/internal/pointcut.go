@@ -19,7 +19,6 @@ var regExp = func() *regexp.Regexp {
 	expr += fmt.Sprintf(`(?P<func>%s)`, exprFunc)
 	expr += fmt.Sprintf(`(?P<args>\(%s)`, exprArgs)
 	expr += `$`
-	fmt.Println(expr)
 	return regexp.MustCompile(expr)
 }()
 
