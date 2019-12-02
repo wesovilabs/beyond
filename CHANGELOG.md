@@ -1,9 +1,5 @@
 # Changelog
 
-## [v0.0.1] - 24/11/2019 
-
-🎉 first release!
-
 ## [v1.0.0] - ??/12/2019
 
 ### Added
@@ -25,12 +21,10 @@ It's due an existing and known library already had that name.
 - [#10](https://github.com/wesovilabs/beyond/issues/10) This change improves the `Beyond performance` since
 the list of functions to be evaluated is less than It used to be required in older versions.
 
-### Removed
-
 ### Fixed
 - [#23](https://github.com/wesovilabs/beyond/issues/23) Fix build command when flag -o is not provided.
 - [#14](https://github.com/wesovilabs/beyond/issues/14) Fixing windows compilation error
 
-### Deprecated
+## [v0.0.1] - 24/11/2019 
 
- 
+🎉 first release! 
