@@ -116,5 +116,8 @@ func Test_SetWithType(t *testing.T) {
 	args.SetWithType("male", 10, "int")
 	assert.Equal(10, args.Get("male").value)
 	assert.Equal("int", args.Get("male").kind)
+	assert.Len(args.items, 3)
+	args.SetWithType("other", 20, "int")
+	assert.Len(args.items, 4)
 
 }

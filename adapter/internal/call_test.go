@@ -25,3 +25,15 @@ func Test_CallCreateAspect(t *testing.T) {
 	}
 
 }
+
+func Test_prepareArgs(t *testing.T) {
+	assert := assert.New(t)
+	res := prepareArgs([]*FieldDef{
+		{
+			Name: "param",
+			Kind: &ast.Ellipsis{},
+		},
+	}, true)
+	assert.Len(res, 1)
+	assert.Equal("param...", res[0].(*ast.Ident).Name)
+}
