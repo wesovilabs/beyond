@@ -17,6 +17,7 @@ toml file.
 Before method.  
 - [#3](https://github.com/wesovilabs/beyond/issues?q=is%3Aissue+is%3Aclosed+milestone%3Av0.0.2+label%3Aenhancement)
 Docker image `wesovilabs/beyond:1.0.0` is provided.
+- [#8](https://github.com/wesovilabs/beyond/issues/8) It special character `?` is supported for optional objects
 
 ### Changed
 - [#26](https://github.com/wesovilabs/beyond/issues/26) Library has been renamed from `goa` to `beyond`. 
@@ -28,7 +29,7 @@ the list of functions to be evaluated is less than It used to be required in old
 
 ### Fixed
 - [#23](https://github.com/wesovilabs/beyond/issues/23) Fix build command when flag -o is not provided.
-
+- [#14](https://github.com/wesovilabs/beyond/issues/14) Fixing windows compilation error
 
 ### Deprecated
 
