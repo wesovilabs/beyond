@@ -45,9 +45,9 @@ build: ; @ ## build exeutable for your current osm
 
 .PHONY: build-all
 build-all: ; @ ## Build binary files
+	GOARCH=amd64 GOOS=windows $(GOBUILD) -o build/beyond.exe main.go
 	GOARCH=amd64 GOOS=linux  $(GOBUILD) -o build/beyond.linux main.go
 	GOARCH=amd64 GOOS=darwin $(GOBUILD) -o build/beyond.darwin main.go
-	#GOARCH=amd64 GOOS=windows $(GOBUILD) -o build/beyond.exe main.go
 
 .PHONY: init
 init: ; @ ## Setup the git hooks

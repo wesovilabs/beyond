@@ -1,12 +1,10 @@
 package helper
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"syscall"
 )
 
 // CopyDirectory function that copies directories
@@ -37,15 +35,7 @@ func copyEntry(scrDir, dest string, excludes map[string]bool, entry os.FileInfo)
 	fileInfo, err := os.Stat(sourcePath)
 	CheckError(err)
 
-	stat, ok := fileInfo.Sys().(*syscall.Stat_t)
-	if !ok {
-		panic(fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", sourcePath))
-	}
-
 	copy(fileInfo, sourcePath, destPath, excludes)
-
-	err = os.Lchown(destPath, int(stat.Uid), int(stat.Gid))
-	CheckError(err)
 
 	isSymlink := entry.Mode()&os.ModeSymlink != 0
 	if !isSymlink {

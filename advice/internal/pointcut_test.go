@@ -16,7 +16,6 @@ func Test_NormalizePointcut(t *testing.T) {
 	assert.False(expr.Match([]byte("pkg.Object.fn(string,*int)")))
 	assert.False(expr.Match([]byte("pkg.Person?.fn(string,*int)")))
 
-
 	expr = NormalizePointcut("pkg.*?.fn(...)...")
 	fmt.Println(expr.String())
 	assert.True(expr.Match([]byte("pkg.Person.fn(string,*int)")))
