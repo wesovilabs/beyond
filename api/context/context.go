@@ -122,8 +122,12 @@ func (c *BeyondContext) IsCompleted() bool {
 }
 
 // Hash return an unique value for the context
-func (c *BeyondContext) Hash() string{
+func (c *BeyondContext) Hash() string {
 	var b bytes.Buffer
-	gob.NewEncoder(&b).Encode(c.ctx)
-	return string(b.Bytes())
+
+	if err:=gob.NewEncoder(&b).Encode(c.ctx);err!=nil{
+		return ""
+	}
+
+	return b.String()
 }
