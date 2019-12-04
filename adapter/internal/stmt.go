@@ -90,23 +90,56 @@ func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 			},
 		})
 
-		stmts = append(stmts, &ast.AssignStmt{
-			Lhs: []ast.Expr{
-				NewIdentObj(fmt.Sprintf("result%v", i)),
+		stmts = append(stmts, &ast.DeclStmt{
+			Decl: &ast.GenDecl{
+				Specs: []ast.Spec{
+					&ast.ValueSpec{
+
+						Names: []*ast.Ident{
+							NewIdentObj(fmt.Sprintf("result%v", i)),
+						},
+						Type: result.Kind,
+					},
+				},
+				Tok:token.VAR,
 			},
-			Tok: token.DEFINE,
-			Rhs: []ast.Expr{
-				&ast.TypeAssertExpr{
-					X: &ast.CallExpr{
-						Fun: &ast.SelectorExpr{
-							X:   NewIdentObjVar(fmt.Sprintf("beyondResult%v", i)),
-							Sel: NewIdent("Value"),
+		})
+
+		stmts = append(stmts, &ast.IfStmt{
+			Cond: &ast.BinaryExpr{
+				X: &ast.CallExpr{
+					Fun: &ast.SelectorExpr{
+						X:   NewIdentObjVar(fmt.Sprintf("beyondResult%v", i)),
+						Sel: NewIdent("Value"),
+					},
+				},
+				Op: token.NEQ,
+				Y:NewIdentObj("nil"),
+			},
+			Body:&ast.BlockStmt{
+				List:[]ast.Stmt{
+					&ast.AssignStmt{
+						Lhs: []ast.Expr{
+							NewIdentObj(fmt.Sprintf("result%v", i)),
+						},
+						Tok: token.ASSIGN,
+						Rhs: []ast.Expr{
+							&ast.TypeAssertExpr{
+								X: &ast.CallExpr{
+									Fun: &ast.SelectorExpr{
+										X:   NewIdentObjVar(fmt.Sprintf("beyondResult%v", i)),
+										Sel: NewIdent("Value"),
+									},
+								},
+								Type: result.Kind,
+							},
 						},
 					},
-					Type: result.Kind,
 				},
 			},
 		})
+
+
 		returnExpr[i] = NewIdent(fmt.Sprintf("result%v", i))
 	}
 
@@ -115,6 +148,12 @@ func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 	})
 }
 
+/**
+var result1 error
+                if beyondResult1.Value()!=nil{
+                        result1=beyondResult0.Value().(error)
+                }
+*/
 // IfAdviceIsCompleted add statements if advice is completed
 func IfAdviceIsCompleted(results []*FieldDef) ast.Stmt {
 	stmts := make([]ast.Stmt, 0)

@@ -2,7 +2,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/wesovilabs/beyond)](https://goreportcard.com/report/github.com/wesovilabs/beyond)
 [![GoDoc](https://godoc.org/github.com/wesovilabs/beyond?status.svg)](https://godoc.org/github.com/wesovilabs/beyond)
 [![codecov](https://codecov.io/gh/wesovilabs/beyond/branch/master/graph/badge.svg)](https://codecov.io/gh/wesovilabs/beyond)
-
+[![Mentioned in Awesome Go](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/avelino/awesome-go)
 
 # Beyond
 

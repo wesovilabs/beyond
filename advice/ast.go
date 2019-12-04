@@ -175,6 +175,8 @@ func adviceCallText(ar ast.Expr) string {
 		}
 
 		argText = fmt.Sprintf("%s(%s)", adviceCallText(a.Fun), strings.Join(args, ","))
+	case *ast.BinaryExpr:
+		argText = fmt.Sprintf("%s %s %s",adviceCallText(a.X),a.Op.String(),adviceCallText(a.Y))
 	default:
 		argText = unsupportedType(reflect.TypeOf(a).String())
 	}
@@ -206,6 +208,7 @@ func addAdviceCallExpr(arg *ast.CallExpr, importSpecs []*ast.ImportSpec, invocat
 					val: argText,
 				})
 			} else {
+				fmt.Println(argText)
 				items := strings.Split(argText, ".")
 				if len(items) == 2 {
 					isPointer := false
@@ -224,6 +227,7 @@ func addAdviceCallExpr(arg *ast.CallExpr, importSpecs []*ast.ImportSpec, invocat
 						pointer: isPointer,
 					})
 				} else {
+
 					invocationArgs = append(invocationArgs, &adviceInvocationArg{
 						val: argText,
 					})

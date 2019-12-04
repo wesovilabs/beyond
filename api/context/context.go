@@ -1,10 +1,5 @@
 package context
 
-import (
-	"bytes"
-	"encoding/gob"
-)
-
 type contextKey string
 
 const (
@@ -119,15 +114,4 @@ func (c *BeyondContext) Exit() {
 // IsCompleted returns true if flow must stop
 func (c *BeyondContext) IsCompleted() bool {
 	return c.completed
-}
-
-// Hash return an unique value for the context
-func (c *BeyondContext) Hash() string {
-	var b bytes.Buffer
-
-	if err:=gob.NewEncoder(&b).Encode(c.ctx);err!=nil{
-		return ""
-	}
-
-	return b.String()
 }
