@@ -55,6 +55,7 @@ func ifArgumentValueIsNotNil(variable string, stmt ast.Stmt) ast.Stmt {
 	}
 }
 
+//nolint:funlen
 func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 	stmts := make([]ast.Stmt, 0)
 	stmts = append(stmts, &ast.AssignStmt{
@@ -101,7 +102,7 @@ func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 						Type: result.Kind,
 					},
 				},
-				Tok:token.VAR,
+				Tok: token.VAR,
 			},
 		})
 
@@ -114,10 +115,10 @@ func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 					},
 				},
 				Op: token.NEQ,
-				Y:NewIdentObj("nil"),
+				Y:  NewIdentObj("nil"),
 			},
-			Body:&ast.BlockStmt{
-				List:[]ast.Stmt{
+			Body: &ast.BlockStmt{
+				List: []ast.Stmt{
 					&ast.AssignStmt{
 						Lhs: []ast.Expr{
 							NewIdentObj(fmt.Sprintf("result%v", i)),
@@ -138,7 +139,6 @@ func appendResultsStatements(results []*FieldDef) []ast.Stmt {
 				},
 			},
 		})
-
 
 		returnExpr[i] = NewIdent(fmt.Sprintf("result%v", i))
 	}
